@@ -1,0 +1,23 @@
+# OS / Misc
+.DS_Store
+*.log
+*.swp
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# Dart / Flutter (workspace root)
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+/build/
+/coverage/
+**/doc/api/
+
+# Bundler (CocoaPods管理用)
+.bundle/
+vendor/bundle/

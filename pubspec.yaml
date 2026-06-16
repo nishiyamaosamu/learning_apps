@@ -1,0 +1,9 @@
+name: leaning_apps
+publish_to: none
+
+environment:
+  sdk: ^3.11.5
+
+workspace:
+  - engine
+  - apps/ipa_ip
