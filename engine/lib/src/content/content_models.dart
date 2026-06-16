@@ -28,16 +28,79 @@ class ContentIndex with _$ContentIndex {
       _$ContentIndexFromJson(json);
 }
 
-/// 講座内容。contents/lessons/{id}.json を都度ロード。
+/// レッスン内容。contents/lessons/{id}.json を都度ロード。
+///
+/// docs/LESSON.md の `lesson` 構造に対応。`pages` を配列順に表示し、
+/// 末尾に `exercises`（本番演習への参照）を表示する。
 @freezed
 class Lesson with _$Lesson {
   const factory Lesson({
     required String id,
     required String title,
-    @Default('') String body,
+    // 説明・ミニクイズのページ列。配列順に表示。
+    @Default(<LessonPage>[]) List<LessonPage> pages,
+    // 末尾に表示する本番演習への参照（exercises/{id}.json の id）。
+    // 演習を持たないレッスンは空配列。
+    @Default(<int>[]) List<int> exercises,
   }) = _Lesson;
 
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
+}
+
+/// レッスンの1ページ。複数のコンテンツを束ねる。
+@freezed
+class LessonPage with _$LessonPage {
+  const factory LessonPage({
+    // このページに並べるコンテンツ列。配列順に表示。
+    @Default(<LessonContent>[]) List<LessonContent> contents,
+  }) = _LessonPage;
+
+  factory LessonPage.fromJson(Map<String, dynamic> json) =>
+      _$LessonPageFromJson(json);
+}
+
+/// ページ内コンテンツ。`type` を discriminator とするフラットなunion。
+///
+/// 各バリアントは型ごとのフィールドを同階層に持つ（`data:` でネストしない）。
+@Freezed(unionKey: 'type')
+sealed class LessonContent with _$LessonContent {
+  /// 説明本文（Markdown）。
+  @FreezedUnionValue('text')
+  const factory LessonContent.text({
+    required String text,
+    // 本文ナレーション音声。ローカルアセット相対パス（例 audio/1-1.mp3）。
+    String? audioUrl,
+  }) = TextContent;
+
+  /// 画像。imageUrl はローカルアセット相対パス（例 images/vowels.png）。
+  @FreezedUnionValue('image')
+  const factory LessonContent.image({
+    required String imageUrl,
+  }) = ImageContent;
+
+  /// 複数の選択肢から正解を1つ選ぶミニクイズ。
+  /// 設問文は直前の [TextContent] が担う（このバリアント自身は設問文を持たない）。
+  @FreezedUnionValue('quizMultipleChoice')
+  const factory LessonContent.quizMultipleChoice({
+    required List<String> options,
+    // 正解の選択肢インデックス（0始まり）。
+    required int correctOptionIndex,
+  }) = QuizMultipleChoiceContent;
+
+  /// 問題文中の空欄（`[__]`）を選択肢で順番に穴埋めするミニクイズ。
+  @FreezedUnionValue('quizFillInTheBlank')
+  const factory LessonContent.quizFillInTheBlank({
+    // 問題文。空欄は `[__]` で表現。
+    required String question,
+    // 選択肢（同一内容の重複は不可）。options数 ≥ 空欄数。
+    required List<String> options,
+    // 各空欄の正解。correctOptionIndices[n] = 出現順 n 番目の `[__]` の
+    // 正解 = options のインデックス。値は重複しない。
+    required List<int> correctOptionIndices,
+  }) = QuizFillInTheBlankContent;
+
+  factory LessonContent.fromJson(Map<String, dynamic> json) =>
+      _$LessonContentFromJson(json);
 }
 
 /// 問題の1問。

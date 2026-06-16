@@ -21,3 +21,12 @@
 # Bundler (CocoaPods管理用)
 .bundle/
 vendor/bundle/
+
+# サービスアカウント等の機密情報
+secrets/
+
+# Python (content_works/scripts)
+__pycache__/
+*.pyc
+.venv/
+content_works/scripts/output.mp3

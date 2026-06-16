@@ -1,5 +1,46 @@
 {
   "id": "1",
   "title": "IPAとは何か",
-  "body": "国際音声記号（IPA: International Phonetic Alphabet）は、世界中の言語の音声を表記するための記号体系です。\n\n1つの記号が1つの音に対応するため、つづりに惑わされず正確な発音を学べます。"
+  "pages": [
+    {
+      "contents": [
+        {
+          "type": "text",
+          "text": "# 情報処理推進機構（IPA）\n\n**IPA: Information-technology Promotion Agency** は、日本のIT分野を推進する独立行政法人です。\n\n- ITパスポート試験などの**国家試験（情報処理技術者試験）を実施**する\n- 情報セキュリティ対策や人材育成の支援を行う"
+        }
+      ]
+    },
+    {
+      "contents": [
+        {
+          "type": "text",
+          "text": "ITパスポート試験を実施している機関はどれでしょう？"
+        },
+        {
+          "type": "quizMultipleChoice",
+          "options": [
+            "情報処理推進機構（IPA）",
+            "総務省",
+            "日本商工会議所"
+          ],
+          "correctOptionIndex": 0
+        }
+      ]
+    },
+    {
+      "contents": [
+        {
+          "type": "quizFillInTheBlank",
+          "question": "ITパスポート試験は[__]系・[__]系・テクノロジ系の3分野から出題されます。",
+          "options": [
+            "ストラテジ",
+            "マネジメント",
+            "ネットワーク"
+          ],
+          "correctOptionIndices": [0, 1]
+        }
+      ]
+    }
+  ],
+  "exercises": []
 }
