@@ -23,58 +23,61 @@ void main() {
     expect(index.exercises, isEmpty);
   });
 
-  test('Lesson.fromJson が pages/contents の union をパースできる', () {
+  test('Lesson.fromJson が scenes の union をパースできる', () {
     final lesson = Lesson.fromJson({
-      'id': '1',
-      'title': 'IPAとは何か',
-      'pages': [
+      'id': '2',
+      'title': '企業活動と経営資源',
+      'scenes': [
         {
-          'contents': [
-            {'type': 'text', 'text': '本文', 'audioUrl': 'audio/1-1.mp3'},
-            {'type': 'image', 'imageUrl': 'images/chart.png'},
+          'type': 'narration',
+          'steps': [
+            {
+              'text': '本文1',
+              'imageUrl': 'lessons/images/2-1.jpeg',
+              'audioUrl': 'lessons/audios/2-1.mp3',
+            },
+            {'text': '本文2'},
           ],
         },
         {
-          'contents': [
-            {
-              'type': 'quizMultipleChoice',
-              'options': ['A', 'B'],
-              'correctOptionIndex': 1,
-            },
-            {
-              'type': 'quizFillInTheBlank',
-              'question': '[i] は[__]母音です。',
-              'options': ['前舌・狭', '後舌・広'],
-              'correctOptionIndices': [0],
-            },
-          ],
+          'type': 'quizMultipleChoice',
+          'question': '問1',
+          'options': ['A', 'B'],
+          'correctOptionIndex': 1,
+        },
+        {
+          'type': 'quizFillInTheBlank',
+          'question': '経営資源は ヒト・[__] の…',
+          'options': ['モノ', '土地'],
+          'correctOptionIndices': [0],
         },
       ],
       'exercises': [],
     });
 
-    expect(lesson.pages.length, 2);
+    expect(lesson.scenes.length, 3);
     expect(lesson.exercises, isEmpty);
 
-    final first = lesson.pages.first.contents;
-    expect(first.first, isA<TextContent>());
-    expect((first.first as TextContent).audioUrl, 'audio/1-1.mp3');
-    expect(first.last, isA<ImageContent>());
+    final narration = lesson.scenes.first as NarrationScene;
+    expect(narration.steps.length, 2);
+    expect(narration.steps.first.imageUrl, 'lessons/images/2-1.jpeg');
+    expect(narration.steps.first.audioUrl, 'lessons/audios/2-1.mp3');
+    expect(narration.steps.last.imageUrl, isNull);
+    expect(narration.steps.last.audioUrl, isNull);
 
-    final second = lesson.pages.last.contents;
     expect(
-      (second.first as QuizMultipleChoiceContent).correctOptionIndex,
+      (lesson.scenes[1] as QuizMultipleChoiceScene).correctOptionIndex,
       1,
     );
     expect(
-      (second.last as QuizFillInTheBlankContent).correctOptionIndices,
+      (lesson.scenes.last as QuizFillInTheBlankScene).correctOptionIndices,
       [0],
     );
   });
 
-  test('exercises を持たないレッスンは空配列になる', () {
+  test('scenes を持たないレッスンは空配列になる', () {
     final lesson = Lesson.fromJson({'id': '2', 'title': '導入のみ'});
-    expect(lesson.pages, isEmpty);
+    expect(lesson.scenes, isEmpty);
     expect(lesson.exercises, isEmpty);
   });
 }

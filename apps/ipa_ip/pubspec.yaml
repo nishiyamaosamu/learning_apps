@@ -26,5 +26,6 @@ flutter:
     - contents/base.json
     - contents/lessons/
     - contents/lessons/audios/
+    - contents/lessons/images/
     - contents/exercises/
     - contents/anki/

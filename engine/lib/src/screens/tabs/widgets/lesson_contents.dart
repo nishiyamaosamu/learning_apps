@@ -1,79 +1,60 @@
 import 'package:flutter/material.dart';
 
 import '../../../content/content_models.dart';
-import 'lesson_audio_player.dart';
-import 'lesson_page_controller.dart';
+import 'quiz_controller.dart';
 
-/// 1つの [LessonContent] を型に応じたウィジェットへ振り分けて描画する。
-///
-/// クイズは [controller] により回答状態を集約し、正誤表示は「回答する」
-/// （= [LessonPageController.submitted]）に連動する。
-class LessonContentView extends StatelessWidget {
-  const LessonContentView({
-    super.key,
-    required this.content,
-    required this.contentIndex,
-    required this.controller,
-    required this.assetBasePath,
-  });
+/// シーンの固定画像。アセットが見つからない場合はプレースホルダを表示する。
+class SceneImage extends StatelessWidget {
+  const SceneImage({super.key, required this.assetPath});
 
-  final LessonContent content;
-  final int contentIndex;
-  final LessonPageController controller;
-
-  /// 画像/音声などローカルアセットを解決するためのベースパス（例: 'contents'）。
-  final String assetBasePath;
+  /// 画像アセットの完全パス（例: 'contents/lessons/images/2-1.jpeg'）。
+  final String assetPath;
 
   @override
   Widget build(BuildContext context) {
-    return switch (content) {
-      TextContent(:final text, :final audioUrl) => _TextContent(
-          text: text,
-          audioAssetPath:
-              audioUrl == null ? null : '$assetBasePath/$audioUrl',
-        ),
-      ImageContent(:final imageUrl) =>
-        _ImageContent(assetPath: '$assetBasePath/$imageUrl'),
-      QuizMultipleChoiceContent() => MultipleChoiceQuiz(
-          content: content as QuizMultipleChoiceContent,
-          contentIndex: contentIndex,
-          controller: controller,
-        ),
-      QuizFillInTheBlankContent() => FillInTheBlankQuiz(
-          content: content as QuizFillInTheBlankContent,
-          contentIndex: contentIndex,
-          controller: controller,
-        ),
-    };
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.asset(
+        assetPath,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          final theme = Theme.of(context);
+          return Container(
+            height: 120,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.image_outlined),
+                const SizedBox(height: 4),
+                Text(assetPath, style: theme.textTheme.bodySmall),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
 /// 説明本文。Markdown ソースをそのまま表示する簡易レンダラ。
 ///
-/// （見出し `#`・箇条書き `-`・太字 `**` の最小対応。本格的な Markdown
-/// 表示が必要になったら flutter_markdown 等の導入を検討する。）
-class _TextContent extends StatelessWidget {
-  const _TextContent({required this.text, this.audioAssetPath});
+/// （見出し `#`・箇条書き `-`・太字 `**`・インラインコード `` ` `` の最小対応。
+/// 本格的な Markdown 表示が必要になったら flutter_markdown 等の導入を検討する。）
+class MarkdownText extends StatelessWidget {
+  const MarkdownText({super.key, required this.text});
 
   final String text;
-
-  /// 本文ナレーション音声のアセット完全パス（無い場合は null）。
-  final String? audioAssetPath;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final lines = text.split('\n');
     final widgets = <Widget>[];
-
-    // ナレーション音声があれば本文の先頭に再生バーを表示し、自動再生する。
-    if (audioAssetPath != null) {
-      widgets.add(Align(
-        alignment: Alignment.centerLeft,
-        child: LessonAudioPlayer(assetPath: audioAssetPath!),
-      ));
-      widgets.add(const SizedBox(height: 12));
-    }
 
     for (final line in lines) {
       final trimmed = line.trimRight();
@@ -143,95 +124,49 @@ class _TextContent extends StatelessWidget {
   }
 }
 
-/// 画像。アセットが見つからない場合はプレースホルダを表示する。
-class _ImageContent extends StatelessWidget {
-  const _ImageContent({required this.assetPath});
-
-  final String assetPath;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Image.asset(
-        assetPath,
-        fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) {
-          final theme = Theme.of(context);
-          return Container(
-            height: 120,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.image_outlined),
-                const SizedBox(height: 4),
-                Text(assetPath, style: theme.textTheme.bodySmall),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
 /// 単一選択ミニクイズ。選択肢タップで [controller] に回答を登録し、
-/// 「回答する」確定後（[LessonPageController.submitted]）に正誤を表示する。
+/// 「回答する」確定後（[QuizController.submitted]）に正誤を表示する。
 class MultipleChoiceQuiz extends StatelessWidget {
   const MultipleChoiceQuiz({
     super.key,
-    required this.content,
-    required this.contentIndex,
+    required this.scene,
     required this.controller,
   });
 
-  final QuizMultipleChoiceContent content;
-  final int contentIndex;
-  final LessonPageController controller;
+  final QuizMultipleChoiceScene scene;
+  final QuizController controller;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (context, _) {
-        final theme = Theme.of(context);
-        final answered = controller.submitted;
-        final selected = controller.choiceOf(contentIndex);
+    final theme = Theme.of(context);
+    final answered = controller.submitted;
+    final selected = controller.choice;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (var i = 0; i < content.options.length; i++)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: _OptionTile(
-                  label: content.options[i],
-                  state: _stateFor(i, selected, answered),
-                  onTap: answered
-                      ? null
-                      : () => controller.selectChoice(contentIndex, i),
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < scene.options.length; i++)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: _OptionTile(
+              label: scene.options[i],
+              state: _stateFor(i, selected, answered),
+              onTap: answered ? null : () => controller.selectChoice(i),
+            ),
+          ),
+        if (answered)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              selected == scene.correctOptionIndex ? '正解！' : '不正解',
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: selected == scene.correctOptionIndex
+                    ? Colors.green
+                    : theme.colorScheme.error,
               ),
-            if (answered)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  selected == content.correctOptionIndex ? '正解！' : '不正解',
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: selected == content.correctOptionIndex
-                        ? Colors.green
-                        : theme.colorScheme.error,
-                  ),
-                ),
-              ),
-          ],
-        );
-      },
+            ),
+          ),
+      ],
     );
   }
 
@@ -240,7 +175,7 @@ class MultipleChoiceQuiz extends StatelessWidget {
       return i == selected ? _OptionState.selected : _OptionState.idle;
     }
     // 回答後は正解を緑、選んだ誤答を赤で示す。
-    if (i == content.correctOptionIndex) return _OptionState.correct;
+    if (i == scene.correctOptionIndex) return _OptionState.correct;
     if (i == selected) return _OptionState.wrong;
     return _OptionState.idle;
   }
@@ -310,18 +245,16 @@ class _OptionTile extends StatelessWidget {
 /// - `question` 中の `[__]` を出現順に空欄として扱う。
 /// - 各チップは1つの空欄にのみ使用できる（使用済みは選択肢から消える）。
 /// - 空欄をタップすると配置を解除して選択肢へ戻す（回答確定前のみ）。
-/// - 採点は「回答する」（[LessonPageController.submit]）で行う。
+/// - 採点は「回答する」（[QuizController.submit]）で行う。
 class FillInTheBlankQuiz extends StatelessWidget {
   FillInTheBlankQuiz({
     super.key,
-    required this.content,
-    required this.contentIndex,
+    required this.scene,
     required this.controller,
-  }) : _segments = content.question.split('[__]');
+  }) : _segments = scene.question.split('[__]');
 
-  final QuizFillInTheBlankContent content;
-  final int contentIndex;
-  final LessonPageController controller;
+  final QuizFillInTheBlankScene scene;
+  final QuizController controller;
 
   /// question を `[__]` で分割した、空欄の前後に挟まる固定テキスト片。
   /// （セグメント数 = 空欄数 + 1）
@@ -331,60 +264,55 @@ class FillInTheBlankQuiz extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (context, _) {
-        final theme = Theme.of(context);
-        final placed = controller.blanksOf(contentIndex);
-        final submitted = controller.submitted;
+    final theme = Theme.of(context);
+    final placed = controller.blanks;
+    final submitted = controller.submitted;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 問題文（テキスト片と空欄を交互に並べる）。
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 4,
+          runSpacing: 8,
           children: [
-            // 問題文（テキスト片と空欄を交互に並べる）。
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 4,
-              runSpacing: 8,
-              children: [
-                for (var i = 0; i < _segments.length; i++) ...[
-                  if (_segments[i].isNotEmpty) Text(_segments[i]),
-                  if (i < _blankCount)
-                    _buildBlank(i, placed[i], submitted, theme),
-                ],
-              ],
-            ),
-            const SizedBox(height: 16),
-            // 未使用の選択肢チップ。
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (var i = 0; i < content.options.length; i++)
-                  if (!placed.contains(i))
-                    _buildDraggableChip(i, submitted, theme),
-              ],
-            ),
-            if (submitted)
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Text(
-                  _allCorrect(placed) ? '全問正解！' : 'もう一度試してみましょう',
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: _allCorrect(placed)
-                        ? Colors.green
-                        : theme.colorScheme.error,
-                  ),
-                ),
-              ),
+            for (var i = 0; i < _segments.length; i++) ...[
+              if (_segments[i].isNotEmpty) Text(_segments[i]),
+              if (i < _blankCount)
+                _buildBlank(i, placed[i], submitted, theme),
+            ],
           ],
-        );
-      },
+        ),
+        const SizedBox(height: 16),
+        // 未使用の選択肢チップ。
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (var i = 0; i < scene.options.length; i++)
+              if (!placed.contains(i))
+                _buildDraggableChip(i, submitted, theme),
+          ],
+        ),
+        if (submitted)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Text(
+              _allCorrect(placed) ? '全問正解！' : 'もう一度試してみましょう',
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: _allCorrect(placed)
+                    ? Colors.green
+                    : theme.colorScheme.error,
+              ),
+            ),
+          ),
+      ],
     );
   }
 
   bool _isBlankCorrect(int blankIndex, int? optionIndex) =>
-      optionIndex == content.correctOptionIndices[blankIndex];
+      optionIndex == scene.correctOptionIndices[blankIndex];
 
   bool _allCorrect(List<int?> placed) =>
       List.generate(_blankCount, (i) => _isBlankCorrect(i, placed[i]))
@@ -399,7 +327,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
     return DragTarget<int>(
       onWillAcceptWithDetails: (_) => !submitted,
       onAcceptWithDetails: (details) =>
-          controller.placeBlank(contentIndex, blankIndex, details.data),
+          controller.placeBlank(blankIndex, details.data),
       builder: (context, candidate, rejected) {
         final hovering = candidate.isNotEmpty;
         final Color border;
@@ -415,7 +343,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
 
         return GestureDetector(
           onTap: (!submitted && optionIndex != null)
-              ? () => controller.clearBlank(contentIndex, blankIndex)
+              ? () => controller.clearBlank(blankIndex)
               : null,
           child: Container(
             constraints: const BoxConstraints(minWidth: 72, minHeight: 36),
@@ -429,7 +357,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
                   : null,
             ),
             child: Text(
-              optionIndex != null ? content.options[optionIndex] : '____',
+              optionIndex != null ? scene.options[optionIndex] : '____',
               style: TextStyle(
                 color: optionIndex != null
                     ? null
@@ -443,13 +371,13 @@ class FillInTheBlankQuiz extends StatelessWidget {
   }
 
   Widget _buildDraggableChip(int optionIndex, bool submitted, ThemeData theme) {
-    final chip = _Chip(label: content.options[optionIndex]);
+    final chip = _Chip(label: scene.options[optionIndex]);
     if (submitted) return chip;
     return Draggable<int>(
       data: optionIndex,
       feedback: Material(
         color: Colors.transparent,
-        child: _Chip(label: content.options[optionIndex], elevated: true),
+        child: _Chip(label: scene.options[optionIndex], elevated: true),
       ),
       childWhenDragging: Opacity(opacity: 0.3, child: chip),
       child: chip,

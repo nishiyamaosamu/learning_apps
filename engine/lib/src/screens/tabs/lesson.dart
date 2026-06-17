@@ -1,16 +1,18 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/content_models.dart' as models;
 import '../../content/content_providers.dart';
+import '../../settings/audio_settings.dart';
 import 'widgets/lesson_contents.dart';
-import 'widgets/lesson_page_controller.dart';
+import 'widgets/quiz_controller.dart';
 
-/// レッスン内容。contents/lessons/{id}.json を都度ロードして表示。
+/// レッスン内容。contents/lessons/{id}.json を都度ロードして再生する。
 ///
-/// docs/LESSON.md の構造に従い、`pages` を1ページずつページ送りで表示する。
-/// フッターのボタンで「回答する / 次へ」を切り替え、全ページ通過後に完了
-/// ページを表示する。
+/// docs/LESSON.md の構造に従い、`scenes` をシーン単位で再生する。
+/// ナレーションシーンはタップで1ステップずつ累積表示し、クイズシーンは
+/// 回答UIを伴う。全シーン通過後に完了ページを表示する。
 class Lesson extends ConsumerWidget {
   const Lesson({super.key, required this.id, required this.title});
 
@@ -22,213 +24,600 @@ class Lesson extends ConsumerWidget {
     final lesson = ref.watch(lessonProvider(id));
     final basePath = ref.watch(appConfigProvider).contentBasePath;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: lesson.when(
-        data: (l) => _LessonPager(lesson: l, assetBasePath: basePath),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('読み込みに失敗しました\n$e')),
+    return lesson.when(
+      data: (l) => _LessonPlayer(lesson: l, assetBasePath: basePath),
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (e, _) => Scaffold(
+        body: Center(child: Text('読み込みに失敗しました\n$e')),
       ),
     );
   }
 }
 
-/// ページ送りと回答状態を管理する本体。
-class _LessonPager extends StatefulWidget {
-  const _LessonPager({required this.lesson, required this.assetBasePath});
+/// シーン送り・ステップ展開・回答状態・音声再生をまとめて管理する本体。
+class _LessonPlayer extends ConsumerStatefulWidget {
+  const _LessonPlayer({required this.lesson, required this.assetBasePath});
 
   final models.Lesson lesson;
   final String assetBasePath;
 
   @override
-  State<_LessonPager> createState() => _LessonPagerState();
+  ConsumerState<_LessonPlayer> createState() => _LessonPlayerState();
 }
 
-class _LessonPagerState extends State<_LessonPager> {
-  final _pageController = PageController();
+class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
+  /// ナレーション/クイズ設問の音声を1つだけ再生するプレイヤー。
+  final _audio = AudioPlayer()..audioCache = AudioCache(prefix: '');
 
-  /// 各コンテンツページの回答状態コントローラ（ページ数ぶん）。
-  late List<LessonPageController> _controllers;
+  /// 現在のシーン番号。`scenes.length` は完了ページを指す。
+  int _sceneIndex = 0;
 
-  /// 現在のページ番号。`pages.length` は完了ページを指す。
-  int _index = 0;
+  /// 現在のナレーションシーンで表示済みのステップ数（1始まり）。
+  int _revealed = 1;
 
-  List<models.LessonPage> get _pages => widget.lesson.pages;
+  /// 現在がクイズシーンのときの回答状態（それ以外は null）。
+  QuizController? _quiz;
 
-  bool get _onCompletion => _index >= _pages.length;
+  /// シーン遷移アニメの向き（true=進む/横スライド左へ、false=戻る）。
+  bool _forward = true;
+
+  List<models.LessonScene> get _scenes => widget.lesson.scenes;
+
+  bool get _onCompletion => _sceneIndex >= _scenes.length;
 
   @override
   void initState() {
     super.initState();
-    _controllers = [
-      for (final page in _pages) LessonPageController(page),
-    ];
+    _setupSceneState();
+    // 初回フレーム後に先頭シーンの音声を自動再生する。
+    WidgetsBinding.instance.addPostFrameCallback((_) => _playSetupAudio());
   }
 
   @override
   void dispose() {
-    for (final c in _controllers) {
-      c.dispose();
-    }
-    _pageController.dispose();
+    _quiz?.dispose();
+    _audio.dispose();
     super.dispose();
   }
 
-  void _goTo(int index) {
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 280),
-      curve: Curves.easeInOut,
+  /// 現在シーンに合わせて表示状態（ステップ数・クイズ）を組み立てる。
+  void _setupSceneState() {
+    _revealed = 1;
+    _quiz?.removeListener(_onQuizChanged);
+    _quiz?.dispose();
+    _quiz = null;
+    if (_onCompletion) return;
+    final scene = _scenes[_sceneIndex];
+    if (scene is! models.NarrationScene) {
+      _quiz = QuizController(scene)..addListener(_onQuizChanged);
+    }
+  }
+
+  void _onQuizChanged() => setState(() {});
+
+  /// 現在シーンの先頭（または現在ステップ）音声を再生する。
+  void _playSetupAudio() => _playAudio(_currentAudioUrl());
+
+  String? _currentAudioUrl() {
+    if (_onCompletion) return null;
+    final scene = _scenes[_sceneIndex];
+    return switch (scene) {
+      models.NarrationScene(:final steps) =>
+        (_revealed - 1) < steps.length ? steps[_revealed - 1].audioUrl : null,
+      models.QuizMultipleChoiceScene(:final audioUrl) => audioUrl,
+      models.QuizFillInTheBlankScene(:final audioUrl) => audioUrl,
+    };
+  }
+
+  /// 音声を停止し、オンなら指定アセットを先頭から再生する。
+  void _playAudio(String? url) {
+    _audio.stop();
+    if (url == null) return;
+    if (!ref.read(audioEnabledProvider)) return;
+    _audio.play(AssetSource('${widget.assetBasePath}/$url')).catchError((_) {});
+  }
+
+  /// 右タップ＝進む。
+  void _advance() {
+    if (_onCompletion) return;
+    final scene = _scenes[_sceneIndex];
+    if (scene is models.NarrationScene) {
+      if (_revealed < scene.steps.length) {
+        setState(() => _revealed++);
+        _playAudio(scene.steps[_revealed - 1].audioUrl);
+      } else {
+        _goToScene(_sceneIndex + 1, forward: true);
+      }
+    } else {
+      // クイズは採点済みのときだけ次シーンへ進める（未回答は無反応）。
+      if (_quiz?.submitted ?? false) {
+        _goToScene(_sceneIndex + 1, forward: true);
+      }
+    }
+  }
+
+  /// 左タップ＝戻る（シーン単位、先頭ステップにリセット）。
+  void _back() {
+    if (_sceneIndex == 0) return;
+    _goToScene(_sceneIndex - 1, forward: false);
+  }
+
+  void _goToScene(int index, {required bool forward}) {
+    setState(() {
+      _forward = forward;
+      _sceneIndex = index;
+      _setupSceneState();
+    });
+    _playSetupAudio();
+  }
+
+  void _restart() => _goToScene(0, forward: false);
+
+  @override
+  Widget build(BuildContext context) {
+    // 音声トグルの変化に追従：オフ→オンで現在音声を再生、オフで停止。
+    ref.listen<bool>(audioEnabledProvider, (prev, next) {
+      if (next && prev == false) {
+        _playAudio(_currentAudioUrl());
+      } else if (!next) {
+        _audio.stop();
+      }
+    });
+    final enabled = ref.watch(audioEnabledProvider);
+    final total = _scenes.length;
+    final progress = (_sceneIndex + 1) / (total + 1);
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
+        title: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: progress.clamp(0.0, 1.0),
+            minHeight: 6,
+          ),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.easeIn,
+              transitionBuilder: (child, animation) {
+                // 進む時：新ページは右(+1)から中央へ、現ページは中央から左(-1)へ。
+                // 戻る時はその左右を反転する。
+                final bool incoming = child.key == ValueKey(_sceneIndex);
+                // フェード主体。移動はわずかだけ（進む＝右から左）。
+                const slide = 0.06;
+                final Offset begin;
+                if (incoming) {
+                  begin = _forward
+                      ? const Offset(slide, 0)
+                      : const Offset(-slide, 0);
+                } else {
+                  begin = _forward
+                      ? const Offset(-slide, 0)
+                      : const Offset(slide, 0);
+                }
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween(begin: begin, end: Offset.zero)
+                        .animate(animation),
+                    child: child,
+                  ),
+                );
+              },
+              child: KeyedSubtree(
+                key: ValueKey(_sceneIndex),
+                child: _buildSceneArea(),
+              ),
+            ),
+          ),
+          if (!_onCompletion) _buildFooter(enabled),
+        ],
+      ),
     );
   }
 
-  void _restart() {
-    setState(() {
-      for (final c in _controllers) {
-        c.dispose();
-      }
-      _controllers = [
-        for (final page in _pages) LessonPageController(page),
-      ];
-    });
-    _goTo(0);
+  Widget _buildSceneArea() {
+    if (_onCompletion) {
+      return _CompletionPage(
+        exercises: widget.lesson.exercises,
+        onRestart: _restart,
+      );
+    }
+    final scene = _scenes[_sceneIndex];
+    return switch (scene) {
+      models.NarrationScene() => _NarrationView(
+          scene: scene,
+          revealed: _revealed,
+          assetBasePath: widget.assetBasePath,
+          onAdvance: _advance,
+          onBack: _back,
+        ),
+      _ => _QuizView(
+          scene: scene,
+          controller: _quiz!,
+          assetBasePath: widget.assetBasePath,
+          canGoBack: _sceneIndex > 0,
+          onAdvance: _advance,
+          onBack: _back,
+        ),
+    };
+  }
+
+  Widget _buildFooter(bool enabled) {
+    final theme = Theme.of(context);
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Center(
+          child: TextButton.icon(
+            onPressed: () => ref.read(audioEnabledProvider.notifier).toggle(),
+            icon: Icon(
+              enabled ? Icons.volume_up : Icons.volume_off,
+              size: 20,
+            ),
+            label: Text(enabled ? '音声オン' : '音声オフ'),
+            style: TextButton.styleFrom(
+              foregroundColor: enabled
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// ナレーションシーン。画像を上部にピン留めし、ステップを下へ累積表示する。
+/// 本文エリアの左30%タップ＝戻る／右70%タップ＝進む。
+class _NarrationView extends StatefulWidget {
+  const _NarrationView({
+    required this.scene,
+    required this.revealed,
+    required this.assetBasePath,
+    required this.onAdvance,
+    required this.onBack,
+  });
+
+  final models.NarrationScene scene;
+  final int revealed;
+  final String assetBasePath;
+  final VoidCallback onAdvance;
+  final VoidCallback onBack;
+
+  @override
+  State<_NarrationView> createState() => _NarrationViewState();
+}
+
+class _NarrationViewState extends State<_NarrationView> {
+  final _scroll = ScrollController();
+
+  @override
+  void didUpdateWidget(_NarrationView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 新ステップ出現時は最新が見える位置まで自動スクロール。
+    if (widget.revealed > oldWidget.revealed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    }
+  }
+
+  void _scrollToBottom() {
+    if (!_scroll.hasClients) return;
+    _scroll.animateTo(
+      _scroll.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// このシーンが画像モードか（いずれかの step が画像を持つ＝シーン静的）。
+  bool get _hasImage => widget.scene.steps.any((s) => s.imageUrl != null);
+
+  /// 表示中の画像 = 表示済みステップのうち直近で指定された imageUrl。
+  String? _effectiveImage() {
+    final steps = widget.scene.steps;
+    String? image;
+    for (var i = 0; i < widget.revealed && i < steps.length; i++) {
+      if (steps[i].imageUrl != null) image = steps[i].imageUrl;
+    }
+    return image;
   }
 
   @override
   Widget build(BuildContext context) {
-    final totalSteps = _pages.length + 1; // 完了ページを含む
+    final steps = widget.scene.steps;
+    final imageUrl = _effectiveImage();
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // 画像モードのシーンは枠を最初から確保（レイアウト判定はシーン静的）。
+        // 画像はステップ単位で差し替え可能。切替は左→右のワイプ（リビール）。
+        if (_hasImage)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: SizedBox(
+              height: 240,
+              child: imageUrl == null
+                  ? const SizedBox.shrink()
+                  : _StepImage(
+                      assetBasePath: widget.assetBasePath,
+                      imageUrl: imageUrl,
+                    ),
+            ),
+          ),
         Expanded(
-          child: PageView.builder(
-            controller: _pageController,
-            // ナビゲーションはフッターのボタンに限定する。
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: totalSteps,
-            onPageChanged: (i) => setState(() => _index = i),
-            itemBuilder: (context, i) {
-              if (i >= _pages.length) {
-                return _CompletionPage(
-                  exercises: widget.lesson.exercises,
-                  onRestart: _restart,
-                );
-              }
-              return _PageContent(
-                page: _pages[i],
-                controller: _controllers[i],
-                assetBasePath: widget.assetBasePath,
-              );
-            },
+          child: Stack(
+            children: [
+              // 累積ステップ（縦スクロール）。画像なしシーンは縦中央寄せにし、
+              // 内容が増えて溢れたらスクロールする。
+              LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  controller: _scroll,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisAlignment: _hasImage
+                            ? MainAxisAlignment.start
+                            : MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 全ステップ分の領域を最初から確保（未表示は透明）。
+                          // これで表示済みテキストの位置が固定され、ずれない。
+                          for (var i = 0; i < steps.length; i++)
+                            Padding(
+                              key: ValueKey(i),
+                              padding: EdgeInsets.only(top: i == 0 ? 0 : 16),
+                              child: _StepReveal(
+                                visible: i < widget.revealed,
+                                child: MarkdownText(text: steps[i].text),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // タップゾーン（translucent でスクロールと共存：タップは進む/戻る、
+              // 縦ドラッグは背面のスクロールへ）。
+              Positioned.fill(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: widget.onBack,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 7,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: widget.onAdvance,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        if (!_onCompletion) _buildFooter(totalSteps),
       ],
     );
   }
+}
 
-  Widget _buildFooter(int totalSteps) {
-    final controller = _controllers[_index];
-    final isLastContentPage = _index == _pages.length - 1;
+/// 1ステップの出現制御。`visible` が false の間も領域を確保し（透明）、
+/// true になったタイミングでフェードイン＋スライドアップする。
+class _StepReveal extends StatelessWidget {
+  const _StepReveal({required this.visible, required this.child});
 
+  final bool visible;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSlide(
+      offset: visible ? Offset.zero : const Offset(0, 0.15),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+      child: AnimatedOpacity(
+        opacity: visible ? 1 : 0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        child: child,
+      ),
+    );
+  }
+}
+
+/// ステップ単位で差し替わる画像。
+///
+/// 画像が変わると、旧画像を下に敷いたまま新画像を**左→右へワイプ**して
+/// 重ね、描き足された部分が左から順に現れるように見せる。
+class _StepImage extends StatefulWidget {
+  const _StepImage({required this.assetBasePath, required this.imageUrl});
+
+  final String assetBasePath;
+  final String imageUrl;
+
+  @override
+  State<_StepImage> createState() => _StepImageState();
+}
+
+class _StepImageState extends State<_StepImage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 360),
+  );
+
+  /// ワイプ中に下に表示する直前の画像（無ければ null）。
+  String? _previous;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.value = 1; // 初回はワイプせず即表示。
+  }
+
+  @override
+  void didUpdateWidget(_StepImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imageUrl != widget.imageUrl) {
+      _previous = oldWidget.imageUrl;
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final current =
+        SceneImage(assetPath: '${widget.assetBasePath}/${widget.imageUrl}');
     return AnimatedBuilder(
-      animation: controller,
+      animation: _controller,
       builder: (context, _) {
-        final theme = Theme.of(context);
-        // クイズ未回答なら「回答する」、それ以外は「次へ / 完了する」。
-        final needsAnswer = controller.hasQuiz && !controller.submitted;
-
-        final String label;
-        final VoidCallback? onPressed;
-        if (needsAnswer) {
-          label = '回答する';
-          onPressed = controller.canSubmit ? controller.submit : null;
-        } else {
-          label = isLastContentPage ? '完了する' : '次へ';
-          onPressed = () => _goTo(_index + 1);
-        }
-
-        return SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      '${_index + 1} / ${_pages.length}',
-                      style: theme.textTheme.bodySmall,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: (_index + 1) / _pages.length,
-                          minHeight: 6,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    if (_index > 0)
-                      TextButton(
-                        onPressed: () => _goTo(_index - 1),
-                        child: const Text('戻る'),
-                      ),
-                    const Spacer(),
-                    FilledButton(
-                      onPressed: onPressed,
-                      child: Text(label),
-                    ),
-                  ],
-                ),
-              ],
+        if (_controller.isCompleted || _previous == null) return current;
+        // 固定高さの枠（StackFit.expand）に旧画像を敷き、新画像を左→右へ
+        // クリップ展開して重ねる。
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            SceneImage(assetPath: '${widget.assetBasePath}/$_previous'),
+            ClipRect(
+              clipper: _LeftRevealClipper(_controller.value),
+              child: current,
             ),
-          ),
+          ],
         );
       },
     );
   }
 }
 
-/// 1ページ分のコンテンツ列を縦に並べて表示する。
-class _PageContent extends StatelessWidget {
-  const _PageContent({
-    required this.page,
+/// 左端から幅 `t`（0..1）の範囲だけを見せるクリッパ（左→右リビール）。
+class _LeftRevealClipper extends CustomClipper<Rect> {
+  const _LeftRevealClipper(this.t);
+
+  final double t;
+
+  @override
+  Rect getClip(Size size) => Rect.fromLTWH(0, 0, size.width * t, size.height);
+
+  @override
+  bool shouldReclip(_LeftRevealClipper oldClipper) => oldClipper.t != t;
+}
+
+/// クイズシーン。設問（＋任意の画像）と回答UI、本文内のナビボタンを表示する。
+///
+/// タップゾーンは選択肢操作と競合するため使わず、「回答する」→「次へ」の
+/// ボタンで進める（未回答では「次へ」を出さない＝進めない）。「戻る」は常時可。
+class _QuizView extends StatelessWidget {
+  const _QuizView({
+    required this.scene,
     required this.controller,
     required this.assetBasePath,
+    required this.canGoBack,
+    required this.onAdvance,
+    required this.onBack,
   });
 
-  final models.LessonPage page;
-  final LessonPageController controller;
+  final models.LessonScene scene;
+  final QuizController controller;
   final String assetBasePath;
+  final bool canGoBack;
+  final VoidCallback onAdvance;
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    final (String question, String? imageUrl) = switch (scene) {
+      models.QuizMultipleChoiceScene(:final question, :final imageUrl) =>
+        (question, imageUrl),
+      models.QuizFillInTheBlankScene(:final imageUrl) => ('', imageUrl),
+      _ => ('', null),
+    };
+
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      children: [
-        for (var i = 0; i < page.contents.length; i++) ...[
-          if (i > 0) const SizedBox(height: 16),
-          LessonContentView(
-            content: page.contents[i],
-            contentIndex: i,
-            controller: controller,
-            assetBasePath: assetBasePath,
-          ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (imageUrl != null) ...[
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 240),
+              child: SceneImage(assetPath: '$assetBasePath/$imageUrl'),
+            ),
+            const SizedBox(height: 16),
+          ],
+          // 単一選択は設問文を MarkdownText で表示。穴埋めは設問を内部で描画。
+          if (scene is models.QuizMultipleChoiceScene) ...[
+            MarkdownText(text: question),
+            const SizedBox(height: 12),
+            MultipleChoiceQuiz(
+              scene: scene as models.QuizMultipleChoiceScene,
+              controller: controller,
+            ),
+          ] else if (scene is models.QuizFillInTheBlankScene)
+            FillInTheBlankQuiz(
+              scene: scene as models.QuizFillInTheBlankScene,
+              controller: controller,
+            ),
+          const SizedBox(height: 24),
+          _buildNav(context),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNav(BuildContext context) {
+    final submitted = controller.submitted;
+    return Row(
+      children: [
+        if (canGoBack)
+          TextButton(onPressed: onBack, child: const Text('戻る')),
+        const Spacer(),
+        if (!submitted)
+          FilledButton(
+            onPressed: controller.canSubmit ? controller.submit : null,
+            child: const Text('回答する'),
+          )
+        else
+          FilledButton(onPressed: onAdvance, child: const Text('次へ')),
       ],
     );
   }
 }
 
-/// 全ページ通過後に表示する完了ページ。
+/// 全シーン通過後に表示する完了ページ。
 class _CompletionPage extends StatelessWidget {
   const _CompletionPage({required this.exercises, required this.onRestart});
 
@@ -249,7 +638,7 @@ class _CompletionPage extends StatelessWidget {
             Text('学習完了！', style: theme.textTheme.headlineSmall),
             const SizedBox(height: 8),
             Text(
-              'このレッスンのすべてのページを終えました。',
+              'このレッスンのすべてのシーンを終えました。',
               style: theme.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
