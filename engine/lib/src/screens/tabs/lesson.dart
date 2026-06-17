@@ -111,12 +111,16 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     };
   }
 
-  /// 音声を停止し、オンなら指定アセットを先頭から再生する。
+  /// 音声を停止し、オンなら指定アセットを現在の倍速で先頭から再生する。
   void _playAudio(String? url) {
     _audio.stop();
     if (url == null) return;
     if (!ref.read(audioEnabledProvider)) return;
-    _audio.play(AssetSource('${widget.assetBasePath}/$url')).catchError((_) {});
+    final speed = ref.read(audioSpeedProvider);
+    _audio
+        .play(AssetSource('${widget.assetBasePath}/$url'))
+        .then((_) => _audio.setPlaybackRate(speed))
+        .catchError((_) {});
   }
 
   /// 右タップ＝進む。
@@ -165,9 +169,14 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
         _audio.stop();
       }
     });
+    // 倍速変更を再生中の音声へ即時反映する。
+    ref.listen<double>(audioSpeedProvider, (_, next) {
+      _audio.setPlaybackRate(next);
+    });
     final enabled = ref.watch(audioEnabledProvider);
     final total = _scenes.length;
-    final progress = (_sceneIndex + 1) / (total + 1);
+    // 1ページ目は0%、全シーン通過（完了ページ）で100%になるよう計算する。
+    final progress = total == 0 ? 0.0 : _sceneIndex / total;
 
     return Scaffold(
       appBar: AppBar(
@@ -256,24 +265,95 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
 
   Widget _buildFooter(bool enabled) {
     final theme = Theme.of(context);
+    final speed = ref.watch(audioSpeedProvider);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    final active = theme.colorScheme.primary;
+
     return SafeArea(
       top: false,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
         child: Center(
-          child: TextButton.icon(
-            onPressed: () => ref.read(audioEnabledProvider.notifier).toggle(),
-            icon: Icon(
-              enabled ? Icons.volume_up : Icons.volume_off,
-              size: 20,
-            ),
-            label: Text(enabled ? '音声オン' : '音声オフ'),
-            style: TextButton.styleFrom(
-              foregroundColor: enabled
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurfaceVariant,
+          // 角丸フローティングメニュー：音声オン/オフ・倍速・AI質問をまとめる。
+          child: Material(
+            color: theme.colorScheme.surface,
+            elevation: 3,
+            shadowColor: Colors.black26,
+            borderRadius: BorderRadius.circular(28),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _FooterButton(
+                    icon: enabled ? Icons.volume_up : Icons.volume_off,
+                    label: enabled ? '音声オン' : '音声オフ',
+                    color: enabled ? active : muted,
+                    onTap: () =>
+                        ref.read(audioEnabledProvider.notifier).toggle(),
+                  ),
+                  // 倍速は音声オン時のみ操作可能。
+                  _FooterButton(
+                    icon: Icons.speed,
+                    label: '${_formatSpeed(speed)}x',
+                    color: enabled ? active : muted,
+                    onTap: enabled
+                        ? () => ref.read(audioSpeedProvider.notifier).cycle()
+                        : null,
+                  ),
+                  _FooterButton(
+                    icon: Icons.auto_awesome,
+                    label: 'AI質問',
+                    color: muted,
+                    onTap: () {},
+                  ),
+                ],
+              ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  /// 1.0 → "1"、1.25 → "1.25" のように末尾の不要な0を落として表示する。
+  String _formatSpeed(double v) {
+    final s = v.toStringAsFixed(2);
+    return s.replaceAll(RegExp(r'\.?0+$'), '');
+  }
+}
+
+/// フローティングメニュー内の1ボタン（アイコン＋ラベル、横並び）。
+class _FooterButton extends StatelessWidget {
+  const _FooterButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 20, color: color),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(color: color, fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
       ),
     );
