@@ -16,8 +16,6 @@ CREDENTIALS_PATH = SCRIPT_DIR / ".." / ".." / "secrets" / "audiobook-maker-c6075
 TEXT = (
 """
 企業は、製品やサービスを社会に提供し、利益を上げて事業を継続・成長させることを目的に活動します。
-- 利益だけでなく、社会への貢献も求められる。
-- 自社の担当業務を理解するには、まず企業全体の活動の流れを知ることが大切。
 """
 )
 OUTPUT_PATH = SCRIPT_DIR / "output.mp3"

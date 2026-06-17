@@ -8,14 +8,16 @@
         {
           "text": "# 企業活動の目的\n\n企業は、製品やサービスを社会に提供し、**利益を上げて事業を継続・成長させる**ことを目的に活動します。",
           "imageUrl": "lessons/images/2-1.jpeg",
-          "audioUrl": "lessons/audios/2-1.mp3"
+          "audioUrl": "lessons/audios/2-1-1.mp3"
         },
         {
           "text": "- 利益だけでなく、社会への貢献も求められる",
-          "imageUrl": "lessons/images/2-2.jpeg"
+          "imageUrl": "lessons/images/2-2.jpeg",
+          "audioUrl": "lessons/audios/2-1-2.mp3"
         },
         {
-          "text": "- 自社の担当業務を理解するには、まず**企業全体の活動の流れ**を知ることが大切"
+          "text": "- 自社の担当業務を理解するには、まず**企業全体の活動の流れ**を知ることが大切",
+          "audioUrl": "lessons/audios/2-1-3.mp3"
         }
       ]
     },
