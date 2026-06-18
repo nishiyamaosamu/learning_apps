@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/app_config.dart';
 import '../../content/content_models.dart' as models;
 import '../../content/content_providers.dart';
 import '../../settings/audio_settings.dart';
@@ -249,6 +250,7 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
           scene: scene,
           revealed: _revealed,
           assetBasePath: widget.assetBasePath,
+          animations: ref.read(appConfigProvider).animations,
           onAdvance: _advance,
           onBack: _back,
         ),
@@ -367,6 +369,7 @@ class _NarrationView extends StatefulWidget {
     required this.scene,
     required this.revealed,
     required this.assetBasePath,
+    required this.animations,
     required this.onAdvance,
     required this.onBack,
   });
@@ -374,6 +377,7 @@ class _NarrationView extends StatefulWidget {
   final models.NarrationScene scene;
   final int revealed;
   final String assetBasePath;
+  final Map<String, LessonAnimationBuilder> animations;
   final VoidCallback onAdvance;
   final VoidCallback onBack;
 
@@ -408,6 +412,26 @@ class _NarrationViewState extends State<_NarrationView> {
     super.dispose();
   }
 
+  /// このシーンのアニメビルダー（`animationKey` がレジストリに登録済みのとき）。
+  /// 未登録/null のときは画像・テキスト表示にフォールバックする。
+  LessonAnimationBuilder? get _animationBuilder {
+    final key = widget.scene.animationKey;
+    if (key == null) return null;
+    return widget.animations[key];
+  }
+
+  /// 表示中アニメの phase = 表示済みステップのうち直近で指定された
+  /// `animationStep`（無指定は直前を継承、先頭が無指定なら0）。
+  int _effectiveAnimationStep() {
+    final steps = widget.scene.steps;
+    var step = 0;
+    for (var i = 0; i < widget.revealed && i < steps.length; i++) {
+      final s = steps[i].animationStep;
+      if (s != null) step = s;
+    }
+    return step;
+  }
+
   /// このシーンが画像モードか（いずれかの step が画像を持つ＝シーン静的）。
   bool get _hasImage => widget.scene.steps.any((s) => s.imageUrl != null);
 
@@ -425,13 +449,31 @@ class _NarrationViewState extends State<_NarrationView> {
   Widget build(BuildContext context) {
     final steps = widget.scene.steps;
     final imageUrl = _effectiveImage();
+    final animationBuilder = _animationBuilder;
+    final isAnimationMode = animationBuilder != null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // アニメモードのシーンは上部固定枠にアニメウィジェットを表示。phase は
+        // 表示中ステップの animationStep で進む（ビルダーが滑らかに遷移する）。
+        // アニメと画像が両立する場合はアニメを優先する。
+        if (isAnimationMode)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: SizedBox(
+              height: 240,
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: animationBuilder(context, _effectiveAnimationStep()),
+                ),
+              ),
+            ),
+          )
         // 画像モードのシーンは枠を最初から確保（レイアウト判定はシーン静的）。
         // 画像はステップ単位で差し替え可能。切替は左→右のワイプ（リビール）。
-        if (_hasImage)
+        else if (_hasImage)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: SizedBox(
@@ -457,7 +499,7 @@ class _NarrationViewState extends State<_NarrationView> {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
-                        mainAxisAlignment: _hasImage
+                        mainAxisAlignment: (isAnimationMode || _hasImage)
                             ? MainAxisAlignment.start
                             : MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,

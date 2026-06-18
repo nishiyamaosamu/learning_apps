@@ -23,7 +23,12 @@ mixin _$AppConfig {
   List<EngineTab> get tabs =>
       throw _privateConstructorUsedError; // コンテンツ（JSON）を格納したアプリ側アセットのベースパス。
   // 例: 'contents' → contents/base.json, contents/lessons/1.json
-  String get contentBasePath => throw _privateConstructorUsedError;
+  String get contentBasePath =>
+      throw _privateConstructorUsedError; // レッスン図解アニメのレジストリ（キー↔ビルダー）。レッスンJSONの
+  // `animationKey` を解決する。未登録キーは静かに無視され、画像/テキスト
+  // 表示にフォールバックする。
+  Map<String, Widget Function(BuildContext, int)> get animations =>
+      throw _privateConstructorUsedError;
 
   /// Create a copy of AppConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -42,6 +47,7 @@ abstract class $AppConfigCopyWith<$Res> {
     Color primaryColor,
     List<EngineTab> tabs,
     String contentBasePath,
+    Map<String, Widget Function(BuildContext, int)> animations,
   });
 }
 
@@ -64,6 +70,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? primaryColor = null,
     Object? tabs = null,
     Object? contentBasePath = null,
+    Object? animations = null,
   }) {
     return _then(
       _value.copyWith(
@@ -83,6 +90,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.contentBasePath
                 : contentBasePath // ignore: cast_nullable_to_non_nullable
                       as String,
+            animations: null == animations
+                ? _value.animations
+                : animations // ignore: cast_nullable_to_non_nullable
+                      as Map<String, Widget Function(BuildContext, int)>,
           )
           as $Val,
     );
@@ -103,6 +114,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     Color primaryColor,
     List<EngineTab> tabs,
     String contentBasePath,
+    Map<String, Widget Function(BuildContext, int)> animations,
   });
 }
 
@@ -124,6 +136,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? primaryColor = null,
     Object? tabs = null,
     Object? contentBasePath = null,
+    Object? animations = null,
   }) {
     return _then(
       _$AppConfigImpl(
@@ -143,6 +156,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.contentBasePath
             : contentBasePath // ignore: cast_nullable_to_non_nullable
                   as String,
+        animations: null == animations
+            ? _value._animations
+            : animations // ignore: cast_nullable_to_non_nullable
+                  as Map<String, Widget Function(BuildContext, int)>,
       ),
     );
   }
@@ -162,7 +179,10 @@ class _$AppConfigImpl implements _AppConfig {
       EngineTab.settings,
     ],
     this.contentBasePath = 'contents',
-  }) : _tabs = tabs;
+    final Map<String, Widget Function(BuildContext, int)> animations =
+        const <String, LessonAnimationBuilder>{},
+  }) : _tabs = tabs,
+       _animations = animations;
 
   @override
   final String title;
@@ -185,10 +205,24 @@ class _$AppConfigImpl implements _AppConfig {
   @override
   @JsonKey()
   final String contentBasePath;
+  // レッスン図解アニメのレジストリ（キー↔ビルダー）。レッスンJSONの
+  // `animationKey` を解決する。未登録キーは静かに無視され、画像/テキスト
+  // 表示にフォールバックする。
+  final Map<String, Widget Function(BuildContext, int)> _animations;
+  // レッスン図解アニメのレジストリ（キー↔ビルダー）。レッスンJSONの
+  // `animationKey` を解決する。未登録キーは静かに無視され、画像/テキスト
+  // 表示にフォールバックする。
+  @override
+  @JsonKey()
+  Map<String, Widget Function(BuildContext, int)> get animations {
+    if (_animations is EqualUnmodifiableMapView) return _animations;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_animations);
+  }
 
   @override
   String toString() {
-    return 'AppConfig(title: $title, primaryColor: $primaryColor, tabs: $tabs, contentBasePath: $contentBasePath)';
+    return 'AppConfig(title: $title, primaryColor: $primaryColor, tabs: $tabs, contentBasePath: $contentBasePath, animations: $animations)';
   }
 
   @override
@@ -201,7 +235,11 @@ class _$AppConfigImpl implements _AppConfig {
                 other.primaryColor == primaryColor) &&
             const DeepCollectionEquality().equals(other._tabs, _tabs) &&
             (identical(other.contentBasePath, contentBasePath) ||
-                other.contentBasePath == contentBasePath));
+                other.contentBasePath == contentBasePath) &&
+            const DeepCollectionEquality().equals(
+              other._animations,
+              _animations,
+            ));
   }
 
   @override
@@ -211,6 +249,7 @@ class _$AppConfigImpl implements _AppConfig {
     primaryColor,
     const DeepCollectionEquality().hash(_tabs),
     contentBasePath,
+    const DeepCollectionEquality().hash(_animations),
   );
 
   /// Create a copy of AppConfig
@@ -228,6 +267,7 @@ abstract class _AppConfig implements AppConfig {
     final Color primaryColor,
     final List<EngineTab> tabs,
     final String contentBasePath,
+    final Map<String, Widget Function(BuildContext, int)> animations,
   }) = _$AppConfigImpl;
 
   @override
@@ -238,7 +278,11 @@ abstract class _AppConfig implements AppConfig {
   List<EngineTab> get tabs; // コンテンツ（JSON）を格納したアプリ側アセットのベースパス。
   // 例: 'contents' → contents/base.json, contents/lessons/1.json
   @override
-  String get contentBasePath;
+  String get contentBasePath; // レッスン図解アニメのレジストリ（キー↔ビルダー）。レッスンJSONの
+  // `animationKey` を解決する。未登録キーは静かに無視され、画像/テキスト
+  // 表示にフォールバックする。
+  @override
+  Map<String, Widget Function(BuildContext, int)> get animations;
 
   /// Create a copy of AppConfig
   /// with the given fields replaced by the non-null parameter values.

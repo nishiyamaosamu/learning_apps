@@ -683,7 +683,11 @@ mixin _$LessonStep {
       throw _privateConstructorUsedError; // このステップ以降に表示する画像（任意）。指定しないステップは直前の
   // 画像を継承する。どの step も持たなければテキストのみシーン。
   // 切替は左→右のワイプで行う。
-  String? get imageUrl => throw _privateConstructorUsedError;
+  String? get imageUrl =>
+      throw _privateConstructorUsedError; // アニメモードのシーンで、このステップ表示時にアニメを進める phase
+  // （0始まり・任意）。省略時は直前ステップの値を継承（先頭省略は0）。
+  // シーンの `animationKey` と組で使う（→ [NarrationScene.animationKey]）。
+  int? get animationStep => throw _privateConstructorUsedError;
 
   /// Serializes this LessonStep to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -702,7 +706,12 @@ abstract class $LessonStepCopyWith<$Res> {
     $Res Function(LessonStep) then,
   ) = _$LessonStepCopyWithImpl<$Res, LessonStep>;
   @useResult
-  $Res call({String text, String? audioUrl, String? imageUrl});
+  $Res call({
+    String text,
+    String? audioUrl,
+    String? imageUrl,
+    int? animationStep,
+  });
 }
 
 /// @nodoc
@@ -723,6 +732,7 @@ class _$LessonStepCopyWithImpl<$Res, $Val extends LessonStep>
     Object? text = null,
     Object? audioUrl = freezed,
     Object? imageUrl = freezed,
+    Object? animationStep = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -738,6 +748,10 @@ class _$LessonStepCopyWithImpl<$Res, $Val extends LessonStep>
                 ? _value.imageUrl
                 : imageUrl // ignore: cast_nullable_to_non_nullable
                       as String?,
+            animationStep: freezed == animationStep
+                ? _value.animationStep
+                : animationStep // ignore: cast_nullable_to_non_nullable
+                      as int?,
           )
           as $Val,
     );
@@ -753,7 +767,12 @@ abstract class _$$LessonStepImplCopyWith<$Res>
   ) = __$$LessonStepImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String text, String? audioUrl, String? imageUrl});
+  $Res call({
+    String text,
+    String? audioUrl,
+    String? imageUrl,
+    int? animationStep,
+  });
 }
 
 /// @nodoc
@@ -773,6 +792,7 @@ class __$$LessonStepImplCopyWithImpl<$Res>
     Object? text = null,
     Object? audioUrl = freezed,
     Object? imageUrl = freezed,
+    Object? animationStep = freezed,
   }) {
     return _then(
       _$LessonStepImpl(
@@ -788,6 +808,10 @@ class __$$LessonStepImplCopyWithImpl<$Res>
             ? _value.imageUrl
             : imageUrl // ignore: cast_nullable_to_non_nullable
                   as String?,
+        animationStep: freezed == animationStep
+            ? _value.animationStep
+            : animationStep // ignore: cast_nullable_to_non_nullable
+                  as int?,
       ),
     );
   }
@@ -796,7 +820,12 @@ class __$$LessonStepImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$LessonStepImpl implements _LessonStep {
-  const _$LessonStepImpl({required this.text, this.audioUrl, this.imageUrl});
+  const _$LessonStepImpl({
+    required this.text,
+    this.audioUrl,
+    this.imageUrl,
+    this.animationStep,
+  });
 
   factory _$LessonStepImpl.fromJson(Map<String, dynamic> json) =>
       _$$LessonStepImplFromJson(json);
@@ -812,10 +841,15 @@ class _$LessonStepImpl implements _LessonStep {
   // 切替は左→右のワイプで行う。
   @override
   final String? imageUrl;
+  // アニメモードのシーンで、このステップ表示時にアニメを進める phase
+  // （0始まり・任意）。省略時は直前ステップの値を継承（先頭省略は0）。
+  // シーンの `animationKey` と組で使う（→ [NarrationScene.animationKey]）。
+  @override
+  final int? animationStep;
 
   @override
   String toString() {
-    return 'LessonStep(text: $text, audioUrl: $audioUrl, imageUrl: $imageUrl)';
+    return 'LessonStep(text: $text, audioUrl: $audioUrl, imageUrl: $imageUrl, animationStep: $animationStep)';
   }
 
   @override
@@ -827,12 +861,15 @@ class _$LessonStepImpl implements _LessonStep {
             (identical(other.audioUrl, audioUrl) ||
                 other.audioUrl == audioUrl) &&
             (identical(other.imageUrl, imageUrl) ||
-                other.imageUrl == imageUrl));
+                other.imageUrl == imageUrl) &&
+            (identical(other.animationStep, animationStep) ||
+                other.animationStep == animationStep));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, text, audioUrl, imageUrl);
+  int get hashCode =>
+      Object.hash(runtimeType, text, audioUrl, imageUrl, animationStep);
 
   /// Create a copy of LessonStep
   /// with the given fields replaced by the non-null parameter values.
@@ -853,6 +890,7 @@ abstract class _LessonStep implements LessonStep {
     required final String text,
     final String? audioUrl,
     final String? imageUrl,
+    final int? animationStep,
   }) = _$LessonStepImpl;
 
   factory _LessonStep.fromJson(Map<String, dynamic> json) =
@@ -866,7 +904,11 @@ abstract class _LessonStep implements LessonStep {
   // 画像を継承する。どの step も持たなければテキストのみシーン。
   // 切替は左→右のワイプで行う。
   @override
-  String? get imageUrl;
+  String? get imageUrl; // アニメモードのシーンで、このステップ表示時にアニメを進める phase
+  // （0始まり・任意）。省略時は直前ステップの値を継承（先頭省略は0）。
+  // シーンの `animationKey` と組で使う（→ [NarrationScene.animationKey]）。
+  @override
+  int? get animationStep;
 
   /// Create a copy of LessonStep
   /// with the given fields replaced by the non-null parameter values.
@@ -899,7 +941,8 @@ LessonScene _$LessonSceneFromJson(Map<String, dynamic> json) {
 mixin _$LessonScene {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<LessonStep> steps) narration,
+    required TResult Function(List<LessonStep> steps, String? animationKey)
+    narration,
     required TResult Function(
       String question,
       String? imageUrl,
@@ -919,7 +962,7 @@ mixin _$LessonScene {
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<LessonStep> steps)? narration,
+    TResult? Function(List<LessonStep> steps, String? animationKey)? narration,
     TResult? Function(
       String question,
       String? imageUrl,
@@ -939,7 +982,7 @@ mixin _$LessonScene {
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<LessonStep> steps)? narration,
+    TResult Function(List<LessonStep> steps, String? animationKey)? narration,
     TResult Function(
       String question,
       String? imageUrl,
@@ -1011,7 +1054,7 @@ abstract class _$$NarrationSceneImplCopyWith<$Res> {
     $Res Function(_$NarrationSceneImpl) then,
   ) = __$$NarrationSceneImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<LessonStep> steps});
+  $Res call({List<LessonStep> steps, String? animationKey});
 }
 
 /// @nodoc
@@ -1027,13 +1070,17 @@ class __$$NarrationSceneImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? steps = null}) {
+  $Res call({Object? steps = null, Object? animationKey = freezed}) {
     return _then(
       _$NarrationSceneImpl(
         steps: null == steps
             ? _value._steps
             : steps // ignore: cast_nullable_to_non_nullable
                   as List<LessonStep>,
+        animationKey: freezed == animationKey
+            ? _value.animationKey
+            : animationKey // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -1044,6 +1091,7 @@ class __$$NarrationSceneImplCopyWithImpl<$Res>
 class _$NarrationSceneImpl implements NarrationScene {
   const _$NarrationSceneImpl({
     final List<LessonStep> steps = const <LessonStep>[],
+    this.animationKey,
     final String? $type,
   }) : _steps = steps,
        $type = $type ?? 'narration';
@@ -1062,12 +1110,20 @@ class _$NarrationSceneImpl implements NarrationScene {
     return EqualUnmodifiableListView(_steps);
   }
 
+  // 図解アニメのキー（任意・シーン単位）。指定すると「アニメモード」になり、
+  // 上部固定枠に [AppConfig.animations] で解決したウィジェットを表示し、
+  // 各ステップの `animationStep` で phase を進める。未登録キーや null は
+  // 通常の画像/テキスト表示にフォールバックする。
+  // アニメモードと画像モードが両立する場合はアニメを優先する。
+  @override
+  final String? animationKey;
+
   @JsonKey(name: 'type')
   final String $type;
 
   @override
   String toString() {
-    return 'LessonScene.narration(steps: $steps)';
+    return 'LessonScene.narration(steps: $steps, animationKey: $animationKey)';
   }
 
   @override
@@ -1075,13 +1131,18 @@ class _$NarrationSceneImpl implements NarrationScene {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$NarrationSceneImpl &&
-            const DeepCollectionEquality().equals(other._steps, _steps));
+            const DeepCollectionEquality().equals(other._steps, _steps) &&
+            (identical(other.animationKey, animationKey) ||
+                other.animationKey == animationKey));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_steps));
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(_steps),
+    animationKey,
+  );
 
   /// Create a copy of LessonScene
   /// with the given fields replaced by the non-null parameter values.
@@ -1097,7 +1158,8 @@ class _$NarrationSceneImpl implements NarrationScene {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<LessonStep> steps) narration,
+    required TResult Function(List<LessonStep> steps, String? animationKey)
+    narration,
     required TResult Function(
       String question,
       String? imageUrl,
@@ -1115,13 +1177,13 @@ class _$NarrationSceneImpl implements NarrationScene {
     )
     quizFillInTheBlank,
   }) {
-    return narration(steps);
+    return narration(steps, animationKey);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<LessonStep> steps)? narration,
+    TResult? Function(List<LessonStep> steps, String? animationKey)? narration,
     TResult? Function(
       String question,
       String? imageUrl,
@@ -1139,13 +1201,13 @@ class _$NarrationSceneImpl implements NarrationScene {
     )?
     quizFillInTheBlank,
   }) {
-    return narration?.call(steps);
+    return narration?.call(steps, animationKey);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<LessonStep> steps)? narration,
+    TResult Function(List<LessonStep> steps, String? animationKey)? narration,
     TResult Function(
       String question,
       String? imageUrl,
@@ -1165,7 +1227,7 @@ class _$NarrationSceneImpl implements NarrationScene {
     required TResult orElse(),
   }) {
     if (narration != null) {
-      return narration(steps);
+      return narration(steps, animationKey);
     }
     return orElse();
   }
@@ -1211,14 +1273,21 @@ class _$NarrationSceneImpl implements NarrationScene {
 }
 
 abstract class NarrationScene implements LessonScene {
-  const factory NarrationScene({final List<LessonStep> steps}) =
-      _$NarrationSceneImpl;
+  const factory NarrationScene({
+    final List<LessonStep> steps,
+    final String? animationKey,
+  }) = _$NarrationSceneImpl;
 
   factory NarrationScene.fromJson(Map<String, dynamic> json) =
       _$NarrationSceneImpl.fromJson;
 
   // タップごとに1つずつ出現し累積するステップ列（1つ以上）。
-  List<LessonStep> get steps;
+  List<LessonStep> get steps; // 図解アニメのキー（任意・シーン単位）。指定すると「アニメモード」になり、
+  // 上部固定枠に [AppConfig.animations] で解決したウィジェットを表示し、
+  // 各ステップの `animationStep` で phase を進める。未登録キーや null は
+  // 通常の画像/テキスト表示にフォールバックする。
+  // アニメモードと画像モードが両立する場合はアニメを優先する。
+  String? get animationKey;
 
   /// Create a copy of LessonScene
   /// with the given fields replaced by the non-null parameter values.
@@ -1374,7 +1443,8 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<LessonStep> steps) narration,
+    required TResult Function(List<LessonStep> steps, String? animationKey)
+    narration,
     required TResult Function(
       String question,
       String? imageUrl,
@@ -1404,7 +1474,7 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<LessonStep> steps)? narration,
+    TResult? Function(List<LessonStep> steps, String? animationKey)? narration,
     TResult? Function(
       String question,
       String? imageUrl,
@@ -1434,7 +1504,7 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<LessonStep> steps)? narration,
+    TResult Function(List<LessonStep> steps, String? animationKey)? narration,
     TResult Function(
       String question,
       String? imageUrl,
@@ -1692,7 +1762,8 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<LessonStep> steps) narration,
+    required TResult Function(List<LessonStep> steps, String? animationKey)
+    narration,
     required TResult Function(
       String question,
       String? imageUrl,
@@ -1722,7 +1793,7 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<LessonStep> steps)? narration,
+    TResult? Function(List<LessonStep> steps, String? animationKey)? narration,
     TResult? Function(
       String question,
       String? imageUrl,
@@ -1752,7 +1823,7 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<LessonStep> steps)? narration,
+    TResult Function(List<LessonStep> steps, String? animationKey)? narration,
     TResult Function(
       String question,
       String? imageUrl,
