@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,6 +54,13 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
   /// ナレーション/クイズ設問の音声を1つだけ再生するプレイヤー。
   final _audio = AudioPlayer()..audioCache = AudioCache(prefix: '');
 
+  /// 音声の自然終了を検知する購読（次タップを促すヒント表示に使う）。
+  StreamSubscription<void>? _completeSub;
+
+  /// 音声が止まっていてタップ待ちであることを示すヒントを表示するか。
+  /// 再生中は隠し、再生完了時/音声オフ時に表示する。
+  bool _showTapHint = false;
+
   /// 現在のシーン番号。`scenes.length` は完了ページを指す。
   int _sceneIndex = 0;
 
@@ -72,12 +81,17 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
   void initState() {
     super.initState();
     _setupSceneState();
+    // 音声が最後まで再生されたら、次へ進むタップを促すヒントを表示する。
+    _completeSub = _audio.onPlayerComplete.listen((_) {
+      if (mounted) setState(() => _showTapHint = true);
+    });
     // 初回フレーム後に先頭シーンの音声を自動再生する。
     WidgetsBinding.instance.addPostFrameCallback((_) => _playSetupAudio());
   }
 
   @override
   void dispose() {
+    _completeSub?.cancel();
     _quiz?.dispose();
     _audio.dispose();
     super.dispose();
@@ -115,8 +129,10 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
   /// 音声を停止し、オンなら指定アセットを現在の倍速で先頭から再生する。
   void _playAudio(String? url) {
     _audio.stop();
-    if (url == null) return;
-    if (!ref.read(audioEnabledProvider)) return;
+    final willPlay = url != null && ref.read(audioEnabledProvider);
+    // 再生する間はヒントを隠し、鳴らない（音声オフ等）ならすぐタップを促す。
+    setState(() => _showTapHint = !willPlay);
+    if (!willPlay) return;
     final speed = ref.read(audioSpeedProvider);
     _audio
         .play(AssetSource('${widget.assetBasePath}/$url'))
@@ -251,6 +267,7 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
           revealed: _revealed,
           assetBasePath: widget.assetBasePath,
           animations: ref.read(appConfigProvider).animations,
+          showTapHint: _showTapHint,
           onAdvance: _advance,
           onBack: _back,
         ),
@@ -370,6 +387,7 @@ class _NarrationView extends StatefulWidget {
     required this.revealed,
     required this.assetBasePath,
     required this.animations,
+    required this.showTapHint,
     required this.onAdvance,
     required this.onBack,
   });
@@ -378,6 +396,9 @@ class _NarrationView extends StatefulWidget {
   final int revealed;
   final String assetBasePath;
   final Map<String, LessonAnimationBuilder> animations;
+
+  /// 音声が止まりタップ待ちであることを示すヒントを表示するか。
+  final bool showTapHint;
   final VoidCallback onAdvance;
   final VoidCallback onBack;
 
@@ -543,10 +564,62 @@ class _NarrationViewState extends State<_NarrationView> {
                   ],
                 ),
               ),
+              // 音声が止まったらタップを促す控えめな記号を下部中央に出す。
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 12,
+                child: Center(child: _TapHint(visible: widget.showTapHint)),
+              ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+/// 音声が止まったときに「タップで次へ」を促す控えめな記号。
+///
+/// `visible` の間だけゆっくり明滅する。タップは背面のゾーンへ通すため
+/// [IgnorePointer] で覆い、表示/非表示はフェードで切り替える。
+class _TapHint extends StatefulWidget {
+  const _TapHint({required this.visible});
+
+  final bool visible;
+
+  @override
+  State<_TapHint> createState() => _TapHintState();
+}
+
+class _TapHintState extends State<_TapHint>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1100),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurfaceVariant;
+    return IgnorePointer(
+      child: AnimatedOpacity(
+        opacity: widget.visible ? 1 : 0,
+        duration: const Duration(milliseconds: 250),
+        child: FadeTransition(
+          // 0.3〜0.6 の薄い明滅にとどめ、目立ちすぎないようにする。
+          opacity: Tween(begin: 0.3, end: 0.6).animate(
+            CurvedAnimation(parent: _pulse, curve: Curves.easeInOut),
+          ),
+          child: Icon(Icons.touch_app, size: 22, color: color),
+        ),
+      ),
     );
   }
 }
