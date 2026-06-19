@@ -1,6 +1,5 @@
+import 'package:engine/engine.dart';
 import 'package:flutter/material.dart';
-
-import 'common/common.dart';
 
 /// TCP 3ウェイハンドシェイク。クライアントとサーバが3往復で接続を確立する流れ。
 ///

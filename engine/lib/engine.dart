@@ -1,3 +1,4 @@
+export 'src/animations/animation_primitives.dart';
 export 'src/app/app_config.dart';
 export 'src/app/engine_app.dart';
 export 'src/content/content_models.dart';

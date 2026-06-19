@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ipa_ip/animations/common/common.dart' show motionDurationLong;
+import 'package:engine/engine.dart' show motionDurationLong;
 
 /// プレビューで使う本物のフォント family 名。テスト既定フォントは全文字を
 /// 豆腐（□）で描くため、実フォントを読み込んでこの family に割り当てる。

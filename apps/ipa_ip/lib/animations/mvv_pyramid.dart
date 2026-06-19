@@ -1,6 +1,5 @@
+import 'package:engine/engine.dart';
 import 'package:flutter/material.dart';
-
-import 'common/common.dart';
 
 /// 企業理念（MVV）のピラミッドが下から積み上がる図解。
 ///

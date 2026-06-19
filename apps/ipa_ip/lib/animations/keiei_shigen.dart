@@ -1,6 +1,5 @@
+import 'package:engine/engine.dart';
 import 'package:flutter/material.dart';
-
-import 'common/common.dart';
 
 /// 経営資源（ヒト・モノ・カネ・情報）が中央の「企業」へ集まる図解。
 ///
