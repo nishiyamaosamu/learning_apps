@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:engine/engine.dart';
@@ -8,6 +9,27 @@ void main() {
     expect(config.contentBasePath, 'contents');
     expect(config.tabs, isNotEmpty);
     expect(config.primaryColor, isNotNull);
+  });
+
+  test('AppDesignScheme が Material ColorScheme に反映される', () {
+    const design = AppDesignScheme(
+      primary: Color(0xFF1F7ACC),
+      secondary: Color(0xFF0A457B),
+      tertiary: Color(0xFF4B9CFB),
+      accent: Color(0xFFF84F65),
+      surface: Colors.white,
+      onSurface: Color(0xFF393C41),
+    );
+
+    final scheme = design.toColorScheme();
+    final accentColors = design.toAccentColors();
+
+    expect(scheme.primary, const Color(0xFF1F7ACC));
+    expect(scheme.secondary, const Color(0xFF0A457B));
+    expect(scheme.tertiary, const Color(0xFF4B9CFB));
+    expect(scheme.surface, Colors.white);
+    expect(scheme.onSurface, const Color(0xFF393C41));
+    expect(accentColors?.accent, const Color(0xFFF84F65));
   });
 
   test('ContentIndex.fromJson が一覧をパースできる', () {
@@ -65,10 +87,7 @@ void main() {
     expect(narration.steps.last.imageUrl, isNull);
     expect(narration.steps.last.audioUrl, isNull);
 
-    expect(
-      (lesson.scenes[1] as QuizMultipleChoiceScene).correctOptionIndex,
-      1,
-    );
+    expect((lesson.scenes[1] as QuizMultipleChoiceScene).correctOptionIndex, 1);
     expect(
       (lesson.scenes.last as QuizFillInTheBlankScene).correctOptionIndices,
       [0],

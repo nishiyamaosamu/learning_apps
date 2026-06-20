@@ -1,6 +1,7 @@
 import 'package:engine/engine.dart';
 import 'package:flutter/material.dart';
 
+import 'app_design.dart';
 import 'animations/registry.dart';
 
 void main() {
@@ -8,7 +9,7 @@ void main() {
     EngineApp(
       config: AppConfig(
         title: 'ITパスポート',
-        primaryColor: Colors.teal,
+        designScheme: ipaIpDesignScheme,
         tabs: [
           EngineTab.home,
           EngineTab.lesson,

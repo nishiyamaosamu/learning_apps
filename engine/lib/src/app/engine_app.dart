@@ -12,13 +12,18 @@ class EngineApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final router = buildRouter(config);
+    final colorScheme = config.resolvedColorScheme;
+    final accentColors = config.designScheme?.toAccentColors();
 
     return ProviderScope(
       overrides: [appConfigProvider.overrideWithValue(config)],
       child: MaterialApp.router(
         title: config.title,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: config.primaryColor),
+          useMaterial3: true,
+          colorScheme: colorScheme,
+          scaffoldBackgroundColor: colorScheme.surface,
+          extensions: <ThemeExtension<dynamic>>[?accentColors],
         ),
         routerConfig: router,
       ),

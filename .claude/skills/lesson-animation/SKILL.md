@@ -36,7 +36,7 @@ engine/app には以下が実装済み。スキルは土台を作り直さず利
 2. phase の増減で**滑らかに遷移**する。明示的な `AnimationController` は不要 —— engine 提供の共通部品（`PhaseReveal`・`NodeBox.active`・`AnimatedArrow.active`・`MovingDot.active`）が暗黙アニメで遷移を担う。各部品に「この phase で出る/光る/動く」を `step >= n` の形で渡すだけでよい。
 3. `static const phaseCount` に総 phase 数を持ち、ファイル先頭コメントに各 phase の意味を書く。
 4. **枠いっぱいにスケール**する（固定ピクセル前提にしない）。`DiagramCanvas` を使えば 16:9 枠に収まる。
-5. 色は `Theme.of(context).colorScheme` を使い、アプリのテーマに馴染ませる（原色ベタ塗りを避ける）。
+5. 色は `Theme.of(context).colorScheme` を使い、アプリのテーマに馴染ませる（原色ベタ塗りを避ける）。配色はシンプルにし、基本は `primary` と surface/onSurface/outline 系に絞る。`secondary` / `tertiary` / `accent` は必要な時だけ、強調・差分・注意点を示すポイント色として小さく使う。
 
 ## 共通プリミティブ（これで組む。ゼロから描かない）
 
@@ -128,3 +128,4 @@ testWidgets('{key} transitions', (tester) async {
 - 自動ループで常時動くアニメ（学習の段階同期が崩れ、負荷も上がる）。**タップ駆動・phaseの到達状態**で設計する。
 - PNG確認を飛ばして「できました」と報告する。見ずに納品しない。
 - 原色ベタ塗り・固定ピクセル決め打ち。テーマ色と枠フィットを使う。
+- `secondary` / `tertiary` / `accent` を大面積や複数要素に多用して、配色を散らかす。必要な箇所のポイント色に留める。

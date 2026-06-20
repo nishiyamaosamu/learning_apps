@@ -18,7 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$AppConfig {
   String get title => throw _privateConstructorUsedError;
-  Color get primaryColor =>
+  Color get primaryColor => throw _privateConstructorUsedError;
+  AppDesignScheme? get designScheme =>
       throw _privateConstructorUsedError; // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   List<EngineTab> get tabs =>
       throw _privateConstructorUsedError; // コンテンツ（JSON）を格納したアプリ側アセットのベースパス。
@@ -45,6 +46,7 @@ abstract class $AppConfigCopyWith<$Res> {
   $Res call({
     String title,
     Color primaryColor,
+    AppDesignScheme? designScheme,
     List<EngineTab> tabs,
     String contentBasePath,
     Map<String, Widget Function(BuildContext, int)> animations,
@@ -68,6 +70,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
   $Res call({
     Object? title = null,
     Object? primaryColor = null,
+    Object? designScheme = freezed,
     Object? tabs = null,
     Object? contentBasePath = null,
     Object? animations = null,
@@ -82,6 +85,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.primaryColor
                 : primaryColor // ignore: cast_nullable_to_non_nullable
                       as Color,
+            designScheme: freezed == designScheme
+                ? _value.designScheme
+                : designScheme // ignore: cast_nullable_to_non_nullable
+                      as AppDesignScheme?,
             tabs: null == tabs
                 ? _value.tabs
                 : tabs // ignore: cast_nullable_to_non_nullable
@@ -112,6 +119,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
   $Res call({
     String title,
     Color primaryColor,
+    AppDesignScheme? designScheme,
     List<EngineTab> tabs,
     String contentBasePath,
     Map<String, Widget Function(BuildContext, int)> animations,
@@ -134,6 +142,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
   $Res call({
     Object? title = null,
     Object? primaryColor = null,
+    Object? designScheme = freezed,
     Object? tabs = null,
     Object? contentBasePath = null,
     Object? animations = null,
@@ -148,6 +157,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.primaryColor
             : primaryColor // ignore: cast_nullable_to_non_nullable
                   as Color,
+        designScheme: freezed == designScheme
+            ? _value.designScheme
+            : designScheme // ignore: cast_nullable_to_non_nullable
+                  as AppDesignScheme?,
         tabs: null == tabs
             ? _value._tabs
             : tabs // ignore: cast_nullable_to_non_nullable
@@ -171,6 +184,7 @@ class _$AppConfigImpl implements _AppConfig {
   const _$AppConfigImpl({
     required this.title,
     this.primaryColor = Colors.indigo,
+    this.designScheme,
     final List<EngineTab> tabs = const [
       EngineTab.home,
       EngineTab.lesson,
@@ -189,6 +203,8 @@ class _$AppConfigImpl implements _AppConfig {
   @override
   @JsonKey()
   final Color primaryColor;
+  @override
+  final AppDesignScheme? designScheme;
   // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   final List<EngineTab> _tabs;
   // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
@@ -222,7 +238,7 @@ class _$AppConfigImpl implements _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(title: $title, primaryColor: $primaryColor, tabs: $tabs, contentBasePath: $contentBasePath, animations: $animations)';
+    return 'AppConfig(title: $title, primaryColor: $primaryColor, designScheme: $designScheme, tabs: $tabs, contentBasePath: $contentBasePath, animations: $animations)';
   }
 
   @override
@@ -233,6 +249,8 @@ class _$AppConfigImpl implements _AppConfig {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.primaryColor, primaryColor) ||
                 other.primaryColor == primaryColor) &&
+            (identical(other.designScheme, designScheme) ||
+                other.designScheme == designScheme) &&
             const DeepCollectionEquality().equals(other._tabs, _tabs) &&
             (identical(other.contentBasePath, contentBasePath) ||
                 other.contentBasePath == contentBasePath) &&
@@ -247,6 +265,7 @@ class _$AppConfigImpl implements _AppConfig {
     runtimeType,
     title,
     primaryColor,
+    designScheme,
     const DeepCollectionEquality().hash(_tabs),
     contentBasePath,
     const DeepCollectionEquality().hash(_animations),
@@ -265,6 +284,7 @@ abstract class _AppConfig implements AppConfig {
   const factory _AppConfig({
     required final String title,
     final Color primaryColor,
+    final AppDesignScheme? designScheme,
     final List<EngineTab> tabs,
     final String contentBasePath,
     final Map<String, Widget Function(BuildContext, int)> animations,
@@ -273,7 +293,9 @@ abstract class _AppConfig implements AppConfig {
   @override
   String get title;
   @override
-  Color get primaryColor; // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
+  Color get primaryColor;
+  @override
+  AppDesignScheme? get designScheme; // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   @override
   List<EngineTab> get tabs; // コンテンツ（JSON）を格納したアプリ側アセットのベースパス。
   // 例: 'contents' → contents/base.json, contents/lessons/1.json
