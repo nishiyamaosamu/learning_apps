@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/app_config.dart';
+import '../../avatar/talking_avatar.dart';
 import '../../content/content_models.dart' as models;
 import '../../content/content_providers.dart';
 import '../../settings/audio_settings.dart';
@@ -29,12 +30,9 @@ class Lesson extends ConsumerWidget {
 
     return lesson.when(
       data: (l) => _LessonPlayer(lesson: l, assetBasePath: basePath),
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
-      error: (e, _) => Scaffold(
-        body: Center(child: Text('読み込みに失敗しました\n$e')),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, _) => Scaffold(body: Center(child: Text('読み込みに失敗しました\n$e'))),
     );
   }
 }
@@ -56,6 +54,12 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
 
   /// 音声の自然終了を検知する購読（次タップを促すヒント表示に使う）。
   StreamSubscription<void>? _completeSub;
+
+  /// 再生状態の変化を検知する購読（先生アバターの口パク制御に使う）。
+  StreamSubscription<PlayerState>? _stateSub;
+
+  /// 音声が今まさに再生中か。アバターはこの間だけ喋る（口パク）。
+  bool _isPlaying = false;
 
   /// 音声が止まっていてタップ待ちであることを示すヒントを表示するか。
   /// 再生中は隠し、再生完了時/音声オフ時に表示する。
@@ -85,6 +89,12 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     _completeSub = _audio.onPlayerComplete.listen((_) {
       if (mounted) setState(() => _showTapHint = true);
     });
+    // 再生中だけアバターを喋らせる。再生開始/停止/完了でトグルする。
+    _stateSub = _audio.onPlayerStateChanged.listen((state) {
+      if (!mounted) return;
+      final playing = state == PlayerState.playing;
+      if (playing != _isPlaying) setState(() => _isPlaying = playing);
+    });
     // 初回フレーム後に先頭シーンの音声を自動再生する。
     WidgetsBinding.instance.addPostFrameCallback((_) => _playSetupAudio());
   }
@@ -92,6 +102,7 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
   @override
   void dispose() {
     _completeSub?.cancel();
+    _stateSub?.cancel();
     _quiz?.dispose();
     _audio.dispose();
     super.dispose();
@@ -195,6 +206,11 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     // 1ページ目は0%、全シーン通過（完了ページ）で100%になるよう計算する。
     final progress = total == 0 ? 0.0 : _sceneIndex / total;
 
+    // 先生アバターはナレーションシーンにだけ常駐させる（クイズ・完了は出さない）。
+    // 音声が鳴っている間だけ喋り、それ以外は idle（まばたきのみ）。
+    final showAvatar =
+        !_onCompletion && _scenes[_sceneIndex] is models.NarrationScene;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -212,44 +228,58 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
       body: Column(
         children: [
           Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              switchInCurve: Curves.easeOut,
-              switchOutCurve: Curves.easeIn,
-              transitionBuilder: (child, animation) {
-                // 進む時：新ページは右(+1)から中央へ、現ページは中央から左(-1)へ。
-                // 戻る時はその左右を反転する。
-                final bool incoming = child.key == ValueKey(_sceneIndex);
-                // フェード主体。移動はわずかだけ（進む＝右から左）。
-                const slide = 0.06;
-                final Offset begin;
-                if (incoming) {
-                  begin = _forward
-                      ? const Offset(slide, 0)
-                      : const Offset(-slide, 0);
-                } else {
-                  begin = _forward
-                      ? const Offset(-slide, 0)
-                      : const Offset(slide, 0);
-                }
-                return FadeTransition(
-                  opacity: animation,
-                  child: SlideTransition(
-                    position: Tween(begin: begin, end: Offset.zero)
-                        .animate(animation),
-                    child: child,
+            child: Stack(
+              children: [
+                Positioned.fill(child: _buildSceneSwitcher()),
+                // ナレーション中だけ右下に先生を常駐（シーン遷移をまたいで持続）。
+                // タップは下の「進む/戻る」ゾーンへ通す（IgnorePointer）。
+                Positioned(
+                  right: 12,
+                  bottom: 12,
+                  child: IgnorePointer(
+                    child: AnimatedOpacity(
+                      opacity: showAvatar ? 1 : 0,
+                      duration: const Duration(milliseconds: 250),
+                      child: _CornerAvatar(talking: _isPlaying && showAvatar),
+                    ),
                   ),
-                );
-              },
-              child: KeyedSubtree(
-                key: ValueKey(_sceneIndex),
-                child: _buildSceneArea(),
-              ),
+                ),
+              ],
             ),
           ),
           if (!_onCompletion) _buildFooter(enabled),
         ],
       ),
+    );
+  }
+
+  /// シーン本体を左右スライド＋フェードで切り替えるスイッチャ。
+  Widget _buildSceneSwitcher() {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      switchInCurve: Curves.easeOut,
+      switchOutCurve: Curves.easeIn,
+      transitionBuilder: (child, animation) {
+        // 進む時：新ページは右(+1)から中央へ、現ページは中央から左(-1)へ。
+        // 戻る時はその左右を反転する。
+        final bool incoming = child.key == ValueKey(_sceneIndex);
+        // フェード主体。移動はわずかだけ（進む＝右から左）。
+        const slide = 0.06;
+        final Offset begin;
+        if (incoming) {
+          begin = _forward ? const Offset(slide, 0) : const Offset(-slide, 0);
+        } else {
+          begin = _forward ? const Offset(-slide, 0) : const Offset(slide, 0);
+        }
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween(begin: begin, end: Offset.zero).animate(animation),
+            child: child,
+          ),
+        );
+      },
+      child: KeyedSubtree(key: ValueKey(_sceneIndex), child: _buildSceneArea()),
     );
   }
 
@@ -263,22 +293,22 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     final scene = _scenes[_sceneIndex];
     return switch (scene) {
       models.NarrationScene() => _NarrationView(
-          scene: scene,
-          revealed: _revealed,
-          assetBasePath: widget.assetBasePath,
-          animations: ref.read(appConfigProvider).animations,
-          showTapHint: _showTapHint,
-          onAdvance: _advance,
-          onBack: _back,
-        ),
+        scene: scene,
+        revealed: _revealed,
+        assetBasePath: widget.assetBasePath,
+        animations: ref.read(appConfigProvider).animations,
+        showTapHint: _showTapHint,
+        onAdvance: _advance,
+        onBack: _back,
+      ),
       _ => _QuizView(
-          scene: scene,
-          controller: _quiz!,
-          assetBasePath: widget.assetBasePath,
-          canGoBack: _sceneIndex > 0,
-          onAdvance: _advance,
-          onBack: _back,
-        ),
+        scene: scene,
+        controller: _quiz!,
+        assetBasePath: widget.assetBasePath,
+        canGoBack: _sceneIndex > 0,
+        onAdvance: _advance,
+        onBack: _back,
+      ),
     };
   }
 
@@ -373,6 +403,59 @@ class _FooterButton extends StatelessWidget {
               style: TextStyle(color: color, fontWeight: FontWeight.w600),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// レッスン右下に常駐する小さな先生アバター。
+///
+/// ベース画像は背景が白なので円形にクリップし、顔が中心に来るようズーム＋上寄せ
+/// して切り出す（口・目の動きを見せるため）。[talking] が true の間だけ口パクし、
+/// まばたきは常時。口パク250ms / まばたき3.8s。
+class _CornerAvatar extends StatelessWidget {
+  const _CornerAvatar({required this.talking});
+
+  final bool talking;
+
+  /// 円の直径。
+  static const _diameter = 96.0;
+
+  /// 顔を大きく見せるためのズーム倍率。
+  static const _zoom = 1.7;
+
+  /// ズームした正方形を円内で上寄せして顔を中心に持ってくる量（-1=上）。
+  static const _faceAlignY = -0.53;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      width: _diameter,
+      height: _diameter,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white,
+        border: Border.all(color: scheme.outlineVariant, width: 1.5),
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 2)),
+        ],
+      ),
+      child: ClipOval(
+        child: OverflowBox(
+          maxWidth: _diameter * _zoom,
+          maxHeight: _diameter * _zoom,
+          alignment: const Alignment(0, _faceAlignY),
+          child: SizedBox(
+            width: _diameter * _zoom,
+            height: _diameter * _zoom,
+            child: TalkingAvatar(
+              talking: talking,
+              mouthInterval: const Duration(milliseconds: 250),
+              blinkInterval: const Duration(milliseconds: 3800),
+            ),
+          ),
         ),
       ),
     );
@@ -516,7 +599,9 @@ class _NarrationViewState extends State<_NarrationView> {
                 builder: (context, constraints) => SingleChildScrollView(
                   controller: _scroll,
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -614,9 +699,10 @@ class _TapHintState extends State<_TapHint>
         duration: const Duration(milliseconds: 250),
         child: FadeTransition(
           // 0.3〜0.6 の薄い明滅にとどめ、目立ちすぎないようにする。
-          opacity: Tween(begin: 0.3, end: 0.6).animate(
-            CurvedAnimation(parent: _pulse, curve: Curves.easeInOut),
-          ),
+          opacity: Tween(
+            begin: 0.3,
+            end: 0.6,
+          ).animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut)),
           child: Icon(Icons.touch_app, size: 22, color: color),
         ),
       ),
@@ -695,8 +781,9 @@ class _StepImageState extends State<_StepImage>
 
   @override
   Widget build(BuildContext context) {
-    final current =
-        SceneImage(assetPath: '${widget.assetBasePath}/${widget.imageUrl}');
+    final current = SceneImage(
+      assetPath: '${widget.assetBasePath}/${widget.imageUrl}',
+    );
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
@@ -755,8 +842,10 @@ class _QuizView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (String question, String? imageUrl) = switch (scene) {
-      models.QuizMultipleChoiceScene(:final question, :final imageUrl) =>
-        (question, imageUrl),
+      models.QuizMultipleChoiceScene(:final question, :final imageUrl) => (
+        question,
+        imageUrl,
+      ),
       models.QuizFillInTheBlankScene(:final imageUrl) => ('', imageUrl),
       _ => ('', null),
     };
@@ -797,8 +886,7 @@ class _QuizView extends StatelessWidget {
     final submitted = controller.submitted;
     return Row(
       children: [
-        if (canGoBack)
-          TextButton(onPressed: onBack, child: const Text('戻る')),
+        if (canGoBack) TextButton(onPressed: onBack, child: const Text('戻る')),
         const Spacer(),
         if (!submitted)
           FilledButton(

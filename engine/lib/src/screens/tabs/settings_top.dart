@@ -11,29 +11,37 @@ class SettingsTop extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // debug ビルドかつアニメが登録されているときだけ、開発用ビューアへの
-    // エントリを出す（release では出さない）。
+    // debug ビルドのときだけ開発用ビューアへのエントリを出す（release では
+    // 出さない）。アニメビューアはアニメ登録があるときのみ、アバタービューアは
+    // 常に表示する（アバターは registry に依存しないため）。
     final hasAnimations =
         ref.watch(appConfigProvider).animations.isNotEmpty;
-    final showDevTools = isDebugBuild && hasAnimations;
 
     return Scaffold(
       appBar: AppBar(title: const Text('設定')),
       body: ListView(
         children: [
           const ListTile(title: Text('設定項目がここに表示されます')),
-          if (showDevTools) ...[
+          if (isDebugBuild) ...[
             const Divider(),
             const Padding(
               padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
               child: Text('開発ツール (debug)'),
             ),
+            if (hasAnimations)
+              ListTile(
+                leading: const Icon(Icons.animation),
+                title: const Text('アニメビューア'),
+                subtitle: const Text('図解アニメの phase を確認する'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/dev/animations'),
+              ),
             ListTile(
-              leading: const Icon(Icons.animation),
-              title: const Text('アニメビューア'),
-              subtitle: const Text('図解アニメの phase を確認する'),
+              leading: const Icon(Icons.face),
+              title: const Text('アバタービューア'),
+              subtitle: const Text('喋るアバターの動きを確認する'),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/dev/animations'),
+              onTap: () => context.push('/dev/avatar'),
             ),
           ],
         ],

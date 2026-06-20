@@ -30,3 +30,10 @@ dev_dependencies:
   json_serializable: ^6.8.0
 
 flutter:
+  assets:
+    # 先生アバター（目開閉×口開閉を重ねて合成）。package:'engine' で参照する。
+    - lib/images/teacher_base.png
+    - lib/images/teacher_closed_eye.png
+    - lib/images/teacher_closed_mouse.png
+    # アバタービューアのサンプル音声（喋り連動確認用）。
+    - lib/audio/teacher_sample.mp3

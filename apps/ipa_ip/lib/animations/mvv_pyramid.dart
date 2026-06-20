@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 /// 企業理念（MVV）のピラミッドが下から積み上がる図解。
 ///
 /// 土台のバリューから順に積み上げ、頂点のミッションへ向かう三段ピラミッド。
-/// 下ほど幅広・薄色、上ほど幅狭・濃色にして階層（土台→頂点）を表す。
+/// 最後に「何のために存在するのか」を問うパーパス経営の補足を出す。
 ///
-/// phaseCount = 3
+/// phaseCount = 4
 /// - phase 0: バリュー（価値観・行動指針）＝土台
 /// - phase 1: ＋ビジョン（目指す将来像）
 /// - phase 2: ＋ミッション（果たすべき使命）＝頂点
+/// - phase 3: ＋パーパス経営（何のために存在するのか）
 class MvvPyramidAnimation extends StatelessWidget {
   const MvvPyramidAnimation({super.key, required this.step});
 
-  /// 現在の phase（0..2）。
+  /// 現在の phase（0..3）。
   final int step;
 
-  static const phaseCount = 3;
+  static const phaseCount = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -37,40 +38,64 @@ class MvvPyramidAnimation extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              // 下から積み上がるピラミッド。表示は上→下なので、頂点（ミッション）
-              // から順に並べ、Column を下寄せにして土台が下に来るようにする。
               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _tier(
-                      context,
-                      appearAt: 2,
-                      widthFactor: 0.40,
-                      label: 'ミッション',
-                      sub: '果たすべき使命',
-                      alpha: 0.95,
-                      onDark: true,
+                    Expanded(
+                      flex: 7,
+                      // 下から積み上がるピラミッド。表示は上→下なので、
+                      // 頂点（ミッション）から順に並べ、Column を下寄せにする。
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          _tier(
+                            context,
+                            appearAt: 2,
+                            widthFactor: 0.42,
+                            label: 'ミッション',
+                            sub: '果たすべき使命',
+                            color: scheme.primary,
+                            alpha: 0.95,
+                            foreground: scheme.onPrimary,
+                          ),
+                          const SizedBox(height: 6),
+                          _tier(
+                            context,
+                            appearAt: 1,
+                            widthFactor: 0.70,
+                            label: 'ビジョン',
+                            sub: '目指す将来像',
+                            color: scheme.secondary,
+                            alpha: 0.34,
+                            foreground: scheme.onSurface,
+                          ),
+                          const SizedBox(height: 6),
+                          _tier(
+                            context,
+                            appearAt: 0,
+                            widthFactor: 1,
+                            label: 'バリュー',
+                            sub: '価値観・行動指針',
+                            color: scheme.tertiary,
+                            alpha: 0.28,
+                            foreground: scheme.onSurface,
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 6),
-                    _tier(
-                      context,
-                      appearAt: 1,
-                      widthFactor: 0.68,
-                      label: 'ビジョン',
-                      sub: '目指す将来像',
-                      alpha: 0.55,
-                      onDark: false,
-                    ),
-                    const SizedBox(height: 6),
-                    _tier(
-                      context,
-                      appearAt: 0,
-                      widthFactor: 1.0,
-                      label: 'バリュー',
-                      sub: '価値観・行動指針',
-                      alpha: 0.28,
-                      onDark: false,
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 3,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: PhaseReveal(
+                          step: step,
+                          appearAt: 3,
+                          slide: const Offset(0.15, 0),
+                          child: _purposeCard(context),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -88,11 +113,11 @@ class MvvPyramidAnimation extends StatelessWidget {
     required double widthFactor,
     required String label,
     required String sub,
+    required Color color,
     required double alpha,
-    required bool onDark,
+    required Color foreground,
   }) {
-    final scheme = Theme.of(context).colorScheme;
-    final fg = onDark ? scheme.onPrimary : scheme.onSurface;
+    final active = step >= appearAt;
     return Expanded(
       child: PhaseReveal(
         step: step,
@@ -105,8 +130,12 @@ class MvvPyramidAnimation extends StatelessWidget {
             curve: motionCurve,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: scheme.primary.withValues(alpha: alpha),
+              color: color.withValues(alpha: alpha),
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: color.withValues(alpha: active ? 0.9 : 0.3),
+                width: active ? 2 : 1,
+              ),
             ),
             child: FittedBox(
               fit: BoxFit.scaleDown,
@@ -116,20 +145,69 @@ class MvvPyramidAnimation extends StatelessWidget {
                   Text(
                     label,
                     style: TextStyle(
-                      color: fg,
+                      color: foreground,
                       fontWeight: FontWeight.w700,
                       fontSize: 14,
                     ),
                   ),
-                  Text(
-                    sub,
-                    style: TextStyle(color: fg, fontSize: 10),
-                  ),
+                  Text(sub, style: TextStyle(color: foreground, fontSize: 10)),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _purposeCard(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return AnimatedContainer(
+      duration: motionDuration,
+      curve: motionCurve,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: scheme.primary, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: scheme.shadow.withValues(alpha: 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.flag, color: scheme.primary, size: 20),
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              'パーパス経営',
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(
+                color: scheme.primary,
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '何のために\n存在するのか',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: scheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+              fontSize: 10,
+              height: 1.2,
+            ),
+          ),
+        ],
       ),
     );
   }
