@@ -2,7 +2,6 @@ import 'package:engine/engine.dart';
 import 'package:flutter/material.dart';
 
 import 'app_design.dart';
-import 'animations/registry.dart';
 
 void main() {
   runApp(
@@ -17,7 +16,6 @@ void main() {
           EngineTab.anki,
           EngineTab.settings,
         ],
-        animations: animationsRegistry,
       ),
     ),
   );

@@ -1,7 +1,5 @@
 import 'package:go_router/go_router.dart';
 import '../app/app_config.dart';
-import '../screens/dev/animation_viewer.dart';
-import '../screens/dev/avatar_viewer.dart';
 import '../screens/home_screen.dart';
 import '../screens/tabs/anki.dart';
 import '../screens/tabs/exercise.dart';
@@ -37,16 +35,6 @@ GoRouter buildRouter(AppConfig config) {
               id: state.pathParameters['id']!,
               title: state.extra as String? ?? '',
             ),
-          ),
-          // 図解アニメの開発用ビューア（debug専用エントリから開く）。
-          GoRoute(
-            path: 'dev/animations',
-            builder: (context, state) => const AnimationViewer(),
-          ),
-          // 喋るアバターの開発用ビューア（debug専用エントリから開く）。
-          GoRoute(
-            path: 'dev/avatar',
-            builder: (context, state) => const AvatarViewer(),
           ),
         ],
       ),

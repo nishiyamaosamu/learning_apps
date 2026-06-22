@@ -59,10 +59,6 @@ class LessonStep with _$LessonStep {
     // 画像を継承する。どの step も持たなければテキストのみシーン。
     // 切替は左→右のワイプで行う。
     String? imageUrl,
-    // アニメモードのシーンで、このステップ表示時にアニメを進める phase
-    // （0始まり・任意）。省略時は直前ステップの値を継承（先頭省略は0）。
-    // シーンの `animationKey` と組で使う（→ [NarrationScene.animationKey]）。
-    int? animationStep,
   }) = _LessonStep;
 
   factory LessonStep.fromJson(Map<String, dynamic> json) =>
@@ -85,12 +81,6 @@ sealed class LessonScene with _$LessonScene {
   const factory LessonScene.narration({
     // タップごとに1つずつ出現し累積するステップ列（1つ以上）。
     @Default(<LessonStep>[]) List<LessonStep> steps,
-    // 図解アニメのキー（任意・シーン単位）。指定すると「アニメモード」になり、
-    // 上部固定枠に [AppConfig.animations] で解決したウィジェットを表示し、
-    // 各ステップの `animationStep` で phase を進める。未登録キーや null は
-    // 通常の画像/テキスト表示にフォールバックする。
-    // アニメモードと画像モードが両立する場合はアニメを優先する。
-    String? animationKey,
   }) = NarrationScene;
 
   /// 複数の選択肢から正解を1つ選ぶミニクイズ。

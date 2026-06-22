@@ -4,8 +4,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../app/app_config.dart';
-import '../../avatar/talking_avatar.dart';
 import '../../content/content_models.dart' as models;
 import '../../content/content_providers.dart';
 import '../../settings/audio_settings.dart';
@@ -55,12 +53,6 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
   /// 音声の自然終了を検知する購読（次タップを促すヒント表示に使う）。
   StreamSubscription<void>? _completeSub;
 
-  /// 再生状態の変化を検知する購読（先生アバターの口パク制御に使う）。
-  StreamSubscription<PlayerState>? _stateSub;
-
-  /// 音声が今まさに再生中か。アバターはこの間だけ喋る（口パク）。
-  bool _isPlaying = false;
-
   /// 音声が止まっていてタップ待ちであることを示すヒントを表示するか。
   /// 再生中は隠し、再生完了時/音声オフ時に表示する。
   bool _showTapHint = false;
@@ -89,12 +81,6 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     _completeSub = _audio.onPlayerComplete.listen((_) {
       if (mounted) setState(() => _showTapHint = true);
     });
-    // 再生中だけアバターを喋らせる。再生開始/停止/完了でトグルする。
-    _stateSub = _audio.onPlayerStateChanged.listen((state) {
-      if (!mounted) return;
-      final playing = state == PlayerState.playing;
-      if (playing != _isPlaying) setState(() => _isPlaying = playing);
-    });
     // 初回フレーム後に先頭シーンの音声を自動再生する。
     WidgetsBinding.instance.addPostFrameCallback((_) => _playSetupAudio());
   }
@@ -102,7 +88,6 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
   @override
   void dispose() {
     _completeSub?.cancel();
-    _stateSub?.cancel();
     _quiz?.dispose();
     _audio.dispose();
     super.dispose();
@@ -206,11 +191,6 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     // 1ページ目は0%、全シーン通過（完了ページ）で100%になるよう計算する。
     final progress = total == 0 ? 0.0 : _sceneIndex / total;
 
-    // 先生アバターはナレーションシーンにだけ常駐させる（クイズ・完了は出さない）。
-    // 音声が鳴っている間だけ喋り、それ以外は idle（まばたきのみ）。
-    final showAvatar =
-        !_onCompletion && _scenes[_sceneIndex] is models.NarrationScene;
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -227,26 +207,7 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Positioned.fill(child: _buildSceneSwitcher()),
-                // ナレーション中だけ右下に先生を常駐（シーン遷移をまたいで持続）。
-                // タップは下の「進む/戻る」ゾーンへ通す（IgnorePointer）。
-                Positioned(
-                  right: 12,
-                  bottom: 12,
-                  child: IgnorePointer(
-                    child: AnimatedOpacity(
-                      opacity: showAvatar ? 1 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: _CornerAvatar(talking: _isPlaying && showAvatar),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          Expanded(child: _buildSceneSwitcher()),
           if (!_onCompletion) _buildFooter(enabled),
         ],
       ),
@@ -296,7 +257,6 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
         scene: scene,
         revealed: _revealed,
         assetBasePath: widget.assetBasePath,
-        animations: ref.read(appConfigProvider).animations,
         showTapHint: _showTapHint,
         onAdvance: _advance,
         onBack: _back,
@@ -409,59 +369,6 @@ class _FooterButton extends StatelessWidget {
   }
 }
 
-/// レッスン右下に常駐する小さな先生アバター。
-///
-/// ベース画像は背景が白なので円形にクリップし、顔が中心に来るようズーム＋上寄せ
-/// して切り出す（口・目の動きを見せるため）。[talking] が true の間だけ口パクし、
-/// まばたきは常時。口パク250ms / まばたき3.8s。
-class _CornerAvatar extends StatelessWidget {
-  const _CornerAvatar({required this.talking});
-
-  final bool talking;
-
-  /// 円の直径。
-  static const _diameter = 96.0;
-
-  /// 顔を大きく見せるためのズーム倍率。
-  static const _zoom = 1.7;
-
-  /// ズームした正方形を円内で上寄せして顔を中心に持ってくる量（-1=上）。
-  static const _faceAlignY = -0.53;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      width: _diameter,
-      height: _diameter,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
-        border: Border.all(color: scheme.outlineVariant, width: 1.5),
-        boxShadow: const [
-          BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 2)),
-        ],
-      ),
-      child: ClipOval(
-        child: OverflowBox(
-          maxWidth: _diameter * _zoom,
-          maxHeight: _diameter * _zoom,
-          alignment: const Alignment(0, _faceAlignY),
-          child: SizedBox(
-            width: _diameter * _zoom,
-            height: _diameter * _zoom,
-            child: TalkingAvatar(
-              talking: talking,
-              mouthInterval: const Duration(milliseconds: 250),
-              blinkInterval: const Duration(milliseconds: 3800),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// ナレーションシーン。画像を上部にピン留めし、ステップを下へ累積表示する。
 /// 本文エリアの左30%タップ＝戻る／右70%タップ＝進む。
 class _NarrationView extends StatefulWidget {
@@ -469,7 +376,6 @@ class _NarrationView extends StatefulWidget {
     required this.scene,
     required this.revealed,
     required this.assetBasePath,
-    required this.animations,
     required this.showTapHint,
     required this.onAdvance,
     required this.onBack,
@@ -478,7 +384,6 @@ class _NarrationView extends StatefulWidget {
   final models.NarrationScene scene;
   final int revealed;
   final String assetBasePath;
-  final Map<String, LessonAnimationBuilder> animations;
 
   /// 音声が止まりタップ待ちであることを示すヒントを表示するか。
   final bool showTapHint;
@@ -516,26 +421,6 @@ class _NarrationViewState extends State<_NarrationView> {
     super.dispose();
   }
 
-  /// このシーンのアニメビルダー（`animationKey` がレジストリに登録済みのとき）。
-  /// 未登録/null のときは画像・テキスト表示にフォールバックする。
-  LessonAnimationBuilder? get _animationBuilder {
-    final key = widget.scene.animationKey;
-    if (key == null) return null;
-    return widget.animations[key];
-  }
-
-  /// 表示中アニメの phase = 表示済みステップのうち直近で指定された
-  /// `animationStep`（無指定は直前を継承、先頭が無指定なら0）。
-  int _effectiveAnimationStep() {
-    final steps = widget.scene.steps;
-    var step = 0;
-    for (var i = 0; i < widget.revealed && i < steps.length; i++) {
-      final s = steps[i].animationStep;
-      if (s != null) step = s;
-    }
-    return step;
-  }
-
   /// このシーンが画像モードか（いずれかの step が画像を持つ＝シーン静的）。
   bool get _hasImage => widget.scene.steps.any((s) => s.imageUrl != null);
 
@@ -553,31 +438,13 @@ class _NarrationViewState extends State<_NarrationView> {
   Widget build(BuildContext context) {
     final steps = widget.scene.steps;
     final imageUrl = _effectiveImage();
-    final animationBuilder = _animationBuilder;
-    final isAnimationMode = animationBuilder != null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // アニメモードのシーンは上部固定枠にアニメウィジェットを表示。phase は
-        // 表示中ステップの animationStep で進む（ビルダーが滑らかに遷移する）。
-        // アニメと画像が両立する場合はアニメを優先する。
-        if (isAnimationMode)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: SizedBox(
-              height: 240,
-              child: Center(
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: animationBuilder(context, _effectiveAnimationStep()),
-                ),
-              ),
-            ),
-          )
         // 画像モードのシーンは枠を最初から確保（レイアウト判定はシーン静的）。
         // 画像はステップ単位で差し替え可能。切替は左→右のワイプ（リビール）。
-        else if (_hasImage)
+        if (_hasImage)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: SizedBox(
@@ -605,7 +472,7 @@ class _NarrationViewState extends State<_NarrationView> {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
-                        mainAxisAlignment: (isAnimationMode || _hasImage)
+                        mainAxisAlignment: _hasImage
                             ? MainAxisAlignment.start
                             : MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,

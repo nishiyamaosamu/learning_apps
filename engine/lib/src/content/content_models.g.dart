@@ -70,7 +70,6 @@ _$LessonStepImpl _$$LessonStepImplFromJson(Map<String, dynamic> json) =>
       text: json['text'] as String,
       audioUrl: json['audioUrl'] as String?,
       imageUrl: json['imageUrl'] as String?,
-      animationStep: (json['animationStep'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$LessonStepImplToJson(_$LessonStepImpl instance) =>
@@ -78,7 +77,6 @@ Map<String, dynamic> _$$LessonStepImplToJson(_$LessonStepImpl instance) =>
       'text': instance.text,
       'audioUrl': instance.audioUrl,
       'imageUrl': instance.imageUrl,
-      'animationStep': instance.animationStep,
     };
 
 _$NarrationSceneImpl _$$NarrationSceneImplFromJson(Map<String, dynamic> json) =>
@@ -88,17 +86,12 @@ _$NarrationSceneImpl _$$NarrationSceneImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => LessonStep.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <LessonStep>[],
-      animationKey: json['animationKey'] as String?,
       $type: json['type'] as String?,
     );
 
 Map<String, dynamic> _$$NarrationSceneImplToJson(
   _$NarrationSceneImpl instance,
-) => <String, dynamic>{
-  'steps': instance.steps,
-  'animationKey': instance.animationKey,
-  'type': instance.$type,
-};
+) => <String, dynamic>{'steps': instance.steps, 'type': instance.$type};
 
 _$QuizMultipleChoiceSceneImpl _$$QuizMultipleChoiceSceneImplFromJson(
   Map<String, dynamic> json,

@@ -16,10 +16,9 @@
 - レッスンは **シーン（scene）** のフラットな列。シーンは1画面に対応し、**シーンの切り替え時に画面はクリアされてアニメーションで遷移する**（＝シーンは表示のリセット境界）。
 - ナレーションシーンは複数の **ステップ（step）** を持つ。ステップは1タップで1つずつ出現し、**同一シーン内では下に累積**していく（前のステップは消えない）。
 - シーンが変わると累積はクリアされる。画像の有無に関係なく、テキストのみ → テキストのみのシーン切り替えもある。
-- **シーンのモード（テキストのみ / 画像あり / アニメあり）はシーン静的に決まる**：シーンが `animationKey` を持てば「アニメモード」、いずれかの step が `imageUrl` を持てば「画像モード」、どれも無ければ「テキストのみ」。アニメと画像が両立する場合はアニメを優先する。表示状態（どこまでタップしたか）には依存しない。
+- **シーンのモード（テキストのみ / 画像あり）はシーン静的に決まる**：いずれかの step が `imageUrl` を持てば「画像モード」、どれも無ければ「テキストのみ」。表示状態（どこまでタップしたか）には依存しない。
 - 画像は**ステップ単位で指定・差し替え**する（→ [step](#step) の `imageUrl`）。表示中の画像は「表示済みステップのうち直近で `imageUrl` を指定したステップの画像」で、無指定のステップは直前の画像を継承する。画像モードのシーンは**先頭 step から画像を持つ**（途中から画像が出る混在は不可。データ生成バリデーションで担保する）。
 - ステップで画像が切り替わるときは、旧画像を下に敷いたまま新画像を**左→右へワイプ（リビール）**して重ね、描き足された部分が左から順に現れるように見せる。テキスト累積はクリアされない。
-- **アニメモードのシーン**は、上部固定枠に図解アニメ（Flutterウィジェット）を表示する。各 step の `animationStep`（phase）に応じてアニメが段階的に展開し、タップでテキストが1つ出るたびにアニメも該当 phase へ滑らかに遷移する（説明文と図解が同期する）。アニメ実体は app 側（`apps/{app}/lib/animations/`）に実装し、`animationKey` で参照する（→ [アニメモード](#アニメモードアニメflutterウィジェット)）。
 
 ```
 シーン1: step1                 （タップ）
@@ -90,9 +89,8 @@
 |---|---|---|---|
 | `type` | `"narration"` | ✅ | |
 | `steps` | array of [step](#step) | ✅（1つ以上） | タップごとに1つずつ出現し、シーン内で累積する。配列順。 |
-| `animationKey` | string | ー（任意） | 図解アニメのキー（シーン単位）。指定するとアニメモードになり、上部固定枠にアニメを表示する。各 step の `animationStep` で phase を進める。app 側レジストリに登録されたキーを指す（→ [アニメモード](#アニメモードアニメflutterウィジェット)）。 |
 
-- シーンが「アニメモード」か「画像モード」か「テキストのみ」かは、`animationKey` の有無 → いずれかの step の `imageUrl` の有無、の順で決まる（→ [表示・操作モデル](#表示操作モデル)）。
+- シーンが「画像モード」か「テキストのみ」かは、いずれかの step の `imageUrl` の有無で決まる（→ [表示・操作モデル](#表示操作モデル)）。
 - **バリデーション（データ生成時に担保）**: 画像モードのシーンは**先頭 step が `imageUrl` を持つ**こと（途中から画像が現れる混在を禁止）。テキストのみシーンは**どの step も `imageUrl` を持たない**こと。
 
 ### step
@@ -104,19 +102,6 @@
 | `text` | string (Markdown) | ✅ | 本文。Markdown（太字・箇条書き・見出し・インラインコード等）。空文字も許可（画像を見せるだけのステップ等）。 |
 | `audioUrl` | string | ー（任意） | 本文ナレーション音声。ローカルアセット相対パス（例 `lessons/audios/2-1.mp3`）。 |
 | `imageUrl` | string | ー（任意） | このステップ以降に表示する画像。無指定なら直前の画像を継承する。どの step も持たなければテキストのみシーン。画像モードのシーンは先頭 step が指定する。切替は左→右のワイプ。ローカルアセット相対パス（例 `lessons/images/2-1.jpeg`）。 |
-| `animationStep` | int | ー（任意） | アニメモードのシーンで、この step 表示時にアニメを進める phase（0始まり）。無指定なら直前 step の値を継承（先頭が無指定なら0）。値は 0 以上・シーン内で単調増加・最大値 < そのアニメの `phaseCount`。`animationKey` の無いシーンでは無視される。 |
-
-### アニメモード（アニメ＝Flutterウィジェット）
-
-アニメは画像（アセット）ではなく、**app 側の Flutter ウィジェット**として実装する。レッスンJSONからは `animationKey` で参照し、engine が app のレジストリで解決して上部固定枠に描画する。
-
-- **実体の置き場**: `apps/{app}/lib/animations/{key}.dart`。共通の図解部品は `apps/{app}/lib/animations/common/`。
-- **レジストリ**: `apps/{app}/lib/animations/registry.dart` に `animationKey` ↔ ウィジェットを登録し、`main.dart` の `AppConfig.animations` に渡す。
-- **契約**: ウィジェットは現在の phase（`int step`）を受け取り、その phase の到達状態を描く。step の増減で滑らかに遷移する（実装は暗黙アニメ＝`AnimatedContainer`/`TweenAnimationBuilder` 等で十分）。総 phase 数はウィジェットの `static const phaseCount` に持ち、JSON の `animationStep` 最大値と突き合わせる。
-- **phase と step の対応**: engine は「表示中の最新 step の `animationStep`」を `step` として渡す。1タップでテキスト1つ出現＋アニメ1段進行、が基本（同じ phase のまま説明文だけ足す step も書ける）。
-- **音声同期**: 既存どおり step 出現時に `audioUrl` を自動再生。アニメ進行も同じ step イベントで動くため自然に同期する。
-
-これらの生成（ウィジェット作成・registry登録・JSON組込み・各phaseのPNG確認）は `lesson-animation` スキルが担う。
 
 ### type: quizMultipleChoice
 
@@ -173,18 +158,6 @@ scenes:
         audioUrl: lessons/audios/2-2.mp3
         # このステップで画像を差し替え（左→右ワイプ）。テキストは累積したまま。
         imageUrl: lessons/images/2-2.jpeg
-
-  # アニメ付きナレーション（animationKey をシーンに、animationStep を step に）。
-  # 1タップでテキストが1つ出て、アニメも該当 phase へ進む。
-  - type: narration
-    animationKey: tcp_handshake
-    steps:
-      - text: TCPはまず接続要求(SYN)をサーバへ送ります。
-        animationStep: 1
-      - text: サーバは応答(SYN+ACK)を返します。
-        animationStep: 2
-      - text: 最後にクライアントがACKを返し、接続が確立します。
-        animationStep: 3
 
   # テキストのみのナレーション（画像なし・複数ステップ）。
   - type: narration

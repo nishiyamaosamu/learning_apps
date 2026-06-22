@@ -21,54 +21,43 @@
     },
     {
       "type": "narration",
-      "animationKey": "keiei_shigen",
       "steps": [
         {
           "text": "# 経営資源（ヒト・モノ・カネ・情報）\n\n企業活動を支える要素を**経営資源**と呼びます。まずは **ヒト**：従業員などの人材。",
-          "animationStep": 0,
           "audioUrl": "lessons/audios/1-2-1.mp3"
         },
         {
           "text": "- **モノ**：設備・原材料・製品",
-          "animationStep": 1,
           "audioUrl": "lessons/audios/1-2-2.mp3"
         },
         {
           "text": "- **カネ**：資金・お金",
-          "animationStep": 2,
           "audioUrl": "lessons/audios/1-2-3.mp3"
         },
         {
           "text": "- **情報**：ノウハウ・顧客データ・技術",
-          "animationStep": 3,
           "audioUrl": "lessons/audios/1-2-4.mp3"
         },
         {
           "text": "限りある経営資源を、目的に合わせて**適切に配分・管理・活用**することが経営の基本です。",
-          "animationStep": 3,
           "audioUrl": "lessons/audios/1-2-5.mp3"
         }
       ]
     },
     {
       "type": "narration",
-      "animationKey": "mvv_pyramid",
       "steps": [
         {
-          "text": "# 企業理念とMVV\n\n企業の価値観や存在意義を3つの階層で整理したものが **MVV** です。\n\nまず土台となる **バリュー**：大切にする価値観・行動指針。",
-          "animationStep": 0
+          "text": "# 企業理念とMVV\n\n企業の価値観や存在意義を3つの階層で整理したものが **MVV** です。\n\nまず土台となる **バリュー**：大切にする価値観・行動指針。"
         },
         {
-          "text": "その上に **ビジョン**：目指す将来像（ありたい姿）。",
-          "animationStep": 1
+          "text": "その上に **ビジョン**：目指す将来像（ありたい姿）。"
         },
         {
-          "text": "頂点が **ミッション**：果たすべき使命。",
-          "animationStep": 2
+          "text": "頂点が **ミッション**：果たすべき使命。"
         },
         {
-          "text": "「何のために存在するのか」を見つめ直す**パーパス経営**も注目されています。",
-          "animationStep": 3
+          "text": "「何のために存在するのか」を見つめ直す**パーパス経営**も注目されています。"
         }
       ]
     },
@@ -124,27 +113,21 @@
     },
     {
       "type": "narration",
-      "animationKey": "pdca_cycle",
       "steps": [
         {
-          "text": "# PDCAサイクル\n\n仕事を継続的に改善する基本の考え方が **PDCA** です。\n- **P（Plan）**：計画を立てる",
-          "animationStep": 0
+          "text": "# PDCAサイクル\n\n仕事を継続的に改善する基本の考え方が **PDCA** です。\n- **P（Plan）**：計画を立てる"
         },
         {
-          "text": "- **D（Do）**：実行する",
-          "animationStep": 1
+          "text": "- **D（Do）**：実行する"
         },
         {
-          "text": "- **C（Check）**：結果を評価・確認する",
-          "animationStep": 2
+          "text": "- **C（Check）**：結果を評価・確認する"
         },
         {
-          "text": "- **A（Act）**：改善して次に活かす",
-          "animationStep": 3
+          "text": "- **A（Act）**：改善して次に活かす"
         },
         {
-          "text": "P→D→C→A を**繰り返し回す**ことで、品質や業務が少しずつ良くなっていきます（継続的改善）。",
-          "animationStep": 4
+          "text": "P→D→C→A を**繰り返し回す**ことで、品質や業務が少しずつ良くなっていきます（継続的改善）。"
         }
       ]
     },
