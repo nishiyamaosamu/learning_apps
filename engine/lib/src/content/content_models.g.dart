@@ -47,9 +47,14 @@ _$LessonImpl _$$LessonImplFromJson(Map<String, dynamic> json) => _$LessonImpl(
   title: json['title'] as String,
   pages:
       (json['pages'] as List<dynamic>?)
-          ?.map((e) => LessonPage.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => ContentPage.fromJson(e as Map<String, dynamic>))
           .toList() ??
-      const <LessonPage>[],
+      const <ContentPage>[],
+  quizzes:
+      (json['quizzes'] as List<dynamic>?)
+          ?.map((e) => LessonQuiz.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <LessonQuiz>[],
   exercises:
       (json['exercises'] as List<dynamic>?)
           ?.map((e) => (e as num).toInt())
@@ -62,8 +67,22 @@ Map<String, dynamic> _$$LessonImplToJson(_$LessonImpl instance) =>
       'id': instance.id,
       'title': instance.title,
       'pages': instance.pages,
+      'quizzes': instance.quizzes,
       'exercises': instance.exercises,
     };
+
+_$ContentPageImpl _$$ContentPageImplFromJson(Map<String, dynamic> json) =>
+    _$ContentPageImpl(
+      audioUrl: json['audioUrl'] as String?,
+      blocks:
+          (json['blocks'] as List<dynamic>?)
+              ?.map((e) => ContentBlock.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <ContentBlock>[],
+    );
+
+Map<String, dynamic> _$$ContentPageImplToJson(_$ContentPageImpl instance) =>
+    <String, dynamic>{'audioUrl': instance.audioUrl, 'blocks': instance.blocks};
 
 _$ContentBlockImpl _$$ContentBlockImplFromJson(Map<String, dynamic> json) =>
     _$ContentBlockImpl(
@@ -74,52 +93,31 @@ _$ContentBlockImpl _$$ContentBlockImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$ContentBlockImplToJson(_$ContentBlockImpl instance) =>
     <String, dynamic>{'text': instance.text, 'imageUrl': instance.imageUrl};
 
-_$ContentPageImpl _$$ContentPageImplFromJson(Map<String, dynamic> json) =>
-    _$ContentPageImpl(
-      audioUrl: json['audioUrl'] as String?,
-      blocks:
-          (json['blocks'] as List<dynamic>?)
-              ?.map((e) => ContentBlock.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const <ContentBlock>[],
-      $type: json['type'] as String?,
-    );
-
-Map<String, dynamic> _$$ContentPageImplToJson(_$ContentPageImpl instance) =>
-    <String, dynamic>{
-      'audioUrl': instance.audioUrl,
-      'blocks': instance.blocks,
-      'type': instance.$type,
-    };
-
-_$QuizMultipleChoicePageImpl _$$QuizMultipleChoicePageImplFromJson(
+_$QuizMultipleChoiceImpl _$$QuizMultipleChoiceImplFromJson(
   Map<String, dynamic> json,
-) => _$QuizMultipleChoicePageImpl(
+) => _$QuizMultipleChoiceImpl(
   question: json['question'] as String,
   imageUrl: json['imageUrl'] as String?,
-  audioUrl: json['audioUrl'] as String?,
   options: (json['options'] as List<dynamic>).map((e) => e as String).toList(),
   correctOptionIndex: (json['correctOptionIndex'] as num).toInt(),
   $type: json['type'] as String?,
 );
 
-Map<String, dynamic> _$$QuizMultipleChoicePageImplToJson(
-  _$QuizMultipleChoicePageImpl instance,
+Map<String, dynamic> _$$QuizMultipleChoiceImplToJson(
+  _$QuizMultipleChoiceImpl instance,
 ) => <String, dynamic>{
   'question': instance.question,
   'imageUrl': instance.imageUrl,
-  'audioUrl': instance.audioUrl,
   'options': instance.options,
   'correctOptionIndex': instance.correctOptionIndex,
   'type': instance.$type,
 };
 
-_$QuizFillInTheBlankPageImpl _$$QuizFillInTheBlankPageImplFromJson(
+_$QuizFillInTheBlankImpl _$$QuizFillInTheBlankImplFromJson(
   Map<String, dynamic> json,
-) => _$QuizFillInTheBlankPageImpl(
+) => _$QuizFillInTheBlankImpl(
   question: json['question'] as String,
   imageUrl: json['imageUrl'] as String?,
-  audioUrl: json['audioUrl'] as String?,
   options: (json['options'] as List<dynamic>).map((e) => e as String).toList(),
   correctOptionIndices: (json['correctOptionIndices'] as List<dynamic>)
       .map((e) => (e as num).toInt())
@@ -127,12 +125,11 @@ _$QuizFillInTheBlankPageImpl _$$QuizFillInTheBlankPageImplFromJson(
   $type: json['type'] as String?,
 );
 
-Map<String, dynamic> _$$QuizFillInTheBlankPageImplToJson(
-  _$QuizFillInTheBlankPageImpl instance,
+Map<String, dynamic> _$$QuizFillInTheBlankImplToJson(
+  _$QuizFillInTheBlankImpl instance,
 ) => <String, dynamic>{
   'question': instance.question,
   'imageUrl': instance.imageUrl,
-  'audioUrl': instance.audioUrl,
   'options': instance.options,
   'correctOptionIndices': instance.correctOptionIndices,
   'type': instance.$type,

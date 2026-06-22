@@ -30,21 +30,42 @@ class ContentIndex with _$ContentIndex {
 
 /// レッスン内容。contents/lessons/{id}.json を都度ロード。
 ///
-/// docs/LESSON.md の `lesson` 構造に対応。`pages` を配列順に1ページずつ表示し、
-/// 末尾に `exercises`（本番演習への参照）を表示する。
+/// docs/LESSON.md の `lesson` 構造に対応。コンテンツ（`pages`）を縦スワイプで
+/// 1ページずつ表示し、確認問題（`quizzes`）を別画面で出題、末尾に `exercises`
+/// （本番演習への参照）を表示する。
 @freezed
 class Lesson with _$Lesson {
   const factory Lesson({
     required String id,
     required String title,
-    // ページの列。配列順に1ページずつ表示する（1ページ＝1画面）。
-    @Default(<LessonPage>[]) List<LessonPage> pages,
+    // 説明用のコンテンツページの列（縦スワイプで1ページずつ表示）。
+    @Default(<ContentPage>[]) List<ContentPage> pages,
+    // 確認問題（ミニクイズ）の列。別画面でまとめて出題する。
+    @Default(<LessonQuiz>[]) List<LessonQuiz> quizzes,
     // 末尾に表示する本番演習への参照（exercises/{id}.json の id）。
     // 演習を持たないレッスンは空配列。
     @Default(<int>[]) List<int> exercises,
   }) = _Lesson;
 
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
+}
+
+/// 説明用のコンテンツページ。1つ以上のブロックを縦に積み上げ、一度に表示する。
+///
+/// 画像はブロック単位で指定する（[ContentBlock.imageUrl]）。ナレーション音声は
+/// ページ単位で1つだけ持つ（[audioUrl]）。
+@freezed
+class ContentPage with _$ContentPage {
+  const factory ContentPage({
+    // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
+    // （例 lessons/audios/1-1.mp3）。
+    String? audioUrl,
+    // 縦に積み上げて一度に表示するブロック列（1つ以上）。配列順。
+    @Default(<ContentBlock>[]) List<ContentBlock> blocks,
+  }) = _ContentPage;
+
+  factory ContentPage.fromJson(Map<String, dynamic> json) =>
+      _$ContentPageFromJson(json);
 }
 
 /// コンテンツページを構成するブロック。テキストと任意の画像を組み合わせ、
@@ -63,54 +84,37 @@ class ContentBlock with _$ContentBlock {
       _$ContentBlockFromJson(json);
 }
 
-/// レッスンの1ページ。`type` を discriminator とするフラットなunion。
+/// 確認問題（ミニクイズ）。`type` を discriminator とするフラットなunion。
 ///
 /// 各バリアントは型ごとのフィールドを同階層に持つ（`data:` でネストしない）。
-/// content は説明ページ（テキスト＋画像を積み上げ、ページ単位で1音声）、
-/// quiz は回答UIを伴うページ。
 @Freezed(unionKey: 'type')
-sealed class LessonPage with _$LessonPage {
-  /// 説明用ページ。1つ以上のブロックを縦に積み上げ、一度に表示する。
-  ///
-  /// 画像はブロック単位で指定する（[ContentBlock.imageUrl]）。ナレーション音声は
-  /// ページ単位で1つだけ持つ（[audioUrl]）。
-  @FreezedUnionValue('content')
-  const factory LessonPage.content({
-    // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
-    // （例 lessons/audios/1-1.mp3）。
-    String? audioUrl,
-    // 縦に積み上げて一度に表示するブロック列（1つ以上）。配列順。
-    @Default(<ContentBlock>[]) List<ContentBlock> blocks,
-  }) = ContentPage;
-
+sealed class LessonQuiz with _$LessonQuiz {
   /// 複数の選択肢から正解を1つ選ぶミニクイズ。
   @FreezedUnionValue('quizMultipleChoice')
-  const factory LessonPage.quizMultipleChoice({
+  const factory LessonQuiz.multipleChoice({
     // 設問文（Markdown）。
     required String question,
     String? imageUrl,
-    String? audioUrl,
     required List<String> options,
     // 正解の選択肢インデックス（0始まり）。
     required int correctOptionIndex,
-  }) = QuizMultipleChoicePage;
+  }) = QuizMultipleChoice;
 
   /// 問題文中の空欄（`[__]`）を選択肢で順番に穴埋めするミニクイズ。
   @FreezedUnionValue('quizFillInTheBlank')
-  const factory LessonPage.quizFillInTheBlank({
+  const factory LessonQuiz.fillInTheBlank({
     // 問題文。空欄は `[__]` で表現。
     required String question,
     String? imageUrl,
-    String? audioUrl,
     // 選択肢（同一内容の重複は不可）。options数 ≥ 空欄数。
     required List<String> options,
     // 各空欄の正解。correctOptionIndices[n] = 出現順 n 番目の `[__]` の
     // 正解 = options のインデックス。値は重複しない。
     required List<int> correctOptionIndices,
-  }) = QuizFillInTheBlankPage;
+  }) = QuizFillInTheBlank;
 
-  factory LessonPage.fromJson(Map<String, dynamic> json) =>
-      _$LessonPageFromJson(json);
+  factory LessonQuiz.fromJson(Map<String, dynamic> json) =>
+      _$LessonQuizFromJson(json);
 }
 
 /// 問題の1問。

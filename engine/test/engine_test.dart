@@ -45,19 +45,20 @@ void main() {
     expect(index.exercises, isEmpty);
   });
 
-  test('Lesson.fromJson が pages の union をパースできる', () {
+  test('Lesson.fromJson が pages と quizzes をパースできる', () {
     final lesson = Lesson.fromJson({
       'id': '2',
       'title': '企業活動と経営資源',
       'pages': [
         {
-          'type': 'content',
           'audioUrl': 'lessons/audios/2-1.mp3',
           'blocks': [
             {'text': '本文1', 'imageUrl': 'lessons/images/2-1.jpeg'},
             {'text': '本文2'},
           ],
         },
+      ],
+      'quizzes': [
         {
           'type': 'quizMultipleChoice',
           'question': '問1',
@@ -74,25 +75,27 @@ void main() {
       'exercises': [],
     });
 
-    expect(lesson.pages.length, 3);
+    expect(lesson.pages.length, 1);
+    expect(lesson.quizzes.length, 2);
     expect(lesson.exercises, isEmpty);
 
-    final content = lesson.pages.first as ContentPage;
+    final content = lesson.pages.first;
     expect(content.audioUrl, 'lessons/audios/2-1.mp3');
     expect(content.blocks.length, 2);
     expect(content.blocks.first.imageUrl, 'lessons/images/2-1.jpeg');
     expect(content.blocks.last.imageUrl, isNull);
 
-    expect((lesson.pages[1] as QuizMultipleChoicePage).correctOptionIndex, 1);
+    expect((lesson.quizzes.first as QuizMultipleChoice).correctOptionIndex, 1);
     expect(
-      (lesson.pages.last as QuizFillInTheBlankPage).correctOptionIndices,
+      (lesson.quizzes.last as QuizFillInTheBlank).correctOptionIndices,
       [0],
     );
   });
 
-  test('pages を持たないレッスンは空配列になる', () {
+  test('pages / quizzes を持たないレッスンは空配列になる', () {
     final lesson = Lesson.fromJson({'id': '2', 'title': '導入のみ'});
     expect(lesson.pages, isEmpty);
+    expect(lesson.quizzes, isEmpty);
     expect(lesson.exercises, isEmpty);
   });
 }

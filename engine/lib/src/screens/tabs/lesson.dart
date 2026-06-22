@@ -12,10 +12,10 @@ import 'widgets/quiz_controller.dart';
 
 /// レッスン内容。contents/lessons/{id}.json を都度ロードして再生する。
 ///
-/// docs/LESSON.md の構造に従い、`pages` を縦スワイプで1ページずつ表示する。
-/// コンテンツページはテキスト＋画像のブロックを積み上げて一度に表示し、
-/// ページ単位で1音声を再生する。クイズページは回答UIを伴う。
-/// 全ページ通過後に完了ページを表示する。
+/// docs/LESSON.md の構造に従い、コンテンツページ（content）を縦スワイプで
+/// 1ページずつ表示する。クイズページ（quiz）はスワイプ feed には含めず、
+/// コンテンツ末尾の「確認問題に挑戦！」ボタンから別画面（[_QuizScreen]）で
+/// 出題する。
 class Lesson extends ConsumerWidget {
   const Lesson({super.key, required this.id, required this.title});
 
@@ -36,11 +36,10 @@ class Lesson extends ConsumerWidget {
   }
 }
 
-/// ページ送り・音声再生をまとめて管理する本体。
+/// コンテンツページの縦スワイプ再生と音声をまとめて管理する本体。
 ///
-/// ページ間は縦スワイプ（上＝次／下＝前）で1ページずつスナップ移動する。
-/// クイズページはページャをロックし、ページ内のボタンで進める（未回答は
-/// せき止め）。
+/// ページ間は縦スワイプ（上＝次／下＝前）で1ページずつ移動する。クイズは
+/// この feed には含めず、最終ページの「確認問題に挑戦！」ボタンで別画面へ遷移する。
 class _LessonPlayer extends ConsumerStatefulWidget {
   const _LessonPlayer({required this.lesson, required this.assetBasePath});
 
@@ -52,7 +51,7 @@ class _LessonPlayer extends ConsumerStatefulWidget {
 }
 
 class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
-  /// ページ／クイズ設問の音声を1つだけ再生するプレイヤー。
+  /// ページのナレーション音声を1つだけ再生するプレイヤー。
   final _audio = AudioPlayer()..audioCache = AudioCache(prefix: '');
 
   /// 縦スワイプのページャ。
@@ -62,23 +61,18 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
   StreamSubscription<void>? _completeSub;
 
   /// 音声が止まっていて次へ促し中であることを示すヒントを表示するか。
-  /// 再生中は隠し、再生完了時/音声オフ時に表示する。
   bool _showHint = false;
 
-  /// 現在のページ番号。`pages.length` は完了ページを指す。
+  /// 現在のページ番号。`contentPages.length` は完了（CTA）ページを指す。
   int _pageIndex = 0;
 
-  /// クイズページの入場回数。再入場のたびに増やしてキーを変え、
-  /// 回答状態をリセットする（戻る→再入場でリセットする方針）。
-  final Map<int, int> _quizEntries = {};
+  /// スワイプ feed に並べるコンテンツページ。
+  List<models.ContentPage> get _contentPages => widget.lesson.pages;
 
-  List<models.LessonPage> get _pages => widget.lesson.pages;
+  /// 確認問題画面で出題するクイズ。
+  List<models.LessonQuiz> get _quizzes => widget.lesson.quizzes;
 
-  bool get _onCompletion => _pageIndex >= _pages.length;
-
-  /// 指定インデックスがクイズページか（コンテンツでも完了ページでもない）。
-  bool _isQuizPage(int index) =>
-      index < _pages.length && _pages[index] is! models.ContentPage;
+  bool get _onDone => _pageIndex >= _contentPages.length;
 
   @override
   void initState() {
@@ -99,23 +93,17 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     super.dispose();
   }
 
-  /// 現在ページの音声を再生する。
   void _playSetupAudio() => _playAudio(_currentAudioUrl());
 
   String? _currentAudioUrl() {
-    if (_onCompletion) return null;
-    return switch (_pages[_pageIndex]) {
-      models.ContentPage(:final audioUrl) => audioUrl,
-      models.QuizMultipleChoicePage(:final audioUrl) => audioUrl,
-      models.QuizFillInTheBlankPage(:final audioUrl) => audioUrl,
-    };
+    if (_onDone) return null;
+    return _contentPages[_pageIndex].audioUrl;
   }
 
   /// 音声を停止し、オンなら指定アセットを現在の倍速で先頭から再生する。
   void _playAudio(String? url) {
     _audio.stop();
     final willPlay = url != null && ref.read(audioEnabledProvider);
-    // 再生する間はヒントを隠し、鳴らない（音声オフ等）ならすぐ次へ促す。
     setState(() => _showHint = !willPlay);
     if (!willPlay) return;
     final speed = ref.read(audioSpeedProvider);
@@ -125,40 +113,35 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
         .catchError((_) {});
   }
 
-  /// スワイプ／ボタンでページが切り替わったときの処理。
   void _onPageChanged(int index) {
-    setState(() {
-      _pageIndex = index;
-      // クイズページへ入場したら回答状態をリセットする。
-      if (_isQuizPage(index)) {
-        _quizEntries[index] = (_quizEntries[index] ?? 0) + 1;
-      }
-    });
+    setState(() => _pageIndex = index);
     _playSetupAudio();
   }
 
-  /// 指定ページへアニメーションで移動する（onPageChanged が状態を更新）。
-  void _goToPage(int index) {
+  void _restart() {
     _controller.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 320),
-      curve: Curves.easeInOut,
+      0,
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOutCubic,
     );
   }
 
-  /// クイズの「次へ」＝次ページへ。
-  void _advance() {
-    if (_onCompletion) return;
-    _goToPage(_pageIndex + 1);
+  /// 確認問題画面へ遷移する。確認問題画面で「閉じる」が押された（true が返る）
+  /// ときはレッスン本体も閉じて一覧へ戻る。
+  Future<void> _startQuiz() async {
+    _audio.stop();
+    final closed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => _QuizScreen(
+          quizzes: _quizzes,
+          exercises: widget.lesson.exercises,
+          assetBasePath: widget.assetBasePath,
+        ),
+      ),
+    );
+    if (!mounted || closed != true) return;
+    Navigator.of(context).maybePop();
   }
-
-  /// クイズの「戻る」＝前ページへ。
-  void _back() {
-    if (_pageIndex == 0) return;
-    _goToPage(_pageIndex - 1);
-  }
-
-  void _restart() => _goToPage(0);
 
   @override
   Widget build(BuildContext context) {
@@ -174,79 +157,90 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     ref.listen<double>(audioSpeedProvider, (_, next) {
       _audio.setPlaybackRate(next);
     });
-    final enabled = ref.watch(audioEnabledProvider);
-    final total = _pages.length;
+    final total = _contentPages.length;
     // 1ページ目は0%、全ページ通過（完了ページ）で100%になるよう計算する。
     final progress = total == 0 ? 0.0 : _pageIndex / total;
 
-    // クイズページではページャをロックし、ページ内ボタンで進める
-    // （未回答のまま次へ進めないせき止め）。
-    final lockSwipe = _isQuizPage(_pageIndex);
-
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => Navigator.of(context).maybePop(),
-        ),
-        title: ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(
-            value: progress.clamp(0.0, 1.0),
-            minHeight: 6,
-          ),
-        ),
-      ),
+      appBar: _LessonAppBar(progress: progress),
       body: Column(
         children: [
           Expanded(
             child: PageView.builder(
               controller: _controller,
               scrollDirection: Axis.vertical,
-              physics: lockSwipe
-                  ? const NeverScrollableScrollPhysics()
-                  : null,
+              // スナップ判定は _SnappyPageScrollPhysics 側で行う（軽いスワイプでも
+              // ページを送れるよう、標準より緩い判定にする）。
+              pageSnapping: false,
+              physics: const _SnappyPageScrollPhysics(),
               onPageChanged: _onPageChanged,
-              itemCount: _pages.length + 1,
+              itemCount: _contentPages.length + 1,
               itemBuilder: (context, index) => _buildPage(index),
             ),
           ),
-          if (!_onCompletion) _buildFooter(enabled),
+          if (!_onDone) const _AudioFooter(),
         ],
       ),
     );
   }
 
   Widget _buildPage(int index) {
-    if (index >= _pages.length) {
-      return _CompletionPage(
-        key: const ValueKey('completion'),
+    if (index >= _contentPages.length) {
+      return _ContentDoneView(
+        key: const ValueKey('done'),
+        hasQuiz: _quizzes.isNotEmpty,
         exercises: widget.lesson.exercises,
+        onStartQuiz: _startQuiz,
         onRestart: _restart,
       );
     }
-    final page = _pages[index];
-    return switch (page) {
-      models.ContentPage() => _ContentPageView(
-        key: ValueKey('content-$index'),
-        page: page,
-        assetBasePath: widget.assetBasePath,
-        showHint: _showHint && index == _pageIndex,
-      ),
-      _ => _QuizPage(
-        // 入場回数をキーに含め、再入場で State を作り直して回答をリセットする。
-        key: ValueKey('quiz-$index-${_quizEntries[index] ?? 0}'),
-        page: page,
-        assetBasePath: widget.assetBasePath,
-        canGoBack: index > 0,
-        onAdvance: _advance,
-        onBack: _back,
-      ),
-    };
+    return _ContentPageView(
+      key: ValueKey('content-$index'),
+      page: _contentPages[index],
+      assetBasePath: widget.assetBasePath,
+      showHint: _showHint && index == _pageIndex,
+    );
   }
+}
 
-  Widget _buildFooter(bool enabled) {
+/// レッスン本体・確認問題画面で共有する AppBar。
+/// 左上に閉じる（×）ボタン、残りの領域を進捗バーにする。
+class _LessonAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _LessonAppBar({required this.progress});
+
+  /// 進捗（0.0〜1.0）。
+  final double progress;
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () => Navigator.of(context).maybePop(),
+      ),
+      title: ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: LinearProgressIndicator(
+          value: progress.clamp(0.0, 1.0),
+          minHeight: 6,
+        ),
+      ),
+    );
+  }
+}
+
+/// 音声オン/オフ・倍速・AI質問をまとめる角丸フローティングメニュー。
+/// コンテンツページの再生中に表示する（クイズは音声を持たないため出さない）。
+class _AudioFooter extends ConsumerWidget {
+  const _AudioFooter();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final enabled = ref.watch(audioEnabledProvider);
     final speed = ref.watch(audioSpeedProvider);
     final muted = theme.colorScheme.onSurfaceVariant;
     final active = theme.colorScheme.primary;
@@ -256,7 +250,6 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
         child: Center(
-          // 角丸フローティングメニュー：音声オン/オフ・倍速・AI質問をまとめる。
           child: Material(
             color: theme.colorScheme.surface,
             elevation: 3,
@@ -303,6 +296,77 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     final s = v.toStringAsFixed(2);
     return s.replaceAll(RegExp(r'\.?0+$'), '');
   }
+}
+
+/// 縦 PageView 用のスナップ物理。軽いスワイプでもページが送られるよう、
+/// 標準の [PageScrollPhysics] より判定を緩める。
+///
+/// 標準は「半ページ以上ドラッグ」または「一定速度以上のフリック」が必要だが、
+/// ここでは**弱いフリックでもその方向へ1ページ送る**（[_flingVelocity] を低く設定）。
+/// ほぼ静止したリリース時のみ近い方のページへスナップする。
+/// PageView 側は `pageSnapping: false` にして本クラスがスナップを担う。
+class _SnappyPageScrollPhysics extends ScrollPhysics {
+  const _SnappyPageScrollPhysics({super.parent});
+
+  /// この速度（logical px/s）を超えるフリックは、ドラッグ量に関係なくその方向へ
+  /// 1ページ送る。標準より低くして軽いスワイプでも反応させる。
+  static const double _flingVelocity = 50.0;
+
+  @override
+  _SnappyPageScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return _SnappyPageScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  // スナップを素早く収束させる硬めのばね（標準は stiffness:100, mass:0.5）。
+  @override
+  SpringDescription get spring => SpringDescription.withDampingRatio(
+    mass: 0.4,
+    stiffness: 220,
+    ratio: 1.1,
+  );
+
+  double _targetPixels(ScrollMetrics position, double velocity) {
+    final vp = position.viewportDimension;
+    if (vp == 0) return position.pixels;
+    final current = position.pixels / vp;
+    final base = current.floorToDouble();
+    double page;
+    if (velocity > _flingVelocity) {
+      page = base + 1; // 進む方向の軽いフリック
+    } else if (velocity < -_flingVelocity) {
+      page = base; // 戻る方向の軽いフリック
+    } else {
+      page = current.roundToDouble(); // ほぼ静止：近い方へ
+    }
+    return (page * vp).clamp(position.minScrollExtent, position.maxScrollExtent);
+  }
+
+  @override
+  Simulation? createBallisticSimulation(
+    ScrollMetrics position,
+    double velocity,
+  ) {
+    // 端でのオーバースクロール（戻り）は既定挙動に任せる。
+    if ((velocity <= 0.0 && position.pixels <= position.minScrollExtent) ||
+        (velocity >= 0.0 && position.pixels >= position.maxScrollExtent)) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+    final tolerance = toleranceFor(position);
+    final target = _targetPixels(position, velocity);
+    if ((target - position.pixels).abs() < tolerance.distance) {
+      return null;
+    }
+    return ScrollSpringSimulation(
+      spring,
+      position.pixels,
+      target,
+      velocity,
+      tolerance: tolerance,
+    );
+  }
+
+  @override
+  bool get allowImplicitScrolling => false;
 }
 
 /// フローティングメニュー内の1ボタン（アイコン＋ラベル、横並び）。
@@ -474,22 +538,171 @@ class _SwipeHintState extends State<_SwipeHint>
   }
 }
 
-/// クイズページ。設問（＋任意の画像）と回答UI、本文内のナビボタンを表示する。
+/// コンテンツを全て読み終えた後に表示する締めのページ。
 ///
-/// クイズページはページャがロックされるため、ナビは本文内のボタンで行う：
+/// 確認問題があれば「確認問題に挑戦！」ボタンを出して [_QuizScreen] へ遷移する。
+/// 確認問題が無いレッスンはここが最終ページとなり、演習への参照を表示する。
+class _ContentDoneView extends StatelessWidget {
+  const _ContentDoneView({
+    super.key,
+    required this.hasQuiz,
+    required this.exercises,
+    required this.onStartQuiz,
+    required this.onRestart,
+  });
+
+  final bool hasQuiz;
+  final List<int> exercises;
+  final VoidCallback onStartQuiz;
+  final VoidCallback onRestart;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              hasQuiz ? Icons.menu_book : Icons.celebration,
+              size: 72,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              hasQuiz ? 'コンテンツはここまで！' : '学習完了！',
+              style: theme.textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              hasQuiz ? '確認問題で理解度をチェックしましょう。' : 'このレッスンのコンテンツを終えました。',
+              style: theme.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            if (hasQuiz) ...[
+              const SizedBox(height: 24),
+              FilledButton.icon(
+                onPressed: onStartQuiz,
+                icon: const Icon(Icons.quiz),
+                label: const Text('確認問題に挑戦！'),
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 14,
+                  ),
+                ),
+              ),
+            ] else ...[
+              // 確認問題が無いレッスンはここが最終ページ。演習参照と操作を出す。
+              if (exercises.isNotEmpty) ...[
+                const SizedBox(height: 24),
+                _ExerciseLinks(exercises: exercises),
+              ],
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: onRestart,
+                    icon: const Icon(Icons.replay),
+                    label: const Text('最初から'),
+                  ),
+                  const SizedBox(width: 12),
+                  FilledButton(
+                    onPressed: () => Navigator.of(context).maybePop(),
+                    child: const Text('レッスンを閉じる'),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 確認問題（クイズ）を出題する別画面。
+///
+/// クイズは縦スワイプ feed と分離し、ここでは本文内のボタン（戻る／回答する／
+/// 次へ）で1問ずつ進める。未回答のまま次へは進めない（せき止め）。
+/// クイズは音声を持たないため、音声フッターは表示しない。
+class _QuizScreen extends StatefulWidget {
+  const _QuizScreen({
+    required this.quizzes,
+    required this.exercises,
+    required this.assetBasePath,
+  });
+
+  final List<models.LessonQuiz> quizzes;
+  final List<int> exercises;
+  final String assetBasePath;
+
+  @override
+  State<_QuizScreen> createState() => _QuizScreenState();
+}
+
+class _QuizScreenState extends State<_QuizScreen> {
+  /// 現在の設問番号。`quizzes.length` は完了ページを指す。
+  int _index = 0;
+
+  List<models.LessonQuiz> get _quizzes => widget.quizzes;
+
+  bool get _onCompletion => _index >= _quizzes.length;
+
+  void _go(int index) => setState(() => _index = index);
+
+  void _advance() => _go(_index + 1);
+  void _back() {
+    if (_index == 0) return;
+    _go(_index - 1);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final total = _quizzes.length;
+    final progress = total == 0 ? 0.0 : _index / total;
+
+    return Scaffold(
+      appBar: _LessonAppBar(progress: progress),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: _onCompletion
+            ? _QuizCompletionView(
+                key: const ValueKey('quiz-done'),
+                exercises: widget.exercises,
+              )
+            : _QuizPage(
+                // 設問が切り替わるたび State を作り直して回答をリセットする。
+                key: ValueKey('quiz-$_index'),
+                quiz: _quizzes[_index],
+                assetBasePath: widget.assetBasePath,
+                canGoBack: _index > 0,
+                onAdvance: _advance,
+                onBack: _back,
+              ),
+      ),
+    );
+  }
+}
+
+/// 1問のクイズ。設問（＋任意の画像）と回答UI、本文内のナビボタンを表示する。
+///
 /// 「回答する」→「次へ」（未回答では「次へ」を出さない＝進めない）、「戻る」は常時可。
-/// 回答状態は自身の [QuizController] で保持し、再入場では State ごと作り直す。
+/// 回答状態は自身の [QuizController] で保持する。
 class _QuizPage extends StatefulWidget {
   const _QuizPage({
     super.key,
-    required this.page,
+    required this.quiz,
     required this.assetBasePath,
     required this.canGoBack,
     required this.onAdvance,
     required this.onBack,
   });
 
-  final models.LessonPage page;
+  final models.LessonQuiz quiz;
   final String assetBasePath;
   final bool canGoBack;
   final VoidCallback onAdvance;
@@ -500,7 +713,7 @@ class _QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<_QuizPage> {
-  late final QuizController _controller = QuizController(widget.page)
+  late final QuizController _controller = QuizController(widget.quiz)
     ..addListener(_onChanged);
 
   void _onChanged() => setState(() {});
@@ -514,14 +727,24 @@ class _QuizPageState extends State<_QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    final page = widget.page;
-    final (String question, String? imageUrl) = switch (page) {
-      models.QuizMultipleChoicePage(:final question, :final imageUrl) => (
-        question,
-        imageUrl,
+    // 画像と回答UIを1回の型分岐で取り出す。
+    // 単一選択は設問文を MarkdownText で表示し、穴埋めは設問を内部で描画する。
+    final (String? imageUrl, Widget answer) = switch (widget.quiz) {
+      final models.QuizMultipleChoice q => (
+        q.imageUrl,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            MarkdownText(text: q.question),
+            const SizedBox(height: 12),
+            MultipleChoiceQuiz(quiz: q, controller: _controller),
+          ],
+        ),
       ),
-      models.QuizFillInTheBlankPage(:final imageUrl) => ('', imageUrl),
-      _ => ('', null),
+      final models.QuizFillInTheBlank q => (
+        q.imageUrl,
+        FillInTheBlankQuiz(quiz: q, controller: _controller),
+      ),
     };
 
     return SingleChildScrollView(
@@ -532,17 +755,13 @@ class _QuizPageState extends State<_QuizPage> {
           if (imageUrl != null) ...[
             ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 240),
-              child: ContentImage(assetPath: '${widget.assetBasePath}/$imageUrl'),
+              child: ContentImage(
+                assetPath: '${widget.assetBasePath}/$imageUrl',
+              ),
             ),
             const SizedBox(height: 16),
           ],
-          // 単一選択は設問文を MarkdownText で表示。穴埋めは設問を内部で描画。
-          if (page is models.QuizMultipleChoicePage) ...[
-            MarkdownText(text: question),
-            const SizedBox(height: 12),
-            MultipleChoiceQuiz(scene: page, controller: _controller),
-          ] else if (page is models.QuizFillInTheBlankPage)
-            FillInTheBlankQuiz(scene: page, controller: _controller),
+          answer,
           const SizedBox(height: 24),
           _buildNav(),
         ],
@@ -569,16 +788,11 @@ class _QuizPageState extends State<_QuizPage> {
   }
 }
 
-/// 全ページ通過後に表示する完了ページ。
-class _CompletionPage extends StatelessWidget {
-  const _CompletionPage({
-    super.key,
-    required this.exercises,
-    required this.onRestart,
-  });
+/// 確認問題をすべて終えた後に表示する完了ページ。
+class _QuizCompletionView extends StatelessWidget {
+  const _QuizCompletionView({super.key, required this.exercises});
 
   final List<int> exercises;
-  final VoidCallback onRestart;
 
   @override
   Widget build(BuildContext context) {
@@ -591,46 +805,55 @@ class _CompletionPage extends StatelessWidget {
           children: [
             Icon(Icons.celebration, size: 72, color: theme.colorScheme.primary),
             const SizedBox(height: 16),
-            Text('学習完了！', style: theme.textTheme.headlineSmall),
+            Text('お疲れさまでした！', style: theme.textTheme.headlineSmall),
             const SizedBox(height: 8),
             Text(
-              'このレッスンのすべてのページを終えました。',
+              '確認問題はここまでです。',
               style: theme.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
             if (exercises.isNotEmpty) ...[
               const SizedBox(height: 24),
-              Text('演習に挑戦', style: theme.textTheme.titleMedium),
-              const SizedBox(height: 8),
-              for (final id in exercises)
-                Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.assignment),
-                    title: Text('演習 $id'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {},
-                  ),
-                ),
+              _ExerciseLinks(exercises: exercises),
             ],
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: onRestart,
-                  icon: const Icon(Icons.replay),
-                  label: const Text('最初から'),
-                ),
-                const SizedBox(width: 12),
-                FilledButton(
-                  onPressed: () => Navigator.of(context).maybePop(),
-                  child: const Text('レッスンを閉じる'),
-                ),
-              ],
+            FilledButton(
+              // 確認問題画面とレッスン本体の両方を閉じて一覧へ戻る
+              // （_LessonPlayer._startQuiz が true を受けて本体を pop する）。
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('閉じる'),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// 完了ページで表示する本番演習（exercises）への参照リンク一覧。
+class _ExerciseLinks extends StatelessWidget {
+  const _ExerciseLinks({required this.exercises});
+
+  final List<int> exercises;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('演習に挑戦', style: theme.textTheme.titleMedium),
+        const SizedBox(height: 8),
+        for (final id in exercises)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.assignment),
+              title: Text('演習 $id'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {},
+            ),
+          ),
+      ],
     );
   }
 }

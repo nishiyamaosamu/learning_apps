@@ -129,11 +129,11 @@ class MarkdownText extends StatelessWidget {
 class MultipleChoiceQuiz extends StatelessWidget {
   const MultipleChoiceQuiz({
     super.key,
-    required this.scene,
+    required this.quiz,
     required this.controller,
   });
 
-  final QuizMultipleChoicePage scene;
+  final QuizMultipleChoice quiz;
   final QuizController controller;
 
   @override
@@ -145,11 +145,11 @@ class MultipleChoiceQuiz extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (var i = 0; i < scene.options.length; i++)
+        for (var i = 0; i < quiz.options.length; i++)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: _OptionTile(
-              label: scene.options[i],
+              label: quiz.options[i],
               state: _stateFor(i, selected, answered),
               onTap: answered ? null : () => controller.selectChoice(i),
             ),
@@ -158,9 +158,9 @@ class MultipleChoiceQuiz extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              selected == scene.correctOptionIndex ? '正解！' : '不正解',
+              selected == quiz.correctOptionIndex ? '正解！' : '不正解',
               style: theme.textTheme.titleSmall?.copyWith(
-                color: selected == scene.correctOptionIndex
+                color: selected == quiz.correctOptionIndex
                     ? Colors.green
                     : theme.colorScheme.error,
               ),
@@ -175,7 +175,7 @@ class MultipleChoiceQuiz extends StatelessWidget {
       return i == selected ? _OptionState.selected : _OptionState.idle;
     }
     // 回答後は正解を緑、選んだ誤答を赤で示す。
-    if (i == scene.correctOptionIndex) return _OptionState.correct;
+    if (i == quiz.correctOptionIndex) return _OptionState.correct;
     if (i == selected) return _OptionState.wrong;
     return _OptionState.idle;
   }
@@ -249,11 +249,11 @@ class _OptionTile extends StatelessWidget {
 class FillInTheBlankQuiz extends StatelessWidget {
   FillInTheBlankQuiz({
     super.key,
-    required this.scene,
+    required this.quiz,
     required this.controller,
-  }) : _segments = scene.question.split('[__]');
+  }) : _segments = quiz.question.split('[__]');
 
-  final QuizFillInTheBlankPage scene;
+  final QuizFillInTheBlank quiz;
   final QuizController controller;
 
   /// question を `[__]` で分割した、空欄の前後に挟まる固定テキスト片。
@@ -290,7 +290,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
-            for (var i = 0; i < scene.options.length; i++)
+            for (var i = 0; i < quiz.options.length; i++)
               if (!placed.contains(i))
                 _buildDraggableChip(i, submitted, theme),
           ],
@@ -312,7 +312,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
   }
 
   bool _isBlankCorrect(int blankIndex, int? optionIndex) =>
-      optionIndex == scene.correctOptionIndices[blankIndex];
+      optionIndex == quiz.correctOptionIndices[blankIndex];
 
   bool _allCorrect(List<int?> placed) =>
       List.generate(_blankCount, (i) => _isBlankCorrect(i, placed[i]))
@@ -357,7 +357,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
                   : null,
             ),
             child: Text(
-              optionIndex != null ? scene.options[optionIndex] : '____',
+              optionIndex != null ? quiz.options[optionIndex] : '____',
               style: TextStyle(
                 color: optionIndex != null
                     ? null
@@ -371,13 +371,13 @@ class FillInTheBlankQuiz extends StatelessWidget {
   }
 
   Widget _buildDraggableChip(int optionIndex, bool submitted, ThemeData theme) {
-    final chip = _Chip(label: scene.options[optionIndex]);
+    final chip = _Chip(label: quiz.options[optionIndex]);
     if (submitted) return chip;
     return Draggable<int>(
       data: optionIndex,
       feedback: Material(
         color: Colors.transparent,
-        child: _Chip(label: scene.options[optionIndex], elevated: true),
+        child: _Chip(label: quiz.options[optionIndex], elevated: true),
       ),
       childWhenDragging: Opacity(opacity: 0.3, child: chip),
       child: chip,
