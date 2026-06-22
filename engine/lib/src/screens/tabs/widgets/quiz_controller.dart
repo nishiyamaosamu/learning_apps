@@ -2,20 +2,20 @@ import 'package:flutter/foundation.dart';
 
 import '../../../content/content_models.dart';
 
-/// 1つのクイズシーンの回答状態を集約するコントローラ。
+/// 1つのクイズページの回答状態を集約するコントローラ。
 ///
-/// シーンに入るたびに生成し、戻る→再入場では作り直して回答状態をリセットする。
-/// 単一選択・穴埋めの両方を扱う（シーンの型で分岐）。
+/// ページに入るたびに生成し、戻る→再入場では作り直して回答状態をリセットする。
+/// 単一選択・穴埋めの両方を扱う（ページの型で分岐）。
 class QuizController extends ChangeNotifier {
-  QuizController(this.scene) {
-    final s = scene;
-    if (s is QuizFillInTheBlankScene) {
-      final blankCount = s.question.split('[__]').length - 1;
+  QuizController(this.page) {
+    final p = page;
+    if (p is QuizFillInTheBlankPage) {
+      final blankCount = p.question.split('[__]').length - 1;
       _blanks = List<int?>.filled(blankCount, null);
     }
   }
 
-  final LessonScene scene;
+  final LessonPage page;
 
   /// 単一選択で選んだ選択肢 index（未選択は null）。
   int? _choice;
@@ -54,9 +54,9 @@ class QuizController extends ChangeNotifier {
 
   /// 回答が揃っていて「回答する」が押せるか。
   bool get canSubmit {
-    return switch (scene) {
-      QuizMultipleChoiceScene() => _choice != null,
-      QuizFillInTheBlankScene() => !_blanks.contains(null),
+    return switch (page) {
+      QuizMultipleChoicePage() => _choice != null,
+      QuizFillInTheBlankPage() => !_blanks.contains(null),
       _ => false,
     };
   }

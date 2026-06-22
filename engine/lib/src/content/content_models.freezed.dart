@@ -427,8 +427,8 @@ Lesson _$LessonFromJson(Map<String, dynamic> json) {
 mixin _$Lesson {
   String get id => throw _privateConstructorUsedError;
   String get title =>
-      throw _privateConstructorUsedError; // シーンの列。配列順に表示（シーン＝表示のリセット境界）。
-  List<LessonScene> get scenes =>
+      throw _privateConstructorUsedError; // ページの列。配列順に1ページずつ表示する（1ページ＝1画面）。
+  List<LessonPage> get pages =>
       throw _privateConstructorUsedError; // 末尾に表示する本番演習への参照（exercises/{id}.json の id）。
   // 演習を持たないレッスンは空配列。
   List<int> get exercises => throw _privateConstructorUsedError;
@@ -450,7 +450,7 @@ abstract class $LessonCopyWith<$Res> {
   $Res call({
     String id,
     String title,
-    List<LessonScene> scenes,
+    List<LessonPage> pages,
     List<int> exercises,
   });
 }
@@ -472,7 +472,7 @@ class _$LessonCopyWithImpl<$Res, $Val extends Lesson>
   $Res call({
     Object? id = null,
     Object? title = null,
-    Object? scenes = null,
+    Object? pages = null,
     Object? exercises = null,
   }) {
     return _then(
@@ -485,10 +485,10 @@ class _$LessonCopyWithImpl<$Res, $Val extends Lesson>
                 ? _value.title
                 : title // ignore: cast_nullable_to_non_nullable
                       as String,
-            scenes: null == scenes
-                ? _value.scenes
-                : scenes // ignore: cast_nullable_to_non_nullable
-                      as List<LessonScene>,
+            pages: null == pages
+                ? _value.pages
+                : pages // ignore: cast_nullable_to_non_nullable
+                      as List<LessonPage>,
             exercises: null == exercises
                 ? _value.exercises
                 : exercises // ignore: cast_nullable_to_non_nullable
@@ -510,7 +510,7 @@ abstract class _$$LessonImplCopyWith<$Res> implements $LessonCopyWith<$Res> {
   $Res call({
     String id,
     String title,
-    List<LessonScene> scenes,
+    List<LessonPage> pages,
     List<int> exercises,
   });
 }
@@ -531,7 +531,7 @@ class __$$LessonImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = null,
-    Object? scenes = null,
+    Object? pages = null,
     Object? exercises = null,
   }) {
     return _then(
@@ -544,10 +544,10 @@ class __$$LessonImplCopyWithImpl<$Res>
             ? _value.title
             : title // ignore: cast_nullable_to_non_nullable
                   as String,
-        scenes: null == scenes
-            ? _value._scenes
-            : scenes // ignore: cast_nullable_to_non_nullable
-                  as List<LessonScene>,
+        pages: null == pages
+            ? _value._pages
+            : pages // ignore: cast_nullable_to_non_nullable
+                  as List<LessonPage>,
         exercises: null == exercises
             ? _value._exercises
             : exercises // ignore: cast_nullable_to_non_nullable
@@ -563,9 +563,9 @@ class _$LessonImpl implements _Lesson {
   const _$LessonImpl({
     required this.id,
     required this.title,
-    final List<LessonScene> scenes = const <LessonScene>[],
+    final List<LessonPage> pages = const <LessonPage>[],
     final List<int> exercises = const <int>[],
-  }) : _scenes = scenes,
+  }) : _pages = pages,
        _exercises = exercises;
 
   factory _$LessonImpl.fromJson(Map<String, dynamic> json) =>
@@ -575,15 +575,15 @@ class _$LessonImpl implements _Lesson {
   final String id;
   @override
   final String title;
-  // シーンの列。配列順に表示（シーン＝表示のリセット境界）。
-  final List<LessonScene> _scenes;
-  // シーンの列。配列順に表示（シーン＝表示のリセット境界）。
+  // ページの列。配列順に1ページずつ表示する（1ページ＝1画面）。
+  final List<LessonPage> _pages;
+  // ページの列。配列順に1ページずつ表示する（1ページ＝1画面）。
   @override
   @JsonKey()
-  List<LessonScene> get scenes {
-    if (_scenes is EqualUnmodifiableListView) return _scenes;
+  List<LessonPage> get pages {
+    if (_pages is EqualUnmodifiableListView) return _pages;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_scenes);
+    return EqualUnmodifiableListView(_pages);
   }
 
   // 末尾に表示する本番演習への参照（exercises/{id}.json の id）。
@@ -601,7 +601,7 @@ class _$LessonImpl implements _Lesson {
 
   @override
   String toString() {
-    return 'Lesson(id: $id, title: $title, scenes: $scenes, exercises: $exercises)';
+    return 'Lesson(id: $id, title: $title, pages: $pages, exercises: $exercises)';
   }
 
   @override
@@ -611,7 +611,7 @@ class _$LessonImpl implements _Lesson {
             other is _$LessonImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
-            const DeepCollectionEquality().equals(other._scenes, _scenes) &&
+            const DeepCollectionEquality().equals(other._pages, _pages) &&
             const DeepCollectionEquality().equals(
               other._exercises,
               _exercises,
@@ -624,7 +624,7 @@ class _$LessonImpl implements _Lesson {
     runtimeType,
     id,
     title,
-    const DeepCollectionEquality().hash(_scenes),
+    const DeepCollectionEquality().hash(_pages),
     const DeepCollectionEquality().hash(_exercises),
   );
 
@@ -646,7 +646,7 @@ abstract class _Lesson implements Lesson {
   const factory _Lesson({
     required final String id,
     required final String title,
-    final List<LessonScene> scenes,
+    final List<LessonPage> pages,
     final List<int> exercises,
   }) = _$LessonImpl;
 
@@ -655,9 +655,9 @@ abstract class _Lesson implements Lesson {
   @override
   String get id;
   @override
-  String get title; // シーンの列。配列順に表示（シーン＝表示のリセット境界）。
+  String get title; // ページの列。配列順に1ページずつ表示する（1ページ＝1画面）。
   @override
-  List<LessonScene> get scenes; // 末尾に表示する本番演習への参照（exercises/{id}.json の id）。
+  List<LessonPage> get pages; // 末尾に表示する本番演習への参照（exercises/{id}.json の id）。
   // 演習を持たないレッスンは空配列。
   @override
   List<int> get exercises;
@@ -670,70 +670,59 @@ abstract class _Lesson implements Lesson {
       throw _privateConstructorUsedError;
 }
 
-LessonStep _$LessonStepFromJson(Map<String, dynamic> json) {
-  return _LessonStep.fromJson(json);
+ContentBlock _$ContentBlockFromJson(Map<String, dynamic> json) {
+  return _ContentBlock.fromJson(json);
 }
 
 /// @nodoc
-mixin _$LessonStep {
-  // 本文（Markdown）。空文字も許可。
+mixin _$ContentBlock {
+  // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
   String get text =>
-      throw _privateConstructorUsedError; // 本文ナレーション音声。ローカルアセット相対パス（例 lessons/audios/2-1.mp3）。
-  String? get audioUrl =>
-      throw _privateConstructorUsedError; // このステップ以降に表示する画像（任意）。指定しないステップは直前の
-  // 画像を継承する。どの step も持たなければテキストのみシーン。
-  // 切替は左→右のワイプで行う。
+      throw _privateConstructorUsedError; // このブロックに添える画像（任意）。本文の上に表示する。
+  // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
   String? get imageUrl => throw _privateConstructorUsedError;
 
-  /// Serializes this LessonStep to a JSON map.
+  /// Serializes this ContentBlock to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of LessonStep
+  /// Create a copy of ContentBlock
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $LessonStepCopyWith<LessonStep> get copyWith =>
+  $ContentBlockCopyWith<ContentBlock> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $LessonStepCopyWith<$Res> {
-  factory $LessonStepCopyWith(
-    LessonStep value,
-    $Res Function(LessonStep) then,
-  ) = _$LessonStepCopyWithImpl<$Res, LessonStep>;
+abstract class $ContentBlockCopyWith<$Res> {
+  factory $ContentBlockCopyWith(
+    ContentBlock value,
+    $Res Function(ContentBlock) then,
+  ) = _$ContentBlockCopyWithImpl<$Res, ContentBlock>;
   @useResult
-  $Res call({String text, String? audioUrl, String? imageUrl});
+  $Res call({String text, String? imageUrl});
 }
 
 /// @nodoc
-class _$LessonStepCopyWithImpl<$Res, $Val extends LessonStep>
-    implements $LessonStepCopyWith<$Res> {
-  _$LessonStepCopyWithImpl(this._value, this._then);
+class _$ContentBlockCopyWithImpl<$Res, $Val extends ContentBlock>
+    implements $ContentBlockCopyWith<$Res> {
+  _$ContentBlockCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of LessonStep
+  /// Create a copy of ContentBlock
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? text = null,
-    Object? audioUrl = freezed,
-    Object? imageUrl = freezed,
-  }) {
+  $Res call({Object? text = null, Object? imageUrl = freezed}) {
     return _then(
       _value.copyWith(
             text: null == text
                 ? _value.text
                 : text // ignore: cast_nullable_to_non_nullable
                       as String,
-            audioUrl: freezed == audioUrl
-                ? _value.audioUrl
-                : audioUrl // ignore: cast_nullable_to_non_nullable
-                      as String?,
             imageUrl: freezed == imageUrl
                 ? _value.imageUrl
                 : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -745,45 +734,37 @@ class _$LessonStepCopyWithImpl<$Res, $Val extends LessonStep>
 }
 
 /// @nodoc
-abstract class _$$LessonStepImplCopyWith<$Res>
-    implements $LessonStepCopyWith<$Res> {
-  factory _$$LessonStepImplCopyWith(
-    _$LessonStepImpl value,
-    $Res Function(_$LessonStepImpl) then,
-  ) = __$$LessonStepImplCopyWithImpl<$Res>;
+abstract class _$$ContentBlockImplCopyWith<$Res>
+    implements $ContentBlockCopyWith<$Res> {
+  factory _$$ContentBlockImplCopyWith(
+    _$ContentBlockImpl value,
+    $Res Function(_$ContentBlockImpl) then,
+  ) = __$$ContentBlockImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String text, String? audioUrl, String? imageUrl});
+  $Res call({String text, String? imageUrl});
 }
 
 /// @nodoc
-class __$$LessonStepImplCopyWithImpl<$Res>
-    extends _$LessonStepCopyWithImpl<$Res, _$LessonStepImpl>
-    implements _$$LessonStepImplCopyWith<$Res> {
-  __$$LessonStepImplCopyWithImpl(
-    _$LessonStepImpl _value,
-    $Res Function(_$LessonStepImpl) _then,
+class __$$ContentBlockImplCopyWithImpl<$Res>
+    extends _$ContentBlockCopyWithImpl<$Res, _$ContentBlockImpl>
+    implements _$$ContentBlockImplCopyWith<$Res> {
+  __$$ContentBlockImplCopyWithImpl(
+    _$ContentBlockImpl _value,
+    $Res Function(_$ContentBlockImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of LessonStep
+  /// Create a copy of ContentBlock
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? text = null,
-    Object? audioUrl = freezed,
-    Object? imageUrl = freezed,
-  }) {
+  $Res call({Object? text = null, Object? imageUrl = freezed}) {
     return _then(
-      _$LessonStepImpl(
+      _$ContentBlockImpl(
         text: null == text
             ? _value.text
             : text // ignore: cast_nullable_to_non_nullable
                   as String,
-        audioUrl: freezed == audioUrl
-            ? _value.audioUrl
-            : audioUrl // ignore: cast_nullable_to_non_nullable
-                  as String?,
         imageUrl: freezed == imageUrl
             ? _value.imageUrl
             : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -795,111 +776,105 @@ class __$$LessonStepImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$LessonStepImpl implements _LessonStep {
-  const _$LessonStepImpl({required this.text, this.audioUrl, this.imageUrl});
+class _$ContentBlockImpl implements _ContentBlock {
+  const _$ContentBlockImpl({required this.text, this.imageUrl});
 
-  factory _$LessonStepImpl.fromJson(Map<String, dynamic> json) =>
-      _$$LessonStepImplFromJson(json);
+  factory _$ContentBlockImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ContentBlockImplFromJson(json);
 
-  // 本文（Markdown）。空文字も許可。
+  // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
   @override
   final String text;
-  // 本文ナレーション音声。ローカルアセット相対パス（例 lessons/audios/2-1.mp3）。
-  @override
-  final String? audioUrl;
-  // このステップ以降に表示する画像（任意）。指定しないステップは直前の
-  // 画像を継承する。どの step も持たなければテキストのみシーン。
-  // 切替は左→右のワイプで行う。
+  // このブロックに添える画像（任意）。本文の上に表示する。
+  // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
   @override
   final String? imageUrl;
 
   @override
   String toString() {
-    return 'LessonStep(text: $text, audioUrl: $audioUrl, imageUrl: $imageUrl)';
+    return 'ContentBlock(text: $text, imageUrl: $imageUrl)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LessonStepImpl &&
+            other is _$ContentBlockImpl &&
             (identical(other.text, text) || other.text == text) &&
-            (identical(other.audioUrl, audioUrl) ||
-                other.audioUrl == audioUrl) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, text, audioUrl, imageUrl);
+  int get hashCode => Object.hash(runtimeType, text, imageUrl);
 
-  /// Create a copy of LessonStep
+  /// Create a copy of ContentBlock
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$LessonStepImplCopyWith<_$LessonStepImpl> get copyWith =>
-      __$$LessonStepImplCopyWithImpl<_$LessonStepImpl>(this, _$identity);
+  _$$ContentBlockImplCopyWith<_$ContentBlockImpl> get copyWith =>
+      __$$ContentBlockImplCopyWithImpl<_$ContentBlockImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$LessonStepImplToJson(this);
+    return _$$ContentBlockImplToJson(this);
   }
 }
 
-abstract class _LessonStep implements LessonStep {
-  const factory _LessonStep({
+abstract class _ContentBlock implements ContentBlock {
+  const factory _ContentBlock({
     required final String text,
-    final String? audioUrl,
     final String? imageUrl,
-  }) = _$LessonStepImpl;
+  }) = _$ContentBlockImpl;
 
-  factory _LessonStep.fromJson(Map<String, dynamic> json) =
-      _$LessonStepImpl.fromJson;
+  factory _ContentBlock.fromJson(Map<String, dynamic> json) =
+      _$ContentBlockImpl.fromJson;
 
-  // 本文（Markdown）。空文字も許可。
+  // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
   @override
-  String get text; // 本文ナレーション音声。ローカルアセット相対パス（例 lessons/audios/2-1.mp3）。
-  @override
-  String? get audioUrl; // このステップ以降に表示する画像（任意）。指定しないステップは直前の
-  // 画像を継承する。どの step も持たなければテキストのみシーン。
-  // 切替は左→右のワイプで行う。
+  String get text; // このブロックに添える画像（任意）。本文の上に表示する。
+  // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
   @override
   String? get imageUrl;
 
-  /// Create a copy of LessonStep
+  /// Create a copy of ContentBlock
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$LessonStepImplCopyWith<_$LessonStepImpl> get copyWith =>
+  _$$ContentBlockImplCopyWith<_$ContentBlockImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-LessonScene _$LessonSceneFromJson(Map<String, dynamic> json) {
+LessonPage _$LessonPageFromJson(Map<String, dynamic> json) {
   switch (json['type']) {
-    case 'narration':
-      return NarrationScene.fromJson(json);
+    case 'content':
+      return ContentPage.fromJson(json);
     case 'quizMultipleChoice':
-      return QuizMultipleChoiceScene.fromJson(json);
+      return QuizMultipleChoicePage.fromJson(json);
     case 'quizFillInTheBlank':
-      return QuizFillInTheBlankScene.fromJson(json);
+      return QuizFillInTheBlankPage.fromJson(json);
 
     default:
       throw CheckedFromJsonException(
         json,
         'type',
-        'LessonScene',
+        'LessonPage',
         'Invalid union type "${json['type']}"!',
       );
   }
 }
 
 /// @nodoc
-mixin _$LessonScene {
+mixin _$LessonPage {
+  // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
+  // （例 lessons/audios/1-1.mp3）。
+  String? get audioUrl => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<LessonStep> steps) narration,
+    required TResult Function(String? audioUrl, List<ContentBlock> blocks)
+    content,
     required TResult Function(
       String question,
       String? imageUrl,
@@ -919,7 +894,7 @@ mixin _$LessonScene {
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<LessonStep> steps)? narration,
+    TResult? Function(String? audioUrl, List<ContentBlock> blocks)? content,
     TResult? Function(
       String question,
       String? imageUrl,
@@ -939,7 +914,7 @@ mixin _$LessonScene {
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<LessonStep> steps)? narration,
+    TResult Function(String? audioUrl, List<ContentBlock> blocks)? content,
     TResult Function(
       String question,
       String? imageUrl,
@@ -960,80 +935,107 @@ mixin _$LessonScene {
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(NarrationScene value) narration,
-    required TResult Function(QuizMultipleChoiceScene value) quizMultipleChoice,
-    required TResult Function(QuizFillInTheBlankScene value) quizFillInTheBlank,
+    required TResult Function(ContentPage value) content,
+    required TResult Function(QuizMultipleChoicePage value) quizMultipleChoice,
+    required TResult Function(QuizFillInTheBlankPage value) quizFillInTheBlank,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NarrationScene value)? narration,
-    TResult? Function(QuizMultipleChoiceScene value)? quizMultipleChoice,
-    TResult? Function(QuizFillInTheBlankScene value)? quizFillInTheBlank,
+    TResult? Function(ContentPage value)? content,
+    TResult? Function(QuizMultipleChoicePage value)? quizMultipleChoice,
+    TResult? Function(QuizFillInTheBlankPage value)? quizFillInTheBlank,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(NarrationScene value)? narration,
-    TResult Function(QuizMultipleChoiceScene value)? quizMultipleChoice,
-    TResult Function(QuizFillInTheBlankScene value)? quizFillInTheBlank,
+    TResult Function(ContentPage value)? content,
+    TResult Function(QuizMultipleChoicePage value)? quizMultipleChoice,
+    TResult Function(QuizFillInTheBlankPage value)? quizFillInTheBlank,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 
-  /// Serializes this LessonScene to a JSON map.
+  /// Serializes this LessonPage to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of LessonPage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $LessonPageCopyWith<LessonPage> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $LessonSceneCopyWith<$Res> {
-  factory $LessonSceneCopyWith(
-    LessonScene value,
-    $Res Function(LessonScene) then,
-  ) = _$LessonSceneCopyWithImpl<$Res, LessonScene>;
+abstract class $LessonPageCopyWith<$Res> {
+  factory $LessonPageCopyWith(
+    LessonPage value,
+    $Res Function(LessonPage) then,
+  ) = _$LessonPageCopyWithImpl<$Res, LessonPage>;
+  @useResult
+  $Res call({String? audioUrl});
 }
 
 /// @nodoc
-class _$LessonSceneCopyWithImpl<$Res, $Val extends LessonScene>
-    implements $LessonSceneCopyWith<$Res> {
-  _$LessonSceneCopyWithImpl(this._value, this._then);
+class _$LessonPageCopyWithImpl<$Res, $Val extends LessonPage>
+    implements $LessonPageCopyWith<$Res> {
+  _$LessonPageCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of LessonScene
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-abstract class _$$NarrationSceneImplCopyWith<$Res> {
-  factory _$$NarrationSceneImplCopyWith(
-    _$NarrationSceneImpl value,
-    $Res Function(_$NarrationSceneImpl) then,
-  ) = __$$NarrationSceneImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({List<LessonStep> steps});
-}
-
-/// @nodoc
-class __$$NarrationSceneImplCopyWithImpl<$Res>
-    extends _$LessonSceneCopyWithImpl<$Res, _$NarrationSceneImpl>
-    implements _$$NarrationSceneImplCopyWith<$Res> {
-  __$$NarrationSceneImplCopyWithImpl(
-    _$NarrationSceneImpl _value,
-    $Res Function(_$NarrationSceneImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of LessonScene
+  /// Create a copy of LessonPage
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? steps = null}) {
+  $Res call({Object? audioUrl = freezed}) {
     return _then(
-      _$NarrationSceneImpl(
-        steps: null == steps
-            ? _value._steps
-            : steps // ignore: cast_nullable_to_non_nullable
-                  as List<LessonStep>,
+      _value.copyWith(
+            audioUrl: freezed == audioUrl
+                ? _value.audioUrl
+                : audioUrl // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ContentPageImplCopyWith<$Res>
+    implements $LessonPageCopyWith<$Res> {
+  factory _$$ContentPageImplCopyWith(
+    _$ContentPageImpl value,
+    $Res Function(_$ContentPageImpl) then,
+  ) = __$$ContentPageImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String? audioUrl, List<ContentBlock> blocks});
+}
+
+/// @nodoc
+class __$$ContentPageImplCopyWithImpl<$Res>
+    extends _$LessonPageCopyWithImpl<$Res, _$ContentPageImpl>
+    implements _$$ContentPageImplCopyWith<$Res> {
+  __$$ContentPageImplCopyWithImpl(
+    _$ContentPageImpl _value,
+    $Res Function(_$ContentPageImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of LessonPage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? audioUrl = freezed, Object? blocks = null}) {
+    return _then(
+      _$ContentPageImpl(
+        audioUrl: freezed == audioUrl
+            ? _value.audioUrl
+            : audioUrl // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        blocks: null == blocks
+            ? _value._blocks
+            : blocks // ignore: cast_nullable_to_non_nullable
+                  as List<ContentBlock>,
       ),
     );
   }
@@ -1041,25 +1043,30 @@ class __$$NarrationSceneImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$NarrationSceneImpl implements NarrationScene {
-  const _$NarrationSceneImpl({
-    final List<LessonStep> steps = const <LessonStep>[],
+class _$ContentPageImpl implements ContentPage {
+  const _$ContentPageImpl({
+    this.audioUrl,
+    final List<ContentBlock> blocks = const <ContentBlock>[],
     final String? $type,
-  }) : _steps = steps,
-       $type = $type ?? 'narration';
+  }) : _blocks = blocks,
+       $type = $type ?? 'content';
 
-  factory _$NarrationSceneImpl.fromJson(Map<String, dynamic> json) =>
-      _$$NarrationSceneImplFromJson(json);
+  factory _$ContentPageImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ContentPageImplFromJson(json);
 
-  // タップごとに1つずつ出現し累積するステップ列（1つ以上）。
-  final List<LessonStep> _steps;
-  // タップごとに1つずつ出現し累積するステップ列（1つ以上）。
+  // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
+  // （例 lessons/audios/1-1.mp3）。
+  @override
+  final String? audioUrl;
+  // 縦に積み上げて一度に表示するブロック列（1つ以上）。配列順。
+  final List<ContentBlock> _blocks;
+  // 縦に積み上げて一度に表示するブロック列（1つ以上）。配列順。
   @override
   @JsonKey()
-  List<LessonStep> get steps {
-    if (_steps is EqualUnmodifiableListView) return _steps;
+  List<ContentBlock> get blocks {
+    if (_blocks is EqualUnmodifiableListView) return _blocks;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_steps);
+    return EqualUnmodifiableListView(_blocks);
   }
 
   @JsonKey(name: 'type')
@@ -1067,37 +1074,40 @@ class _$NarrationSceneImpl implements NarrationScene {
 
   @override
   String toString() {
-    return 'LessonScene.narration(steps: $steps)';
+    return 'LessonPage.content(audioUrl: $audioUrl, blocks: $blocks)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NarrationSceneImpl &&
-            const DeepCollectionEquality().equals(other._steps, _steps));
+            other is _$ContentPageImpl &&
+            (identical(other.audioUrl, audioUrl) ||
+                other.audioUrl == audioUrl) &&
+            const DeepCollectionEquality().equals(other._blocks, _blocks));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_steps));
+  int get hashCode => Object.hash(
+    runtimeType,
+    audioUrl,
+    const DeepCollectionEquality().hash(_blocks),
+  );
 
-  /// Create a copy of LessonScene
+  /// Create a copy of LessonPage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$NarrationSceneImplCopyWith<_$NarrationSceneImpl> get copyWith =>
-      __$$NarrationSceneImplCopyWithImpl<_$NarrationSceneImpl>(
-        this,
-        _$identity,
-      );
+  _$$ContentPageImplCopyWith<_$ContentPageImpl> get copyWith =>
+      __$$ContentPageImplCopyWithImpl<_$ContentPageImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<LessonStep> steps) narration,
+    required TResult Function(String? audioUrl, List<ContentBlock> blocks)
+    content,
     required TResult Function(
       String question,
       String? imageUrl,
@@ -1115,13 +1125,13 @@ class _$NarrationSceneImpl implements NarrationScene {
     )
     quizFillInTheBlank,
   }) {
-    return narration(steps);
+    return content(audioUrl, blocks);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<LessonStep> steps)? narration,
+    TResult? Function(String? audioUrl, List<ContentBlock> blocks)? content,
     TResult? Function(
       String question,
       String? imageUrl,
@@ -1139,13 +1149,13 @@ class _$NarrationSceneImpl implements NarrationScene {
     )?
     quizFillInTheBlank,
   }) {
-    return narration?.call(steps);
+    return content?.call(audioUrl, blocks);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<LessonStep> steps)? narration,
+    TResult Function(String? audioUrl, List<ContentBlock> blocks)? content,
     TResult Function(
       String question,
       String? imageUrl,
@@ -1164,8 +1174,8 @@ class _$NarrationSceneImpl implements NarrationScene {
     quizFillInTheBlank,
     required TResult orElse(),
   }) {
-    if (narration != null) {
-      return narration(steps);
+    if (content != null) {
+      return content(audioUrl, blocks);
     }
     return orElse();
   }
@@ -1173,66 +1183,74 @@ class _$NarrationSceneImpl implements NarrationScene {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(NarrationScene value) narration,
-    required TResult Function(QuizMultipleChoiceScene value) quizMultipleChoice,
-    required TResult Function(QuizFillInTheBlankScene value) quizFillInTheBlank,
+    required TResult Function(ContentPage value) content,
+    required TResult Function(QuizMultipleChoicePage value) quizMultipleChoice,
+    required TResult Function(QuizFillInTheBlankPage value) quizFillInTheBlank,
   }) {
-    return narration(this);
+    return content(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NarrationScene value)? narration,
-    TResult? Function(QuizMultipleChoiceScene value)? quizMultipleChoice,
-    TResult? Function(QuizFillInTheBlankScene value)? quizFillInTheBlank,
+    TResult? Function(ContentPage value)? content,
+    TResult? Function(QuizMultipleChoicePage value)? quizMultipleChoice,
+    TResult? Function(QuizFillInTheBlankPage value)? quizFillInTheBlank,
   }) {
-    return narration?.call(this);
+    return content?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(NarrationScene value)? narration,
-    TResult Function(QuizMultipleChoiceScene value)? quizMultipleChoice,
-    TResult Function(QuizFillInTheBlankScene value)? quizFillInTheBlank,
+    TResult Function(ContentPage value)? content,
+    TResult Function(QuizMultipleChoicePage value)? quizMultipleChoice,
+    TResult Function(QuizFillInTheBlankPage value)? quizFillInTheBlank,
     required TResult orElse(),
   }) {
-    if (narration != null) {
-      return narration(this);
+    if (content != null) {
+      return content(this);
     }
     return orElse();
   }
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$NarrationSceneImplToJson(this);
+    return _$$ContentPageImplToJson(this);
   }
 }
 
-abstract class NarrationScene implements LessonScene {
-  const factory NarrationScene({final List<LessonStep> steps}) =
-      _$NarrationSceneImpl;
+abstract class ContentPage implements LessonPage {
+  const factory ContentPage({
+    final String? audioUrl,
+    final List<ContentBlock> blocks,
+  }) = _$ContentPageImpl;
 
-  factory NarrationScene.fromJson(Map<String, dynamic> json) =
-      _$NarrationSceneImpl.fromJson;
+  factory ContentPage.fromJson(Map<String, dynamic> json) =
+      _$ContentPageImpl.fromJson;
 
-  // タップごとに1つずつ出現し累積するステップ列（1つ以上）。
-  List<LessonStep> get steps;
+  // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
+  // （例 lessons/audios/1-1.mp3）。
+  @override
+  String? get audioUrl; // 縦に積み上げて一度に表示するブロック列（1つ以上）。配列順。
+  List<ContentBlock> get blocks;
 
-  /// Create a copy of LessonScene
+  /// Create a copy of LessonPage
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NarrationSceneImplCopyWith<_$NarrationSceneImpl> get copyWith =>
+  _$$ContentPageImplCopyWith<_$ContentPageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$QuizMultipleChoiceSceneImplCopyWith<$Res> {
-  factory _$$QuizMultipleChoiceSceneImplCopyWith(
-    _$QuizMultipleChoiceSceneImpl value,
-    $Res Function(_$QuizMultipleChoiceSceneImpl) then,
-  ) = __$$QuizMultipleChoiceSceneImplCopyWithImpl<$Res>;
+abstract class _$$QuizMultipleChoicePageImplCopyWith<$Res>
+    implements $LessonPageCopyWith<$Res> {
+  factory _$$QuizMultipleChoicePageImplCopyWith(
+    _$QuizMultipleChoicePageImpl value,
+    $Res Function(_$QuizMultipleChoicePageImpl) then,
+  ) = __$$QuizMultipleChoicePageImplCopyWithImpl<$Res>;
+  @override
   @useResult
   $Res call({
     String question,
@@ -1244,15 +1262,15 @@ abstract class _$$QuizMultipleChoiceSceneImplCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$QuizMultipleChoiceSceneImplCopyWithImpl<$Res>
-    extends _$LessonSceneCopyWithImpl<$Res, _$QuizMultipleChoiceSceneImpl>
-    implements _$$QuizMultipleChoiceSceneImplCopyWith<$Res> {
-  __$$QuizMultipleChoiceSceneImplCopyWithImpl(
-    _$QuizMultipleChoiceSceneImpl _value,
-    $Res Function(_$QuizMultipleChoiceSceneImpl) _then,
+class __$$QuizMultipleChoicePageImplCopyWithImpl<$Res>
+    extends _$LessonPageCopyWithImpl<$Res, _$QuizMultipleChoicePageImpl>
+    implements _$$QuizMultipleChoicePageImplCopyWith<$Res> {
+  __$$QuizMultipleChoicePageImplCopyWithImpl(
+    _$QuizMultipleChoicePageImpl _value,
+    $Res Function(_$QuizMultipleChoicePageImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of LessonScene
+  /// Create a copy of LessonPage
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1264,7 +1282,7 @@ class __$$QuizMultipleChoiceSceneImplCopyWithImpl<$Res>
     Object? correctOptionIndex = null,
   }) {
     return _then(
-      _$QuizMultipleChoiceSceneImpl(
+      _$QuizMultipleChoicePageImpl(
         question: null == question
             ? _value.question
             : question // ignore: cast_nullable_to_non_nullable
@@ -1292,8 +1310,8 @@ class __$$QuizMultipleChoiceSceneImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
-  const _$QuizMultipleChoiceSceneImpl({
+class _$QuizMultipleChoicePageImpl implements QuizMultipleChoicePage {
+  const _$QuizMultipleChoicePageImpl({
     required this.question,
     this.imageUrl,
     this.audioUrl,
@@ -1303,8 +1321,8 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
   }) : _options = options,
        $type = $type ?? 'quizMultipleChoice';
 
-  factory _$QuizMultipleChoiceSceneImpl.fromJson(Map<String, dynamic> json) =>
-      _$$QuizMultipleChoiceSceneImplFromJson(json);
+  factory _$QuizMultipleChoicePageImpl.fromJson(Map<String, dynamic> json) =>
+      _$$QuizMultipleChoicePageImplFromJson(json);
 
   // 設問文（Markdown）。
   @override
@@ -1330,14 +1348,14 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
 
   @override
   String toString() {
-    return 'LessonScene.quizMultipleChoice(question: $question, imageUrl: $imageUrl, audioUrl: $audioUrl, options: $options, correctOptionIndex: $correctOptionIndex)';
+    return 'LessonPage.quizMultipleChoice(question: $question, imageUrl: $imageUrl, audioUrl: $audioUrl, options: $options, correctOptionIndex: $correctOptionIndex)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuizMultipleChoiceSceneImpl &&
+            other is _$QuizMultipleChoicePageImpl &&
             (identical(other.question, question) ||
                 other.question == question) &&
             (identical(other.imageUrl, imageUrl) ||
@@ -1360,21 +1378,23 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
     correctOptionIndex,
   );
 
-  /// Create a copy of LessonScene
+  /// Create a copy of LessonPage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$QuizMultipleChoiceSceneImplCopyWith<_$QuizMultipleChoiceSceneImpl>
+  _$$QuizMultipleChoicePageImplCopyWith<_$QuizMultipleChoicePageImpl>
   get copyWith =>
-      __$$QuizMultipleChoiceSceneImplCopyWithImpl<
-        _$QuizMultipleChoiceSceneImpl
-      >(this, _$identity);
+      __$$QuizMultipleChoicePageImplCopyWithImpl<_$QuizMultipleChoicePageImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<LessonStep> steps) narration,
+    required TResult Function(String? audioUrl, List<ContentBlock> blocks)
+    content,
     required TResult Function(
       String question,
       String? imageUrl,
@@ -1404,7 +1424,7 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<LessonStep> steps)? narration,
+    TResult? Function(String? audioUrl, List<ContentBlock> blocks)? content,
     TResult? Function(
       String question,
       String? imageUrl,
@@ -1434,7 +1454,7 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<LessonStep> steps)? narration,
+    TResult Function(String? audioUrl, List<ContentBlock> blocks)? content,
     TResult Function(
       String question,
       String? imageUrl,
@@ -1468,9 +1488,9 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(NarrationScene value) narration,
-    required TResult Function(QuizMultipleChoiceScene value) quizMultipleChoice,
-    required TResult Function(QuizFillInTheBlankScene value) quizFillInTheBlank,
+    required TResult Function(ContentPage value) content,
+    required TResult Function(QuizMultipleChoicePage value) quizMultipleChoice,
+    required TResult Function(QuizFillInTheBlankPage value) quizFillInTheBlank,
   }) {
     return quizMultipleChoice(this);
   }
@@ -1478,9 +1498,9 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NarrationScene value)? narration,
-    TResult? Function(QuizMultipleChoiceScene value)? quizMultipleChoice,
-    TResult? Function(QuizFillInTheBlankScene value)? quizFillInTheBlank,
+    TResult? Function(ContentPage value)? content,
+    TResult? Function(QuizMultipleChoicePage value)? quizMultipleChoice,
+    TResult? Function(QuizFillInTheBlankPage value)? quizFillInTheBlank,
   }) {
     return quizMultipleChoice?.call(this);
   }
@@ -1488,9 +1508,9 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(NarrationScene value)? narration,
-    TResult Function(QuizMultipleChoiceScene value)? quizMultipleChoice,
-    TResult Function(QuizFillInTheBlankScene value)? quizFillInTheBlank,
+    TResult Function(ContentPage value)? content,
+    TResult Function(QuizMultipleChoicePage value)? quizMultipleChoice,
+    TResult Function(QuizFillInTheBlankPage value)? quizFillInTheBlank,
     required TResult orElse(),
   }) {
     if (quizMultipleChoice != null) {
@@ -1501,42 +1521,46 @@ class _$QuizMultipleChoiceSceneImpl implements QuizMultipleChoiceScene {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$QuizMultipleChoiceSceneImplToJson(this);
+    return _$$QuizMultipleChoicePageImplToJson(this);
   }
 }
 
-abstract class QuizMultipleChoiceScene implements LessonScene {
-  const factory QuizMultipleChoiceScene({
+abstract class QuizMultipleChoicePage implements LessonPage {
+  const factory QuizMultipleChoicePage({
     required final String question,
     final String? imageUrl,
     final String? audioUrl,
     required final List<String> options,
     required final int correctOptionIndex,
-  }) = _$QuizMultipleChoiceSceneImpl;
+  }) = _$QuizMultipleChoicePageImpl;
 
-  factory QuizMultipleChoiceScene.fromJson(Map<String, dynamic> json) =
-      _$QuizMultipleChoiceSceneImpl.fromJson;
+  factory QuizMultipleChoicePage.fromJson(Map<String, dynamic> json) =
+      _$QuizMultipleChoicePageImpl.fromJson;
 
   // 設問文（Markdown）。
   String get question;
   String? get imageUrl;
+  @override
   String? get audioUrl;
   List<String> get options; // 正解の選択肢インデックス（0始まり）。
   int get correctOptionIndex;
 
-  /// Create a copy of LessonScene
+  /// Create a copy of LessonPage
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuizMultipleChoiceSceneImplCopyWith<_$QuizMultipleChoiceSceneImpl>
+  _$$QuizMultipleChoicePageImplCopyWith<_$QuizMultipleChoicePageImpl>
   get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$QuizFillInTheBlankSceneImplCopyWith<$Res> {
-  factory _$$QuizFillInTheBlankSceneImplCopyWith(
-    _$QuizFillInTheBlankSceneImpl value,
-    $Res Function(_$QuizFillInTheBlankSceneImpl) then,
-  ) = __$$QuizFillInTheBlankSceneImplCopyWithImpl<$Res>;
+abstract class _$$QuizFillInTheBlankPageImplCopyWith<$Res>
+    implements $LessonPageCopyWith<$Res> {
+  factory _$$QuizFillInTheBlankPageImplCopyWith(
+    _$QuizFillInTheBlankPageImpl value,
+    $Res Function(_$QuizFillInTheBlankPageImpl) then,
+  ) = __$$QuizFillInTheBlankPageImplCopyWithImpl<$Res>;
+  @override
   @useResult
   $Res call({
     String question,
@@ -1548,15 +1572,15 @@ abstract class _$$QuizFillInTheBlankSceneImplCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$QuizFillInTheBlankSceneImplCopyWithImpl<$Res>
-    extends _$LessonSceneCopyWithImpl<$Res, _$QuizFillInTheBlankSceneImpl>
-    implements _$$QuizFillInTheBlankSceneImplCopyWith<$Res> {
-  __$$QuizFillInTheBlankSceneImplCopyWithImpl(
-    _$QuizFillInTheBlankSceneImpl _value,
-    $Res Function(_$QuizFillInTheBlankSceneImpl) _then,
+class __$$QuizFillInTheBlankPageImplCopyWithImpl<$Res>
+    extends _$LessonPageCopyWithImpl<$Res, _$QuizFillInTheBlankPageImpl>
+    implements _$$QuizFillInTheBlankPageImplCopyWith<$Res> {
+  __$$QuizFillInTheBlankPageImplCopyWithImpl(
+    _$QuizFillInTheBlankPageImpl _value,
+    $Res Function(_$QuizFillInTheBlankPageImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of LessonScene
+  /// Create a copy of LessonPage
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1568,7 +1592,7 @@ class __$$QuizFillInTheBlankSceneImplCopyWithImpl<$Res>
     Object? correctOptionIndices = null,
   }) {
     return _then(
-      _$QuizFillInTheBlankSceneImpl(
+      _$QuizFillInTheBlankPageImpl(
         question: null == question
             ? _value.question
             : question // ignore: cast_nullable_to_non_nullable
@@ -1596,8 +1620,8 @@ class __$$QuizFillInTheBlankSceneImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
-  const _$QuizFillInTheBlankSceneImpl({
+class _$QuizFillInTheBlankPageImpl implements QuizFillInTheBlankPage {
+  const _$QuizFillInTheBlankPageImpl({
     required this.question,
     this.imageUrl,
     this.audioUrl,
@@ -1608,8 +1632,8 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
        _correctOptionIndices = correctOptionIndices,
        $type = $type ?? 'quizFillInTheBlank';
 
-  factory _$QuizFillInTheBlankSceneImpl.fromJson(Map<String, dynamic> json) =>
-      _$$QuizFillInTheBlankSceneImplFromJson(json);
+  factory _$QuizFillInTheBlankPageImpl.fromJson(Map<String, dynamic> json) =>
+      _$$QuizFillInTheBlankPageImplFromJson(json);
 
   // 問題文。空欄は `[__]` で表現。
   @override
@@ -1646,14 +1670,14 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
 
   @override
   String toString() {
-    return 'LessonScene.quizFillInTheBlank(question: $question, imageUrl: $imageUrl, audioUrl: $audioUrl, options: $options, correctOptionIndices: $correctOptionIndices)';
+    return 'LessonPage.quizFillInTheBlank(question: $question, imageUrl: $imageUrl, audioUrl: $audioUrl, options: $options, correctOptionIndices: $correctOptionIndices)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuizFillInTheBlankSceneImpl &&
+            other is _$QuizFillInTheBlankPageImpl &&
             (identical(other.question, question) ||
                 other.question == question) &&
             (identical(other.imageUrl, imageUrl) ||
@@ -1678,21 +1702,23 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
     const DeepCollectionEquality().hash(_correctOptionIndices),
   );
 
-  /// Create a copy of LessonScene
+  /// Create a copy of LessonPage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$QuizFillInTheBlankSceneImplCopyWith<_$QuizFillInTheBlankSceneImpl>
+  _$$QuizFillInTheBlankPageImplCopyWith<_$QuizFillInTheBlankPageImpl>
   get copyWith =>
-      __$$QuizFillInTheBlankSceneImplCopyWithImpl<
-        _$QuizFillInTheBlankSceneImpl
-      >(this, _$identity);
+      __$$QuizFillInTheBlankPageImplCopyWithImpl<_$QuizFillInTheBlankPageImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<LessonStep> steps) narration,
+    required TResult Function(String? audioUrl, List<ContentBlock> blocks)
+    content,
     required TResult Function(
       String question,
       String? imageUrl,
@@ -1722,7 +1748,7 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<LessonStep> steps)? narration,
+    TResult? Function(String? audioUrl, List<ContentBlock> blocks)? content,
     TResult? Function(
       String question,
       String? imageUrl,
@@ -1752,7 +1778,7 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<LessonStep> steps)? narration,
+    TResult Function(String? audioUrl, List<ContentBlock> blocks)? content,
     TResult Function(
       String question,
       String? imageUrl,
@@ -1786,9 +1812,9 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(NarrationScene value) narration,
-    required TResult Function(QuizMultipleChoiceScene value) quizMultipleChoice,
-    required TResult Function(QuizFillInTheBlankScene value) quizFillInTheBlank,
+    required TResult Function(ContentPage value) content,
+    required TResult Function(QuizMultipleChoicePage value) quizMultipleChoice,
+    required TResult Function(QuizFillInTheBlankPage value) quizFillInTheBlank,
   }) {
     return quizFillInTheBlank(this);
   }
@@ -1796,9 +1822,9 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NarrationScene value)? narration,
-    TResult? Function(QuizMultipleChoiceScene value)? quizMultipleChoice,
-    TResult? Function(QuizFillInTheBlankScene value)? quizFillInTheBlank,
+    TResult? Function(ContentPage value)? content,
+    TResult? Function(QuizMultipleChoicePage value)? quizMultipleChoice,
+    TResult? Function(QuizFillInTheBlankPage value)? quizFillInTheBlank,
   }) {
     return quizFillInTheBlank?.call(this);
   }
@@ -1806,9 +1832,9 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(NarrationScene value)? narration,
-    TResult Function(QuizMultipleChoiceScene value)? quizMultipleChoice,
-    TResult Function(QuizFillInTheBlankScene value)? quizFillInTheBlank,
+    TResult Function(ContentPage value)? content,
+    TResult Function(QuizMultipleChoicePage value)? quizMultipleChoice,
+    TResult Function(QuizFillInTheBlankPage value)? quizFillInTheBlank,
     required TResult orElse(),
   }) {
     if (quizFillInTheBlank != null) {
@@ -1819,35 +1845,37 @@ class _$QuizFillInTheBlankSceneImpl implements QuizFillInTheBlankScene {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$QuizFillInTheBlankSceneImplToJson(this);
+    return _$$QuizFillInTheBlankPageImplToJson(this);
   }
 }
 
-abstract class QuizFillInTheBlankScene implements LessonScene {
-  const factory QuizFillInTheBlankScene({
+abstract class QuizFillInTheBlankPage implements LessonPage {
+  const factory QuizFillInTheBlankPage({
     required final String question,
     final String? imageUrl,
     final String? audioUrl,
     required final List<String> options,
     required final List<int> correctOptionIndices,
-  }) = _$QuizFillInTheBlankSceneImpl;
+  }) = _$QuizFillInTheBlankPageImpl;
 
-  factory QuizFillInTheBlankScene.fromJson(Map<String, dynamic> json) =
-      _$QuizFillInTheBlankSceneImpl.fromJson;
+  factory QuizFillInTheBlankPage.fromJson(Map<String, dynamic> json) =
+      _$QuizFillInTheBlankPageImpl.fromJson;
 
   // 問題文。空欄は `[__]` で表現。
   String get question;
   String? get imageUrl;
+  @override
   String? get audioUrl; // 選択肢（同一内容の重複は不可）。options数 ≥ 空欄数。
   List<String>
   get options; // 各空欄の正解。correctOptionIndices[n] = 出現順 n 番目の `[__]` の
   // 正解 = options のインデックス。値は重複しない。
   List<int> get correctOptionIndices;
 
-  /// Create a copy of LessonScene
+  /// Create a copy of LessonPage
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuizFillInTheBlankSceneImplCopyWith<_$QuizFillInTheBlankSceneImpl>
+  _$$QuizFillInTheBlankPageImplCopyWith<_$QuizFillInTheBlankPageImpl>
   get copyWith => throw _privateConstructorUsedError;
 }
 

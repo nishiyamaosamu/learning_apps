@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../content/content_models.dart';
 import 'quiz_controller.dart';
 
-/// シーンの固定画像。アセットが見つからない場合はプレースホルダを表示する。
-class SceneImage extends StatelessWidget {
-  const SceneImage({super.key, required this.assetPath});
+/// コンテンツの画像。アセットが見つからない場合はプレースホルダを表示する。
+class ContentImage extends StatelessWidget {
+  const ContentImage({super.key, required this.assetPath});
 
   /// 画像アセットの完全パス（例: 'contents/lessons/images/2-1.jpeg'）。
   final String assetPath;
@@ -133,7 +133,7 @@ class MultipleChoiceQuiz extends StatelessWidget {
     required this.controller,
   });
 
-  final QuizMultipleChoiceScene scene;
+  final QuizMultipleChoicePage scene;
   final QuizController controller;
 
   @override
@@ -253,7 +253,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
     required this.controller,
   }) : _segments = scene.question.split('[__]');
 
-  final QuizFillInTheBlankScene scene;
+  final QuizFillInTheBlankPage scene;
   final QuizController controller;
 
   /// question を `[__]` で分割した、空欄の前後に挟まる固定テキスト片。

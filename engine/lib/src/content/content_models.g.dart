@@ -45,11 +45,11 @@ Map<String, dynamic> _$$ContentIndexImplToJson(_$ContentIndexImpl instance) =>
 _$LessonImpl _$$LessonImplFromJson(Map<String, dynamic> json) => _$LessonImpl(
   id: json['id'] as String,
   title: json['title'] as String,
-  scenes:
-      (json['scenes'] as List<dynamic>?)
-          ?.map((e) => LessonScene.fromJson(e as Map<String, dynamic>))
+  pages:
+      (json['pages'] as List<dynamic>?)
+          ?.map((e) => LessonPage.fromJson(e as Map<String, dynamic>))
           .toList() ??
-      const <LessonScene>[],
+      const <LessonPage>[],
   exercises:
       (json['exercises'] as List<dynamic>?)
           ?.map((e) => (e as num).toInt())
@@ -61,41 +61,40 @@ Map<String, dynamic> _$$LessonImplToJson(_$LessonImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
-      'scenes': instance.scenes,
+      'pages': instance.pages,
       'exercises': instance.exercises,
     };
 
-_$LessonStepImpl _$$LessonStepImplFromJson(Map<String, dynamic> json) =>
-    _$LessonStepImpl(
+_$ContentBlockImpl _$$ContentBlockImplFromJson(Map<String, dynamic> json) =>
+    _$ContentBlockImpl(
       text: json['text'] as String,
-      audioUrl: json['audioUrl'] as String?,
       imageUrl: json['imageUrl'] as String?,
     );
 
-Map<String, dynamic> _$$LessonStepImplToJson(_$LessonStepImpl instance) =>
-    <String, dynamic>{
-      'text': instance.text,
-      'audioUrl': instance.audioUrl,
-      'imageUrl': instance.imageUrl,
-    };
+Map<String, dynamic> _$$ContentBlockImplToJson(_$ContentBlockImpl instance) =>
+    <String, dynamic>{'text': instance.text, 'imageUrl': instance.imageUrl};
 
-_$NarrationSceneImpl _$$NarrationSceneImplFromJson(Map<String, dynamic> json) =>
-    _$NarrationSceneImpl(
-      steps:
-          (json['steps'] as List<dynamic>?)
-              ?.map((e) => LessonStep.fromJson(e as Map<String, dynamic>))
+_$ContentPageImpl _$$ContentPageImplFromJson(Map<String, dynamic> json) =>
+    _$ContentPageImpl(
+      audioUrl: json['audioUrl'] as String?,
+      blocks:
+          (json['blocks'] as List<dynamic>?)
+              ?.map((e) => ContentBlock.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <LessonStep>[],
+          const <ContentBlock>[],
       $type: json['type'] as String?,
     );
 
-Map<String, dynamic> _$$NarrationSceneImplToJson(
-  _$NarrationSceneImpl instance,
-) => <String, dynamic>{'steps': instance.steps, 'type': instance.$type};
+Map<String, dynamic> _$$ContentPageImplToJson(_$ContentPageImpl instance) =>
+    <String, dynamic>{
+      'audioUrl': instance.audioUrl,
+      'blocks': instance.blocks,
+      'type': instance.$type,
+    };
 
-_$QuizMultipleChoiceSceneImpl _$$QuizMultipleChoiceSceneImplFromJson(
+_$QuizMultipleChoicePageImpl _$$QuizMultipleChoicePageImplFromJson(
   Map<String, dynamic> json,
-) => _$QuizMultipleChoiceSceneImpl(
+) => _$QuizMultipleChoicePageImpl(
   question: json['question'] as String,
   imageUrl: json['imageUrl'] as String?,
   audioUrl: json['audioUrl'] as String?,
@@ -104,8 +103,8 @@ _$QuizMultipleChoiceSceneImpl _$$QuizMultipleChoiceSceneImplFromJson(
   $type: json['type'] as String?,
 );
 
-Map<String, dynamic> _$$QuizMultipleChoiceSceneImplToJson(
-  _$QuizMultipleChoiceSceneImpl instance,
+Map<String, dynamic> _$$QuizMultipleChoicePageImplToJson(
+  _$QuizMultipleChoicePageImpl instance,
 ) => <String, dynamic>{
   'question': instance.question,
   'imageUrl': instance.imageUrl,
@@ -115,9 +114,9 @@ Map<String, dynamic> _$$QuizMultipleChoiceSceneImplToJson(
   'type': instance.$type,
 };
 
-_$QuizFillInTheBlankSceneImpl _$$QuizFillInTheBlankSceneImplFromJson(
+_$QuizFillInTheBlankPageImpl _$$QuizFillInTheBlankPageImplFromJson(
   Map<String, dynamic> json,
-) => _$QuizFillInTheBlankSceneImpl(
+) => _$QuizFillInTheBlankPageImpl(
   question: json['question'] as String,
   imageUrl: json['imageUrl'] as String?,
   audioUrl: json['audioUrl'] as String?,
@@ -128,8 +127,8 @@ _$QuizFillInTheBlankSceneImpl _$$QuizFillInTheBlankSceneImplFromJson(
   $type: json['type'] as String?,
 );
 
-Map<String, dynamic> _$$QuizFillInTheBlankSceneImplToJson(
-  _$QuizFillInTheBlankSceneImpl instance,
+Map<String, dynamic> _$$QuizFillInTheBlankPageImplToJson(
+  _$QuizFillInTheBlankPageImpl instance,
 ) => <String, dynamic>{
   'question': instance.question,
   'imageUrl': instance.imageUrl,

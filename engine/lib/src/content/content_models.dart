@@ -30,15 +30,15 @@ class ContentIndex with _$ContentIndex {
 
 /// レッスン内容。contents/lessons/{id}.json を都度ロード。
 ///
-/// docs/LESSON.md の `lesson` 構造に対応。`scenes` を配列順に再生し、
+/// docs/LESSON.md の `lesson` 構造に対応。`pages` を配列順に1ページずつ表示し、
 /// 末尾に `exercises`（本番演習への参照）を表示する。
 @freezed
 class Lesson with _$Lesson {
   const factory Lesson({
     required String id,
     required String title,
-    // シーンの列。配列順に表示（シーン＝表示のリセット境界）。
-    @Default(<LessonScene>[]) List<LessonScene> scenes,
+    // ページの列。配列順に1ページずつ表示する（1ページ＝1画面）。
+    @Default(<LessonPage>[]) List<LessonPage> pages,
     // 末尾に表示する本番演習への参照（exercises/{id}.json の id）。
     // 演習を持たないレッスンは空配列。
     @Default(<int>[]) List<int> exercises,
@@ -47,45 +47,45 @@ class Lesson with _$Lesson {
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
 }
 
-/// ナレーションシーンの1ステップ。1タップで1つずつ出現し、シーン内で累積する。
+/// コンテンツページを構成するブロック。テキストと任意の画像を組み合わせ、
+/// ページ内に上から順（配列順）へ積み上げて一度に表示する。
 @freezed
-class LessonStep with _$LessonStep {
-  const factory LessonStep({
-    // 本文（Markdown）。空文字も許可。
+class ContentBlock with _$ContentBlock {
+  const factory ContentBlock({
+    // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
     required String text,
-    // 本文ナレーション音声。ローカルアセット相対パス（例 lessons/audios/2-1.mp3）。
-    String? audioUrl,
-    // このステップ以降に表示する画像（任意）。指定しないステップは直前の
-    // 画像を継承する。どの step も持たなければテキストのみシーン。
-    // 切替は左→右のワイプで行う。
+    // このブロックに添える画像（任意）。本文の上に表示する。
+    // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
     String? imageUrl,
-  }) = _LessonStep;
+  }) = _ContentBlock;
 
-  factory LessonStep.fromJson(Map<String, dynamic> json) =>
-      _$LessonStepFromJson(json);
+  factory ContentBlock.fromJson(Map<String, dynamic> json) =>
+      _$ContentBlockFromJson(json);
 }
 
-/// シーン。`type` を discriminator とするフラットなunion。
+/// レッスンの1ページ。`type` を discriminator とするフラットなunion。
 ///
 /// 各バリアントは型ごとのフィールドを同階層に持つ（`data:` でネストしない）。
-/// narration はタップで累積表示、quiz は回答UIを伴う。
+/// content は説明ページ（テキスト＋画像を積み上げ、ページ単位で1音声）、
+/// quiz は回答UIを伴うページ。
 @Freezed(unionKey: 'type')
-sealed class LessonScene with _$LessonScene {
-  /// 説明用シーン。1つ以上のステップを持つ。
+sealed class LessonPage with _$LessonPage {
+  /// 説明用ページ。1つ以上のブロックを縦に積み上げ、一度に表示する。
   ///
-  /// 画像は step 単位で指定する（[LessonStep.imageUrl]）。シーンが画像モードか
-  /// テキストのみかは「いずれかの step が imageUrl を持つか」で決まる（シーン静的）。
-  /// 画像モードのシーンは先頭 step から画像を持つ（途中から画像が出る混在は
-  /// データ生成バリデーションで禁止）。
-  @FreezedUnionValue('narration')
-  const factory LessonScene.narration({
-    // タップごとに1つずつ出現し累積するステップ列（1つ以上）。
-    @Default(<LessonStep>[]) List<LessonStep> steps,
-  }) = NarrationScene;
+  /// 画像はブロック単位で指定する（[ContentBlock.imageUrl]）。ナレーション音声は
+  /// ページ単位で1つだけ持つ（[audioUrl]）。
+  @FreezedUnionValue('content')
+  const factory LessonPage.content({
+    // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
+    // （例 lessons/audios/1-1.mp3）。
+    String? audioUrl,
+    // 縦に積み上げて一度に表示するブロック列（1つ以上）。配列順。
+    @Default(<ContentBlock>[]) List<ContentBlock> blocks,
+  }) = ContentPage;
 
   /// 複数の選択肢から正解を1つ選ぶミニクイズ。
   @FreezedUnionValue('quizMultipleChoice')
-  const factory LessonScene.quizMultipleChoice({
+  const factory LessonPage.quizMultipleChoice({
     // 設問文（Markdown）。
     required String question,
     String? imageUrl,
@@ -93,11 +93,11 @@ sealed class LessonScene with _$LessonScene {
     required List<String> options,
     // 正解の選択肢インデックス（0始まり）。
     required int correctOptionIndex,
-  }) = QuizMultipleChoiceScene;
+  }) = QuizMultipleChoicePage;
 
   /// 問題文中の空欄（`[__]`）を選択肢で順番に穴埋めするミニクイズ。
   @FreezedUnionValue('quizFillInTheBlank')
-  const factory LessonScene.quizFillInTheBlank({
+  const factory LessonPage.quizFillInTheBlank({
     // 問題文。空欄は `[__]` で表現。
     required String question,
     String? imageUrl,
@@ -107,10 +107,10 @@ sealed class LessonScene with _$LessonScene {
     // 各空欄の正解。correctOptionIndices[n] = 出現順 n 番目の `[__]` の
     // 正解 = options のインデックス。値は重複しない。
     required List<int> correctOptionIndices,
-  }) = QuizFillInTheBlankScene;
+  }) = QuizFillInTheBlankPage;
 
-  factory LessonScene.fromJson(Map<String, dynamic> json) =>
-      _$LessonSceneFromJson(json);
+  factory LessonPage.fromJson(Map<String, dynamic> json) =>
+      _$LessonPageFromJson(json);
 }
 
 /// 問題の1問。

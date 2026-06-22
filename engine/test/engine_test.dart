@@ -45,19 +45,16 @@ void main() {
     expect(index.exercises, isEmpty);
   });
 
-  test('Lesson.fromJson が scenes の union をパースできる', () {
+  test('Lesson.fromJson が pages の union をパースできる', () {
     final lesson = Lesson.fromJson({
       'id': '2',
       'title': '企業活動と経営資源',
-      'scenes': [
+      'pages': [
         {
-          'type': 'narration',
-          'steps': [
-            {
-              'text': '本文1',
-              'imageUrl': 'lessons/images/2-1.jpeg',
-              'audioUrl': 'lessons/audios/2-1.mp3',
-            },
+          'type': 'content',
+          'audioUrl': 'lessons/audios/2-1.mp3',
+          'blocks': [
+            {'text': '本文1', 'imageUrl': 'lessons/images/2-1.jpeg'},
             {'text': '本文2'},
           ],
         },
@@ -77,26 +74,25 @@ void main() {
       'exercises': [],
     });
 
-    expect(lesson.scenes.length, 3);
+    expect(lesson.pages.length, 3);
     expect(lesson.exercises, isEmpty);
 
-    final narration = lesson.scenes.first as NarrationScene;
-    expect(narration.steps.length, 2);
-    expect(narration.steps.first.imageUrl, 'lessons/images/2-1.jpeg');
-    expect(narration.steps.first.audioUrl, 'lessons/audios/2-1.mp3');
-    expect(narration.steps.last.imageUrl, isNull);
-    expect(narration.steps.last.audioUrl, isNull);
+    final content = lesson.pages.first as ContentPage;
+    expect(content.audioUrl, 'lessons/audios/2-1.mp3');
+    expect(content.blocks.length, 2);
+    expect(content.blocks.first.imageUrl, 'lessons/images/2-1.jpeg');
+    expect(content.blocks.last.imageUrl, isNull);
 
-    expect((lesson.scenes[1] as QuizMultipleChoiceScene).correctOptionIndex, 1);
+    expect((lesson.pages[1] as QuizMultipleChoicePage).correctOptionIndex, 1);
     expect(
-      (lesson.scenes.last as QuizFillInTheBlankScene).correctOptionIndices,
+      (lesson.pages.last as QuizFillInTheBlankPage).correctOptionIndices,
       [0],
     );
   });
 
-  test('scenes を持たないレッスンは空配列になる', () {
+  test('pages を持たないレッスンは空配列になる', () {
     final lesson = Lesson.fromJson({'id': '2', 'title': '導入のみ'});
-    expect(lesson.scenes, isEmpty);
+    expect(lesson.pages, isEmpty);
     expect(lesson.exercises, isEmpty);
   });
 }
