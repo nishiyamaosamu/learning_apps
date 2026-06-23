@@ -5,15 +5,23 @@ import 'quiz_controller.dart';
 
 /// コンテンツの画像。アセットが見つからない場合はプレースホルダを表示する。
 class ContentImage extends StatelessWidget {
-  const ContentImage({super.key, required this.assetPath});
+  const ContentImage({
+    super.key,
+    required this.assetPath,
+    this.borderRadius = const BorderRadius.all(Radius.circular(8)),
+  });
 
   /// 画像アセットの完全パス（例: 'contents/lessons/images/2-1.jpeg'）。
   final String assetPath;
 
+  /// 画像の角丸。カード内に全幅で敷き込む場合は [BorderRadius.zero] を渡し、
+  /// 角丸は外側のカード側のクリップに任せる。
+  final BorderRadius borderRadius;
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: borderRadius,
       child: Image.asset(
         assetPath,
         fit: BoxFit.fitWidth,
@@ -24,7 +32,7 @@ class ContentImage extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: borderRadius,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

@@ -168,24 +168,29 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     final progress = total == 0 ? 0.0 : _pageIndex / total;
 
     return Scaffold(
-      appBar: _LessonAppBar(progress: progress),
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _controller,
-              scrollDirection: Axis.vertical,
-              // スナップ判定は _SnappyPageScrollPhysics 側で行う（軽いスワイプでも
-              // ページを送れるよう、標準より緩い判定にする）。
-              pageSnapping: false,
-              physics: const _SnappyPageScrollPhysics(),
-              onPageChanged: _onPageChanged,
-              itemCount: _contentPages.length + 1,
-              itemBuilder: (context, index) => _buildPage(index),
-            ),
+      backgroundColor: _LessonBackground.baseColor,
+      body: _LessonBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              _LessonHeader(progress: progress),
+              Expanded(
+                child: PageView.builder(
+                  controller: _controller,
+                  scrollDirection: Axis.vertical,
+                  // スナップ判定は _SnappyPageScrollPhysics 側で行う（軽いスワイプでも
+                  // ページを送れるよう、標準より緩い判定にする）。
+                  pageSnapping: false,
+                  physics: const _SnappyPageScrollPhysics(),
+                  onPageChanged: _onPageChanged,
+                  itemCount: _contentPages.length + 1,
+                  itemBuilder: (context, index) => _buildPage(index),
+                ),
+              ),
+              if (!_onDone) const _AudioFooter(),
+            ],
           ),
-          if (!_onDone) const _AudioFooter(),
-        ],
+        ),
       ),
     );
   }
@@ -209,32 +214,165 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
   }
 }
 
-/// レッスン本体・確認問題画面で共有する AppBar。
-/// 左上に閉じる（×）ボタン、残りの領域を進捗バーにする。
-class _LessonAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _LessonAppBar({required this.progress});
+/// レッスン本体・確認問題画面で共有する背景。
+///
+/// 淡いブルーの縦グラデーションの上に、ふわりとした有機的な装飾シェイプ（blob）を
+/// 四隅に配置する。コンテンツは [child] としてこの背景の上に重ねる。
+class _LessonBackground extends StatelessWidget {
+  const _LessonBackground({required this.child});
+
+  final Widget child;
+
+  /// グラデーション最上部の色。Scaffold 背景に合わせてオーバースクロール時の
+  /// はみ出しを目立たなくする。
+  static const Color baseColor = Color(0xFFEAF1FB);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // 全面の縦グラデーション。
+        const Positioned.fill(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.0, 0.38, 1.0],
+                colors: [
+                  Color(0xFFEAF1FB),
+                  Color(0xFFF3F6FC),
+                  Color(0xFFEEF3FB),
+                ],
+              ),
+            ),
+          ),
+        ),
+        // 四隅の装飾 blob。タップを透過し、コンテンツの邪魔をしない。
+        const Positioned.fill(
+          child: IgnorePointer(
+            child: ClipRect(
+              child: Stack(
+                children: [
+                  _Blob(
+                    top: -90,
+                    right: -70,
+                    size: 280,
+                    color: Color(0xFF2F80ED),
+                    opacity: 0.16,
+                  ),
+                  _Blob(
+                    top: 120,
+                    left: -110,
+                    size: 240,
+                    color: Color(0xFF56C4B1),
+                    opacity: 0.14,
+                  ),
+                  _Blob(
+                    bottom: 60,
+                    right: -90,
+                    size: 260,
+                    color: Color(0xFFF3C456),
+                    opacity: 0.14,
+                  ),
+                  _Blob(
+                    bottom: -70,
+                    left: -60,
+                    size: 220,
+                    color: Color(0xFF2F80ED),
+                    opacity: 0.10,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        child,
+      ],
+    );
+  }
+}
+
+/// 背景に置くふんわりした装飾シェイプ。中心から外へ向けて透明にフェードする
+/// 放射グラデーションと、少し歪んだ角丸で有機的な形に見せる。
+class _Blob extends StatelessWidget {
+  const _Blob({
+    this.top,
+    this.left,
+    this.right,
+    this.bottom,
+    required this.size,
+    required this.color,
+    required this.opacity,
+  });
+
+  final double? top;
+  final double? left;
+  final double? right;
+  final double? bottom;
+  final double size;
+  final Color color;
+  final double opacity;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: top,
+      left: left,
+      right: right,
+      bottom: bottom,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          // 真円ではなく少し歪ませて有機的な印象にする。
+          borderRadius: BorderRadius.all(Radius.elliptical(size * 0.52, size * 0.46)),
+          gradient: RadialGradient(
+            center: const Alignment(-0.3, -0.3),
+            colors: [
+              color.withValues(alpha: opacity),
+              color.withValues(alpha: 0.0),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// レッスン本体・確認問題画面で共有するヘッダー。
+/// 左に閉じる（×）ボタン、残りの領域を進捗バーにする。
+class _LessonHeader extends StatelessWidget {
+  const _LessonHeader({required this.progress});
 
   /// 進捗（0.0〜1.0）。
   final double progress;
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      scrolledUnderElevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.close),
-        onPressed: () => Navigator.of(context).maybePop(),
-      ),
-      title: ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        child: LinearProgressIndicator(
-          value: progress.clamp(0.0, 1.0),
-          minHeight: 6,
-        ),
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 24, 8),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            color: theme.colorScheme.onSurface,
+            onPressed: () => Navigator.of(context).maybePop(),
+          ),
+          const SizedBox(width: 4),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: progress.clamp(0.0, 1.0),
+                minHeight: 8,
+                backgroundColor: const Color(0xFFDBE7F5),
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -253,46 +391,40 @@ class _AudioFooter extends ConsumerWidget {
     final muted = theme.colorScheme.onSurfaceVariant;
     final active = theme.colorScheme.primary;
 
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
-        child: Center(
-          child: Material(
-            color: theme.colorScheme.surface,
-            elevation: 3,
-            shadowColor: Colors.black26,
-            borderRadius: BorderRadius.circular(28),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _FooterButton(
-                    icon: enabled ? Icons.volume_up : Icons.volume_off,
-                    label: enabled ? '音声オン' : '音声オフ',
-                    color: enabled ? active : muted,
-                    onTap: () =>
-                        ref.read(audioEnabledProvider.notifier).toggle(),
-                  ),
-                  // 倍速は音声オン時のみ操作可能。
-                  _FooterButton(
-                    icon: Icons.speed,
-                    label: '${_formatSpeed(speed)}x',
-                    color: enabled ? active : muted,
-                    onTap: enabled
-                        ? () => ref.read(audioSpeedProvider.notifier).cycle()
-                        : null,
-                  ),
-                  _FooterButton(
-                    icon: Icons.auto_awesome,
-                    label: 'AI質問',
-                    color: muted,
-                    onTap: () {},
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+      child: Material(
+        color: theme.colorScheme.surface,
+        elevation: 3,
+        shadowColor: Colors.black26,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _FooterButton(
+                icon: enabled ? Icons.volume_up : Icons.volume_off,
+                label: enabled ? '音声オン' : '音声オフ',
+                color: enabled ? active : muted,
+                onTap: () => ref.read(audioEnabledProvider.notifier).toggle(),
               ),
-            ),
+              // 倍速は音声オン時のみ操作可能。
+              _FooterButton(
+                icon: Icons.speed,
+                label: '${_formatSpeed(speed)}x',
+                color: enabled ? active : muted,
+                onTap: enabled
+                    ? () => ref.read(audioSpeedProvider.notifier).cycle()
+                    : null,
+              ),
+              _FooterButton(
+                icon: Icons.auto_awesome,
+                label: 'AI質問',
+                color: muted,
+                onTap: () {},
+              ),
+            ],
           ),
         ),
       ),
@@ -414,7 +546,7 @@ class _FooterButton extends StatelessWidget {
   }
 }
 
-/// コンテンツページ。テキスト＋画像のブロックを縦に積み上げて一度に表示する。
+/// コンテンツページ。本文と画像を1枚の白いカードにまとめ、背景の中央に浮かせる。
 /// ページ移動は本体の縦スワイプで行う（このビューはタップゾーンを持たない）。
 class _ContentPageView extends StatelessWidget {
   const _ContentPageView({
@@ -432,87 +564,141 @@ class _ContentPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final blocks = page.blocks;
-    final hasImage = blocks.any((b) => b.imageUrl != null);
-
-    return Stack(
-      children: [
-        // ブロックを縦に積み上げて表示。内容が短ければ縦中央寄せ（画像あり時は上揃え）、
-        // 溢れたらスクロールする。
-        LayoutBuilder(
-          builder: (context, constraints) => SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: hasImage
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (page.title != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Text(
-                          page.title!,
-                          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                    for (var i = 0; i < blocks.length; i++)
-                      Padding(
-                        padding: EdgeInsets.only(top: i == 0 ? 0 : 16),
-                        child: _ContentBlockView(
-                          block: blocks[i],
-                          assetBasePath: assetBasePath,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
+    // 縦 PageView と同方向のネストスクロールはジェスチャーを取り合い、背の高い
+    // カードでページ送りができなくなる。これを避けるため 1ページ＝1画面に収める。
+    // カードに与えられる最大の幅・高さを渡し、収まらないときはカード側で全体を
+    // 縮小して（文字も含めて）はみ出さないようにする。
+    return LayoutBuilder(
+      builder: (context, constraints) => Stack(
+        children: [
+          Center(
+            child: _LessonCard(
+              page: page,
+              assetBasePath: assetBasePath,
+              maxWidth: constraints.maxWidth - 32,
+              maxHeight: constraints.maxHeight - 40,
             ),
           ),
-        ),
-        // 音声が止まったら次へのスワイプを促す控えめな記号を下部中央に出す。
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 12,
-          child: Center(child: _SwipeHint(visible: showHint)),
-        ),
-      ],
+          // 音声が止まったら次へのスワイプを促す控えめな記号を下部中央に出す。
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 12,
+            child: Center(child: _SwipeHint(visible: showHint)),
+          ),
+        ],
+      ),
     );
   }
 }
 
-/// コンテンツページの1ブロック。本文を上に、画像（任意）を下に積む。
-class _ContentBlockView extends StatelessWidget {
-  const _ContentBlockView({required this.block, required this.assetBasePath});
+/// コンテンツ1ページ分を収める白いカード。
+///
+/// 上部に小さなラベル（ページタイトル）、本文テキストを縦に積み、末尾の画像は
+/// カードの左右いっぱい・下端まで敷き込んで角丸に馴染ませる（デザイン準拠）。
+class _LessonCard extends StatelessWidget {
+  const _LessonCard({
+    required this.page,
+    required this.assetBasePath,
+    required this.maxWidth,
+    required this.maxHeight,
+  });
 
-  final models.ContentBlock block;
+  final models.ContentPage page;
   final String assetBasePath;
+
+  /// カードの幅（＝表示領域から左右マージンを引いた固定幅）。中身はこの幅で
+  /// レイアウトし、縮小時もカードの外形（全幅）は保つ。
+  final double maxWidth;
+
+  /// カードがとり得る最大の高さ（＝1ページ分の表示領域）。中身がこれを超える
+  /// ページは、文字・画像をまとめて縮小して収める。
+  final double maxHeight;
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = block.imageUrl;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (block.text.isNotEmpty) MarkdownText(text: block.text),
-        if (imageUrl != null) ...[
-          if (block.text.isNotEmpty) const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 240),
-              child: ContentImage(assetPath: '$assetBasePath/$imageUrl'),
-            ),
+    final theme = Theme.of(context);
+    final textBlocks = page.blocks.where((b) => b.text.isNotEmpty).toList();
+    final imageUrls = [
+      for (final b in page.blocks)
+        if (b.imageUrl != null) b.imageUrl!,
+    ];
+
+    return Container(
+      width: maxWidth,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.8)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x431F488C),
+            blurRadius: 50,
+            spreadRadius: -14,
+            offset: Offset(0, 20),
+          ),
+          BoxShadow(
+            color: Color(0x0F1F488C),
+            blurRadius: 8,
+            offset: Offset(0, 2),
           ),
         ],
-      ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight),
+        // 中身が高さを超えるページだけ、文字も含めて全体を縮小して収める
+        // （収まるページは原寸のまま）。縦 PageView との競合を避けるため、
+        // ページ内スクロールは持たない。
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: maxWidth,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    20,
+                    24,
+                    20,
+                    imageUrls.isEmpty ? 24 : 18,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (page.title != null) ...[
+                        Text(
+                          page.title!,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      for (var i = 0; i < textBlocks.length; i++)
+                        Padding(
+                          padding: EdgeInsets.only(top: i == 0 ? 0 : 16),
+                          child: MarkdownText(text: textBlocks[i].text),
+                        ),
+                    ],
+                  ),
+                ),
+                // 末尾の画像はカード端まで敷き込む（角丸はカードのクリップに任せる）。
+                for (final url in imageUrls)
+                  ContentImage(
+                    assetPath: '$assetBasePath/$url',
+                    borderRadius: BorderRadius.zero,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -691,23 +877,34 @@ class _QuizScreenState extends State<_QuizScreen> {
     final progress = total == 0 ? 0.0 : _index / total;
 
     return Scaffold(
-      appBar: _LessonAppBar(progress: progress),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        child: _onCompletion
-            ? _QuizCompletionView(
-                key: const ValueKey('quiz-done'),
-                exercises: widget.exercises,
-              )
-            : _QuizPage(
-                // 設問が切り替わるたび State を作り直して回答をリセットする。
-                key: ValueKey('quiz-$_index'),
-                quiz: _quizzes[_index],
-                assetBasePath: widget.assetBasePath,
-                canGoBack: _index > 0,
-                onAdvance: _advance,
-                onBack: _back,
+      backgroundColor: _LessonBackground.baseColor,
+      body: _LessonBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              _LessonHeader(progress: progress),
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: _onCompletion
+                      ? _QuizCompletionView(
+                          key: const ValueKey('quiz-done'),
+                          exercises: widget.exercises,
+                        )
+                      : _QuizPage(
+                          // 設問が切り替わるたび State を作り直して回答をリセットする。
+                          key: ValueKey('quiz-$_index'),
+                          quiz: _quizzes[_index],
+                          assetBasePath: widget.assetBasePath,
+                          canGoBack: _index > 0,
+                          onAdvance: _advance,
+                          onBack: _back,
+                        ),
+                ),
               ),
+            ],
+          ),
+        ),
       ),
     );
   }
