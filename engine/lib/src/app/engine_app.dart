@@ -4,14 +4,27 @@ import 'app_config.dart';
 import '../content/content_providers.dart';
 import '../routing/router.dart';
 
-class EngineApp extends StatelessWidget {
+class EngineApp extends StatefulWidget {
   const EngineApp({super.key, required this.config});
 
   final AppConfig config;
 
   @override
+  State<EngineApp> createState() => _EngineAppState();
+}
+
+class _EngineAppState extends State<EngineApp> {
+  late final _router = buildRouter(widget.config);
+
+  @override
+  void dispose() {
+    _router.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final router = buildRouter(config);
+    final config = widget.config;
     final colorScheme = config.resolvedColorScheme;
     final accentColors = config.designScheme?.toAccentColors();
 
@@ -25,7 +38,7 @@ class EngineApp extends StatelessWidget {
           scaffoldBackgroundColor: colorScheme.surface,
           extensions: <ThemeExtension<dynamic>>[?accentColors],
         ),
-        routerConfig: router,
+        routerConfig: _router,
       ),
     );
   }

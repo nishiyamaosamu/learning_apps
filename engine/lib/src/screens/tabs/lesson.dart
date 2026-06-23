@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show ImageFilter;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class Lesson extends ConsumerWidget {
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, s) {
-        print('Failed to load lesson $id: $e\n$s');
+        debugPrint('Failed to load lesson $id: $e\n$s');
         return Scaffold(
           appBar: AppBar(title: Text(title)),
           body: Center(child: Text('レッスンの読み込みに失敗しました\n$e')),
@@ -167,42 +168,77 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
     // 1ページ目は0%、全ページ通過（完了ページ）で100%になるよう計算する。
     final progress = total == 0 ? 0.0 : _pageIndex / total;
 
+    final viewPadding = MediaQuery.of(context).padding;
+    final footerVisible = !_onDone;
+    final topInset = viewPadding.top + _LessonHeader.height;
+    final contentPageInsets = EdgeInsets.only(
+      top: topInset,
+      bottom: viewPadding.bottom + _AudioFooter.height,
+    );
+    final donePageInsets = EdgeInsets.only(
+      top: topInset,
+      bottom: viewPadding.bottom + _AudioFooter.minBottomGap,
+    );
+
     return Scaffold(
       backgroundColor: _LessonBackground.baseColor,
       body: _LessonBackground(
-        child: SafeArea(
-          child: Column(
-            children: [
-              _LessonHeader(progress: progress),
-              Expanded(
-                child: PageView.builder(
-                  controller: _controller,
-                  scrollDirection: Axis.vertical,
-                  // スナップ判定は _SnappyPageScrollPhysics 側で行う（軽いスワイプでも
-                  // ページを送れるよう、標準より緩い判定にする）。
-                  pageSnapping: false,
-                  physics: const _SnappyPageScrollPhysics(),
-                  onPageChanged: _onPageChanged,
-                  itemCount: _contentPages.length + 1,
-                  itemBuilder: (context, index) => _buildPage(index),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: PageView.builder(
+                controller: _controller,
+                scrollDirection: Axis.vertical,
+                // スナップ判定は _SnappyPageScrollPhysics 側で行う（軽いスワイプでも
+                // ページを送れるよう、標準より緩い判定にする）。
+                pageSnapping: false,
+                physics: const _SnappyPageScrollPhysics(),
+                onPageChanged: _onPageChanged,
+                itemCount: _contentPages.length + 1,
+                itemBuilder: (context, index) =>
+                    _buildPage(index, contentPageInsets, donePageInsets),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              top: 0,
+              right: 0,
+              child: _HeaderBlur(
+                child: SafeArea(
+                  bottom: false,
+                  child: _LessonHeader(progress: progress),
                 ),
               ),
-              if (!_onDone) const _AudioFooter(),
-            ],
-          ),
+            ),
+            if (footerVisible)
+              const Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: SafeArea(top: false, child: _AudioFooter()),
+              ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildPage(int index) {
+  Widget _buildPage(
+    int index,
+    EdgeInsets contentPageInsets,
+    EdgeInsets donePageInsets,
+  ) {
     if (index >= _contentPages.length) {
-      return _ContentDoneView(
+      return Padding(
         key: const ValueKey('done'),
-        hasQuiz: _quizzes.isNotEmpty,
-        exercises: widget.lesson.exercises,
-        onStartQuiz: _startQuiz,
-        onRestart: _restart,
+        padding: donePageInsets,
+        child: _ContentDoneView(
+          key: const ValueKey('done-content'),
+          hasQuiz: _quizzes.isNotEmpty,
+          exercises: widget.lesson.exercises,
+          onStartQuiz: _startQuiz,
+          onRestart: _restart,
+        ),
       );
     }
     return _ContentPageView(
@@ -210,6 +246,7 @@ class _LessonPlayerState extends ConsumerState<_LessonPlayer> {
       page: _contentPages[index],
       assetBasePath: widget.assetBasePath,
       showHint: _showHint && index == _pageIndex,
+      pageInsets: contentPageInsets,
     );
   }
 }
@@ -258,29 +295,53 @@ class _LessonBackground extends StatelessWidget {
                     top: -90,
                     right: -70,
                     size: 280,
-                    color: Color(0xFF2F80ED),
-                    opacity: 0.16,
+                    color: Color.fromARGB(255, 216, 229, 248),
+                    opacity: 1,
+                    radius: _BlobRadius(
+                      topLeft: _BlobCornerRadius(0.48, 0.55),
+                      topRight: _BlobCornerRadius(0.52, 0.45),
+                      bottomRight: _BlobCornerRadius(0.60, 0.55),
+                      bottomLeft: _BlobCornerRadius(0.40, 0.45),
+                    ),
                   ),
                   _Blob(
                     top: 120,
                     left: -110,
                     size: 240,
-                    color: Color(0xFF56C4B1),
-                    opacity: 0.14,
+                    color: Color.fromARGB(255, 193, 225, 220),
+                    opacity: 0.56,
+                    radius: _BlobRadius(
+                      topLeft: _BlobCornerRadius(0.60, 0.50),
+                      topRight: _BlobCornerRadius(0.40, 0.60),
+                      bottomRight: _BlobCornerRadius(0.45, 0.40),
+                      bottomLeft: _BlobCornerRadius(0.55, 0.50),
+                    ),
                   ),
                   _Blob(
                     bottom: 60,
                     right: -90,
                     size: 260,
-                    color: Color(0xFFF3C456),
-                    opacity: 0.14,
+                    color: Color.fromARGB(255, 247, 237, 210),
+                    opacity: 1,
+                    radius: _BlobRadius(
+                      topLeft: _BlobCornerRadius(0.52, 0.45),
+                      topRight: _BlobCornerRadius(0.48, 0.55),
+                      bottomRight: _BlobCornerRadius(0.40, 0.45),
+                      bottomLeft: _BlobCornerRadius(0.60, 0.55),
+                    ),
                   ),
                   _Blob(
                     bottom: -70,
                     left: -60,
                     size: 220,
-                    color: Color(0xFF2F80ED),
-                    opacity: 0.10,
+                    color: Color.fromARGB(255, 212, 231, 255),
+                    opacity: 1,
+                    radius: _BlobRadius(
+                      topLeft: _BlobCornerRadius(0.45, 0.55),
+                      topRight: _BlobCornerRadius(0.55, 0.45),
+                      bottomRight: _BlobCornerRadius(0.55, 0.55),
+                      bottomLeft: _BlobCornerRadius(0.45, 0.45),
+                    ),
                   ),
                 ],
               ),
@@ -293,8 +354,9 @@ class _LessonBackground extends StatelessWidget {
   }
 }
 
-/// 背景に置くふんわりした装飾シェイプ。中心から外へ向けて透明にフェードする
-/// 放射グラデーションと、少し歪んだ角丸で有機的な形に見せる。
+/// 背景に置くふんわりした装飾シェイプ。
+///
+/// 単色の有機的な角丸シェイプに軽いブラーをかけ、背景へ自然に馴染ませる。
 class _Blob extends StatelessWidget {
   const _Blob({
     this.top,
@@ -304,6 +366,7 @@ class _Blob extends StatelessWidget {
     required this.size,
     required this.color,
     required this.opacity,
+    required this.radius,
   });
 
   final double? top;
@@ -313,6 +376,7 @@ class _Blob extends StatelessWidget {
   final double size;
   final Color color;
   final double opacity;
+  final _BlobRadius radius;
 
   @override
   Widget build(BuildContext context) {
@@ -321,19 +385,79 @@ class _Blob extends StatelessWidget {
       left: left,
       right: right,
       bottom: bottom,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          // 真円ではなく少し歪ませて有機的な印象にする。
-          borderRadius: BorderRadius.all(Radius.elliptical(size * 0.52, size * 0.46)),
-          gradient: RadialGradient(
-            center: const Alignment(-0.3, -0.3),
-            colors: [
-              color.withValues(alpha: opacity),
-              color.withValues(alpha: 0.0),
-            ],
+      child: ImageFiltered(
+        imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: opacity),
+            // CSS の border-radius: x1 x2 x3 x4 / y1 y2 y3 y4 と同じ考え方で、
+            // 各角の横半径・縦半径をサイズ比率から作る。
+            borderRadius: radius.resolve(size),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BlobRadius {
+  const _BlobRadius({
+    required this.topLeft,
+    required this.topRight,
+    required this.bottomRight,
+    required this.bottomLeft,
+  });
+
+  final _BlobCornerRadius topLeft;
+  final _BlobCornerRadius topRight;
+  final _BlobCornerRadius bottomRight;
+  final _BlobCornerRadius bottomLeft;
+
+  BorderRadius resolve(double size) {
+    return BorderRadius.only(
+      topLeft: topLeft.resolve(size),
+      topRight: topRight.resolve(size),
+      bottomRight: bottomRight.resolve(size),
+      bottomLeft: bottomLeft.resolve(size),
+    );
+  }
+}
+
+class _BlobCornerRadius {
+  const _BlobCornerRadius(this.x, this.y);
+
+  final double x;
+  final double y;
+
+  Radius resolve(double size) => Radius.elliptical(size * x, size * y);
+}
+
+/// 上部UIの可読性を保つための薄いブラー背景。
+///
+/// 完全な塗りつぶしではなく、カードが通過する動きが見える程度のすりガラスにする。
+class _HeaderBlur extends StatelessWidget {
+  const _HeaderBlur({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colorScheme.surface.withValues(alpha: 0.22),
+            // border: Border(
+            //   bottom: BorderSide(
+            //     color: colorScheme.onSurface.withValues(alpha: 0.06),
+            //   ),
+            // ),
+          ),
+          child: child,
         ),
       ),
     );
@@ -345,6 +469,8 @@ class _Blob extends StatelessWidget {
 class _LessonHeader extends StatelessWidget {
   const _LessonHeader({required this.progress});
 
+  static const double height = 56;
+
   /// 進捗（0.0〜1.0）。
   final double progress;
 
@@ -352,7 +478,7 @@ class _LessonHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 24, 8),
+      padding: const EdgeInsets.fromLTRB(16, 4, 24, 4),
       child: Row(
         children: [
           IconButton(
@@ -367,7 +493,9 @@ class _LessonHeader extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress.clamp(0.0, 1.0),
                 minHeight: 8,
-                backgroundColor: const Color(0xFFDBE7F5),
+                backgroundColor: const Color(
+                  0xFFDBE7F5,
+                ).withValues(alpha: 0.72),
                 color: theme.colorScheme.primary,
               ),
             ),
@@ -383,6 +511,9 @@ class _LessonHeader extends StatelessWidget {
 class _AudioFooter extends ConsumerWidget {
   const _AudioFooter();
 
+  static const double height = 72;
+  static const double minBottomGap = 24;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -394,9 +525,10 @@ class _AudioFooter extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
       child: Material(
-        color: theme.colorScheme.surface,
+        color: theme.colorScheme.surface.withValues(alpha: 0.72),
         elevation: 3,
         shadowColor: Colors.black26,
+        surfaceTintColor: Colors.transparent,
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
@@ -554,6 +686,7 @@ class _ContentPageView extends StatelessWidget {
     required this.page,
     required this.assetBasePath,
     required this.showHint,
+    required this.pageInsets,
   });
 
   final models.ContentPage page;
@@ -562,31 +695,40 @@ class _ContentPageView extends StatelessWidget {
   /// 音声が止まり次へ促し中であることを示すヒントを表示するか。
   final bool showHint;
 
+  /// ヘッダー・フッターに重ならない停止位置を保つための余白。
+  ///
+  /// PageView 自体は全面に広げるため、スワイプ中のカードは透過した上下UIの裏を
+  /// 通って見える。
+  final EdgeInsets pageInsets;
+
   @override
   Widget build(BuildContext context) {
     // 縦 PageView と同方向のネストスクロールはジェスチャーを取り合い、背の高い
     // カードでページ送りができなくなる。これを避けるため 1ページ＝1画面に収める。
     // カードに与えられる最大の幅・高さを渡し、収まらないときはカード側で全体を
     // 縮小して（文字も含めて）はみ出さないようにする。
-    return LayoutBuilder(
-      builder: (context, constraints) => Stack(
-        children: [
-          Center(
-            child: _LessonCard(
-              page: page,
-              assetBasePath: assetBasePath,
-              maxWidth: constraints.maxWidth - 32,
-              maxHeight: constraints.maxHeight - 40,
+    return Padding(
+      padding: pageInsets,
+      child: LayoutBuilder(
+        builder: (context, constraints) => Stack(
+          children: [
+            Center(
+              child: _LessonCard(
+                page: page,
+                assetBasePath: assetBasePath,
+                maxWidth: constraints.maxWidth - 32,
+                maxHeight: constraints.maxHeight - 40,
+              ),
             ),
-          ),
-          // 音声が止まったら次へのスワイプを促す控えめな記号を下部中央に出す。
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 12,
-            child: Center(child: _SwipeHint(visible: showHint)),
-          ),
-        ],
+            // 音声が止まったら次へのスワイプを促す控えめな記号を下部中央に出す。
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 12,
+              child: Center(child: _SwipeHint(visible: showHint)),
+            ),
+          ],
+        ),
       ),
     );
   }
