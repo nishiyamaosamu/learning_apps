@@ -708,7 +708,9 @@ ContentPage _$ContentPageFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ContentPage {
-  // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
+  // ページのタイトル（任意）。AppBar 等の本文外 UI で使う。
+  String? get title =>
+      throw _privateConstructorUsedError; // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
   // （例 lessons/audios/1-1.mp3）。
   String? get audioUrl =>
       throw _privateConstructorUsedError; // 縦に積み上げて一度に表示するブロック列（1つ以上）。配列順。
@@ -731,7 +733,7 @@ abstract class $ContentPageCopyWith<$Res> {
     $Res Function(ContentPage) then,
   ) = _$ContentPageCopyWithImpl<$Res, ContentPage>;
   @useResult
-  $Res call({String? audioUrl, List<ContentBlock> blocks});
+  $Res call({String? title, String? audioUrl, List<ContentBlock> blocks});
 }
 
 /// @nodoc
@@ -748,9 +750,17 @@ class _$ContentPageCopyWithImpl<$Res, $Val extends ContentPage>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? audioUrl = freezed, Object? blocks = null}) {
+  $Res call({
+    Object? title = freezed,
+    Object? audioUrl = freezed,
+    Object? blocks = null,
+  }) {
     return _then(
       _value.copyWith(
+            title: freezed == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String?,
             audioUrl: freezed == audioUrl
                 ? _value.audioUrl
                 : audioUrl // ignore: cast_nullable_to_non_nullable
@@ -774,7 +784,7 @@ abstract class _$$ContentPageImplCopyWith<$Res>
   ) = __$$ContentPageImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? audioUrl, List<ContentBlock> blocks});
+  $Res call({String? title, String? audioUrl, List<ContentBlock> blocks});
 }
 
 /// @nodoc
@@ -790,9 +800,17 @@ class __$$ContentPageImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? audioUrl = freezed, Object? blocks = null}) {
+  $Res call({
+    Object? title = freezed,
+    Object? audioUrl = freezed,
+    Object? blocks = null,
+  }) {
     return _then(
       _$ContentPageImpl(
+        title: freezed == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String?,
         audioUrl: freezed == audioUrl
             ? _value.audioUrl
             : audioUrl // ignore: cast_nullable_to_non_nullable
@@ -810,6 +828,7 @@ class __$$ContentPageImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ContentPageImpl implements _ContentPage {
   const _$ContentPageImpl({
+    this.title,
     this.audioUrl,
     final List<ContentBlock> blocks = const <ContentBlock>[],
   }) : _blocks = blocks;
@@ -817,6 +836,9 @@ class _$ContentPageImpl implements _ContentPage {
   factory _$ContentPageImpl.fromJson(Map<String, dynamic> json) =>
       _$$ContentPageImplFromJson(json);
 
+  // ページのタイトル（任意）。AppBar 等の本文外 UI で使う。
+  @override
+  final String? title;
   // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
   // （例 lessons/audios/1-1.mp3）。
   @override
@@ -834,7 +856,7 @@ class _$ContentPageImpl implements _ContentPage {
 
   @override
   String toString() {
-    return 'ContentPage(audioUrl: $audioUrl, blocks: $blocks)';
+    return 'ContentPage(title: $title, audioUrl: $audioUrl, blocks: $blocks)';
   }
 
   @override
@@ -842,6 +864,7 @@ class _$ContentPageImpl implements _ContentPage {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ContentPageImpl &&
+            (identical(other.title, title) || other.title == title) &&
             (identical(other.audioUrl, audioUrl) ||
                 other.audioUrl == audioUrl) &&
             const DeepCollectionEquality().equals(other._blocks, _blocks));
@@ -851,6 +874,7 @@ class _$ContentPageImpl implements _ContentPage {
   @override
   int get hashCode => Object.hash(
     runtimeType,
+    title,
     audioUrl,
     const DeepCollectionEquality().hash(_blocks),
   );
@@ -871,6 +895,7 @@ class _$ContentPageImpl implements _ContentPage {
 
 abstract class _ContentPage implements ContentPage {
   const factory _ContentPage({
+    final String? title,
     final String? audioUrl,
     final List<ContentBlock> blocks,
   }) = _$ContentPageImpl;
@@ -878,7 +903,9 @@ abstract class _ContentPage implements ContentPage {
   factory _ContentPage.fromJson(Map<String, dynamic> json) =
       _$ContentPageImpl.fromJson;
 
-  // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
+  // ページのタイトル（任意）。AppBar 等の本文外 UI で使う。
+  @override
+  String? get title; // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
   // （例 lessons/audios/1-1.mp3）。
   @override
   String? get audioUrl; // 縦に積み上げて一度に表示するブロック列（1つ以上）。配列順。
@@ -1000,13 +1027,14 @@ class __$$ContentBlockImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ContentBlockImpl implements _ContentBlock {
-  const _$ContentBlockImpl({required this.text, this.imageUrl});
+  const _$ContentBlockImpl({this.text = '', this.imageUrl});
 
   factory _$ContentBlockImpl.fromJson(Map<String, dynamic> json) =>
       _$$ContentBlockImplFromJson(json);
 
   // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
   @override
+  @JsonKey()
   final String text;
   // このブロックに添える画像（任意）。本文の上に表示する。
   // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
@@ -1047,10 +1075,8 @@ class _$ContentBlockImpl implements _ContentBlock {
 }
 
 abstract class _ContentBlock implements ContentBlock {
-  const factory _ContentBlock({
-    required final String text,
-    final String? imageUrl,
-  }) = _$ContentBlockImpl;
+  const factory _ContentBlock({final String text, final String? imageUrl}) =
+      _$ContentBlockImpl;
 
   factory _ContentBlock.fromJson(Map<String, dynamic> json) =
       _$ContentBlockImpl.fromJson;

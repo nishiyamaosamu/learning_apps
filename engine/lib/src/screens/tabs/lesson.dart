@@ -31,7 +31,13 @@ class Lesson extends ConsumerWidget {
       data: (l) => _LessonPlayer(lesson: l, assetBasePath: basePath),
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, _) => Scaffold(body: Center(child: Text('読み込みに失敗しました\n$e'))),
+      error: (e, s) {
+        print('Failed to load lesson $id: $e\n$s');
+        return Scaffold(
+          appBar: AppBar(title: Text(title)),
+          body: Center(child: Text('レッスンの読み込みに失敗しました\n$e')),
+        );
+      },
     );
   }
 }
@@ -217,6 +223,8 @@ class _LessonAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.white,
+      scrolledUnderElevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.close),
         onPressed: () => Navigator.of(context).maybePop(),
@@ -319,11 +327,8 @@ class _SnappyPageScrollPhysics extends ScrollPhysics {
 
   // スナップを素早く収束させる硬めのばね（標準は stiffness:100, mass:0.5）。
   @override
-  SpringDescription get spring => SpringDescription.withDampingRatio(
-    mass: 0.4,
-    stiffness: 220,
-    ratio: 1.1,
-  );
+  SpringDescription get spring =>
+      SpringDescription.withDampingRatio(mass: 0.4, stiffness: 220, ratio: 1.1);
 
   double _targetPixels(ScrollMetrics position, double velocity) {
     final vp = position.viewportDimension;
@@ -338,7 +343,10 @@ class _SnappyPageScrollPhysics extends ScrollPhysics {
     } else {
       page = current.roundToDouble(); // ほぼ静止：近い方へ
     }
-    return (page * vp).clamp(position.minScrollExtent, position.maxScrollExtent);
+    return (page * vp).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    );
   }
 
   @override
@@ -425,10 +433,11 @@ class _ContentPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blocks = page.blocks;
+    final hasImage = blocks.any((b) => b.imageUrl != null);
 
     return Stack(
       children: [
-        // ブロックを縦に積み上げて表示。内容が短ければ縦中央寄せ、
+        // ブロックを縦に積み上げて表示。内容が短ければ縦中央寄せ（画像あり時は上揃え）、
         // 溢れたらスクロールする。
         LayoutBuilder(
           builder: (context, constraints) => SingleChildScrollView(
@@ -437,9 +446,22 @@ class _ContentPageView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: hasImage
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (page.title != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Text(
+                          page.title!,
+                          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
                     for (var i = 0; i < blocks.length; i++)
                       Padding(
                         padding: EdgeInsets.only(top: i == 0 ? 0 : 16),
@@ -466,7 +488,7 @@ class _ContentPageView extends StatelessWidget {
   }
 }
 
-/// コンテンツページの1ブロック。画像（任意）を上に、本文を下に積む。
+/// コンテンツページの1ブロック。本文を上に、画像（任意）を下に積む。
 class _ContentBlockView extends StatelessWidget {
   const _ContentBlockView({required this.block, required this.assetBasePath});
 
@@ -479,14 +501,17 @@ class _ContentBlockView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (imageUrl != null) ...[
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 240),
-            child: ContentImage(assetPath: '$assetBasePath/$imageUrl'),
-          ),
-          if (block.text.isNotEmpty) const SizedBox(height: 12),
-        ],
         if (block.text.isNotEmpty) MarkdownText(text: block.text),
+        if (imageUrl != null) ...[
+          if (block.text.isNotEmpty) const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 240),
+              child: ContentImage(assetPath: '$assetBasePath/$imageUrl'),
+            ),
+          ),
+        ],
       ],
     );
   }

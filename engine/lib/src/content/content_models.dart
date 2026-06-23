@@ -57,6 +57,8 @@ class Lesson with _$Lesson {
 @freezed
 class ContentPage with _$ContentPage {
   const factory ContentPage({
+    // ページのタイトル（任意）。AppBar 等の本文外 UI で使う。
+    String? title,
     // ページ全体のナレーション音声（任意）。ローカルアセット相対パス
     // （例 lessons/audios/1-1.mp3）。
     String? audioUrl,
@@ -74,7 +76,7 @@ class ContentPage with _$ContentPage {
 class ContentBlock with _$ContentBlock {
   const factory ContentBlock({
     // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
-    required String text,
+    @Default('') String text,
     // このブロックに添える画像（任意）。本文の上に表示する。
     // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
     String? imageUrl,

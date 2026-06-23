@@ -73,6 +73,7 @@ Map<String, dynamic> _$$LessonImplToJson(_$LessonImpl instance) =>
 
 _$ContentPageImpl _$$ContentPageImplFromJson(Map<String, dynamic> json) =>
     _$ContentPageImpl(
+      title: json['title'] as String?,
       audioUrl: json['audioUrl'] as String?,
       blocks:
           (json['blocks'] as List<dynamic>?)
@@ -82,11 +83,15 @@ _$ContentPageImpl _$$ContentPageImplFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$$ContentPageImplToJson(_$ContentPageImpl instance) =>
-    <String, dynamic>{'audioUrl': instance.audioUrl, 'blocks': instance.blocks};
+    <String, dynamic>{
+      'title': instance.title,
+      'audioUrl': instance.audioUrl,
+      'blocks': instance.blocks,
+    };
 
 _$ContentBlockImpl _$$ContentBlockImplFromJson(Map<String, dynamic> json) =>
     _$ContentBlockImpl(
-      text: json['text'] as String,
+      text: json['text'] as String? ?? '',
       imageUrl: json['imageUrl'] as String?,
     );
 

@@ -89,3 +89,13 @@ cd engine && mise exec -- dart run build_runner build --delete-conflicting-outpu
 - ITパスポート試験対策アプリ
 - タブ: ホーム・講座・問題集・暗記カード・設定
 - コンテンツは `apps/ipa_ip/contents/` 配下にJSONで管理（`base.json` と `lessons/{id}.json` など）
+
+# 画像生成
+画像生成が必要なときは、以下の形式でCodexを呼び出してください。
+
+codex exec --sandbox workspace-write "
+この画像が使われるレイアウトは、下記内容テキストの下に配置されるため、説明的なテキストは不要です。単語として分かるものはOKです。タイトルも不要です。書き込み量は少なく、抽象的なものにしてください。サイズは16:9横長でお願いします。
+柔らかく、明るい色合いの、日本語の図解スタイルです。
+内容:
+<ここに画像の内容を日本語で簡潔に記述してください>
+"

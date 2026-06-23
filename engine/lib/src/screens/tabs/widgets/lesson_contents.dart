@@ -16,7 +16,7 @@ class ContentImage extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       child: Image.asset(
         assetPath,
-        fit: BoxFit.contain,
+        fit: BoxFit.fitWidth,
         errorBuilder: (context, error, stackTrace) {
           final theme = Theme.of(context);
           return Container(
@@ -89,10 +89,10 @@ class MarkdownText extends StatelessWidget {
     );
   }
 
-  /// `**bold**` と `` `code` `` の最小インライン対応。
+  /// `**bold**`・`` `code` ``・`==highlight==` の最小インライン対応。
   Widget _inline(String source, ThemeData theme) {
     final spans = <TextSpan>[];
-    final pattern = RegExp(r'\*\*(.+?)\*\*|`(.+?)`');
+    final pattern = RegExp(r'\*\*(.+?)\*\*|`(.+?)`|==(.+?)==');
     var index = 0;
     for (final m in pattern.allMatches(source)) {
       if (m.start > index) {
@@ -103,12 +103,20 @@ class MarkdownText extends StatelessWidget {
           text: m.group(1),
           style: const TextStyle(fontWeight: FontWeight.bold),
         ));
-      } else {
+      } else if (m.group(2) != null) {
         spans.add(TextSpan(
           text: m.group(2),
           style: TextStyle(
             fontFamily: 'monospace',
             backgroundColor: theme.colorScheme.surfaceContainerHighest,
+          ),
+        ));
+      } else {
+        spans.add(TextSpan(
+          text: m.group(3),
+          style: TextStyle(
+            color: theme.colorScheme.primary,
+            fontWeight: FontWeight.bold,
           ),
         ));
       }
