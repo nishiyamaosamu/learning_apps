@@ -54,4 +54,8 @@ const Map<String, IconData> markdownIcons = {
   'rocket': Icons.rocket_launch,
   'handshake': Icons.handshake,
   'leaf': Icons.eco,
+  'copy': Icons.content_copy,
+  'share': Icons.share,
+  'gavel': Icons.gavel,
+  'balance': Icons.balance,
 };

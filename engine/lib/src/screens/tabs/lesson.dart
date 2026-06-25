@@ -760,11 +760,6 @@ class _LessonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textBlocks = page.blocks.where((b) => b.text.isNotEmpty).toList();
-    final imageUrls = [
-      for (final b in page.blocks)
-        if (b.imageUrl != null) b.imageUrl!,
-    ];
 
     return Container(
       width: maxWidth,
@@ -787,26 +782,25 @@ class _LessonCard extends StatelessWidget {
         ],
       ),
       clipBehavior: Clip.antiAlias,
-      child: _buildContent(theme, textBlocks, imageUrls),
+      child: _buildContent(theme),
     );
   }
 
-  /// 画像が下端まで縮んでいい最小の高さ。画像はまずこの高さまで縮み、
-  /// それでも収まらないときに初めて文字を含む全体が縮小される。
-  static const double _minImageHeight = 120;
+  Widget _buildContent(ThemeData theme) {
+    // ブロックを定義順にそのまま並べる（テキスト・画像が混在してよい）。
+    final blockWidgets = <Widget>[
+      for (final b in page.blocks)
+        if (b.imageUrl != null)
+          ContentImage(assetPath: '$assetBasePath/${b.imageUrl}')
+        else if (b.text.isNotEmpty)
+          MarkdownText(text: b.text),
+    ];
 
-  Widget _buildContent(
-    ThemeData theme,
-    List<models.ContentBlock> textBlocks,
-    List<String> imageUrls,
-  ) {
-    final hasImage = imageUrls.isNotEmpty;
-
-    final textContent = Padding(
-      padding: EdgeInsets.fromLTRB(20, 24, 20, hasImage ? 18 : 24),
+    final content = Padding(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (page.title != null) ...[
             Text(
@@ -818,71 +812,23 @@ class _LessonCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
           ],
-          for (var i = 0; i < textBlocks.length; i++)
+          for (var i = 0; i < blockWidgets.length; i++)
             Padding(
               padding: EdgeInsets.only(top: i == 0 ? 0 : 16),
-              child: MarkdownText(text: textBlocks[i].text),
+              child: blockWidgets[i],
             ),
         ],
       ),
     );
 
-    // 文字ブロック。原寸で収まる間は縮小せず、与えられた上限を超えるときだけ
-    // 全体を縮めて収める（縦 PageView との競合を避けるためスクロールは持たない）。
-    // 画像があるときは「最小画像高さ」を残した高さを上限にし、画像を優先して
-    // 縮めても足りない場合にのみ文字側が縮むようにする。
-    final textMaxHeight = hasImage
-        ? (maxHeight - _minImageHeight).clamp(0.0, maxHeight)
-        : maxHeight;
-    final textArea = ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: textMaxHeight),
+    // 原寸で収まる間は縮小せず、与えられた上限を超えるときだけ全体を縮めて収める
+    // （縦 PageView との競合を避けるためスクロールは持たない）。
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxHeight),
       child: FittedBox(
         fit: BoxFit.scaleDown,
         alignment: Alignment.topCenter,
-        child: SizedBox(width: maxWidth, child: textContent),
-      ),
-    );
-
-    if (!hasImage) {
-      return ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: maxHeight),
-        child: textArea,
-      );
-    }
-
-    // 画像は残りの高さに収まるよう縮む（最小は [_minImageHeight]）。文字が原寸で
-    // 収まっていれば画像だけが縮み、文字が縮んでいる場合のみ全体が縮む形になる。
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: maxHeight),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          textArea,
-          Flexible(
-            fit: FlexFit.loose,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: _minImageHeight),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // 末尾の画像はカード端まで敷き込む（角丸はカードのクリップに任せる）。
-                  for (final url in imageUrls)
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: ContentImage(
-                        assetPath: '$assetBasePath/$url',
-                        borderRadius: BorderRadius.zero,
-                        fit: BoxFit.contain,
-                        alignment: Alignment.bottomCenter,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ],
+        child: SizedBox(width: maxWidth, child: content),
       ),
     );
   }

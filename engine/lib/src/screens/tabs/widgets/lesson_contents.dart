@@ -137,11 +137,22 @@ class MarkdownText extends StatelessWidget {
       } else if (trimmed.startsWith('- ')) {
         widgets.add(
           Padding(
-            padding: const EdgeInsets.only(left: 8, top: 2, bottom: 2),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('・'),
+                // 小さなドット。先頭行の中央あたりに合わせる。
+                Padding(
+                  padding: const EdgeInsets.only(top: 9, right: 10),
+                  child: Container(
+                    width: 4,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
                 Expanded(child: _inline(trimmed.substring(2), theme)),
               ],
             ),
@@ -309,7 +320,7 @@ class _IconList extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 14),
-              Expanded(child: MarkdownText(text: rows[i].text)),
+              Expanded(child: _rowContent(rows[i].text)),
             ],
           ),
         ),
@@ -319,6 +330,26 @@ class _IconList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: children,
+    );
+  }
+
+  /// 行の本文を描画する。`ラベル：説明` の形（全角コロン区切り）はラベルを上段・
+  /// 説明を下段の2行にして、ラベルが途中で折り返さないようにする。
+  Widget _rowContent(String text) {
+    final sep = text.indexOf('：');
+    if (sep < 0) return MarkdownText(text: text);
+    final label = text.substring(0, sep);
+    final body = text.substring(sep + 1).trimLeft();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        MarkdownText(text: label),
+        if (body.isNotEmpty) ...[
+          const SizedBox(height: 2),
+          MarkdownText(text: body),
+        ],
+      ],
     );
   }
 }
