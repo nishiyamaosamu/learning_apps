@@ -787,59 +787,102 @@ class _LessonCard extends StatelessWidget {
         ],
       ),
       clipBehavior: Clip.antiAlias,
-      child: ConstrainedBox(
+      child: _buildContent(theme, textBlocks, imageUrls),
+    );
+  }
+
+  /// 画像が下端まで縮んでいい最小の高さ。画像はまずこの高さまで縮み、
+  /// それでも収まらないときに初めて文字を含む全体が縮小される。
+  static const double _minImageHeight = 120;
+
+  Widget _buildContent(
+    ThemeData theme,
+    List<models.ContentBlock> textBlocks,
+    List<String> imageUrls,
+  ) {
+    final hasImage = imageUrls.isNotEmpty;
+
+    final textContent = Padding(
+      padding: EdgeInsets.fromLTRB(20, 24, 20, hasImage ? 18 : 24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (page.title != null) ...[
+            Text(
+              page.title!,
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+          for (var i = 0; i < textBlocks.length; i++)
+            Padding(
+              padding: EdgeInsets.only(top: i == 0 ? 0 : 16),
+              child: MarkdownText(text: textBlocks[i].text),
+            ),
+        ],
+      ),
+    );
+
+    // 文字ブロック。原寸で収まる間は縮小せず、与えられた上限を超えるときだけ
+    // 全体を縮めて収める（縦 PageView との競合を避けるためスクロールは持たない）。
+    // 画像があるときは「最小画像高さ」を残した高さを上限にし、画像を優先して
+    // 縮めても足りない場合にのみ文字側が縮むようにする。
+    final textMaxHeight = hasImage
+        ? (maxHeight - _minImageHeight).clamp(0.0, maxHeight)
+        : maxHeight;
+    final textArea = ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: textMaxHeight),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.topCenter,
+        child: SizedBox(width: maxWidth, child: textContent),
+      ),
+    );
+
+    if (!hasImage) {
+      return ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),
-        // 中身が高さを超えるページだけ、文字も含めて全体を縮小して収める
-        // （収まるページは原寸のまま）。縦 PageView との競合を避けるため、
-        // ページ内スクロールは持たない。
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.topCenter,
-          child: SizedBox(
-            width: maxWidth,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    20,
-                    24,
-                    20,
-                    imageUrls.isEmpty ? 24 : 18,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (page.title != null) ...[
-                        Text(
-                          page.title!,
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                      ],
-                      for (var i = 0; i < textBlocks.length; i++)
-                        Padding(
-                          padding: EdgeInsets.only(top: i == 0 ? 0 : 16),
-                          child: MarkdownText(text: textBlocks[i].text),
-                        ),
-                    ],
-                  ),
-                ),
-                // 末尾の画像はカード端まで敷き込む（角丸はカードのクリップに任せる）。
-                for (final url in imageUrls)
-                  ContentImage(
-                    assetPath: '$assetBasePath/$url',
-                    borderRadius: BorderRadius.zero,
-                  ),
-              ],
+        child: textArea,
+      );
+    }
+
+    // 画像は残りの高さに収まるよう縮む（最小は [_minImageHeight]）。文字が原寸で
+    // 収まっていれば画像だけが縮み、文字が縮んでいる場合のみ全体が縮む形になる。
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          textArea,
+          Flexible(
+            fit: FlexFit.loose,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: _minImageHeight),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // 末尾の画像はカード端まで敷き込む（角丸はカードのクリップに任せる）。
+                  for (final url in imageUrls)
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: ContentImage(
+                        assetPath: '$assetBasePath/$url',
+                        borderRadius: BorderRadius.zero,
+                        fit: BoxFit.contain,
+                        alignment: Alignment.bottomCenter,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

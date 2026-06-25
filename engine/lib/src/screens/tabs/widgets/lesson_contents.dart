@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../content/content_models.dart';
+import 'markdown_icons.dart';
 import 'quiz_controller.dart';
 
 /// コンテンツの画像。アセットが見つからない場合はプレースホルダを表示する。
@@ -9,6 +10,8 @@ class ContentImage extends StatelessWidget {
     super.key,
     required this.assetPath,
     this.borderRadius = const BorderRadius.all(Radius.circular(8)),
+    this.fit = BoxFit.fitWidth,
+    this.alignment = Alignment.center,
   });
 
   /// 画像アセットの完全パス（例: 'contents/lessons/images/2-1.jpeg'）。
@@ -18,13 +21,20 @@ class ContentImage extends StatelessWidget {
   /// 角丸は外側のカード側のクリップに任せる。
   final BorderRadius borderRadius;
 
+  /// 画像のフィット方法。高さ制約内で縮めたい場合は [BoxFit.contain] を渡す。
+  final BoxFit fit;
+
+  /// フィット後の配置。縮小時に下端へ寄せたい場合は [Alignment.bottomCenter] など。
+  final Alignment alignment;
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: borderRadius,
       child: Image.asset(
         assetPath,
-        fit: BoxFit.fitWidth,
+        fit: fit,
+        alignment: alignment,
         errorBuilder: (context, error, stackTrace) {
           final theme = Theme.of(context);
           return Container(
@@ -49,14 +59,34 @@ class ContentImage extends StatelessWidget {
   }
 }
 
-/// 説明本文。Markdown ソースをそのまま表示する簡易レンダラ。
+/// 説明本文。Markdown ソースを簡易レンダリングする。
 ///
-/// （見出し `#`・箇条書き `-`・太字 `**`・インラインコード `` ` `` の最小対応。
-/// 本格的な Markdown 表示が必要になったら flutter_markdown 等の導入を検討する。）
+/// 対応記法:
+/// - 見出し `# `、箇条書き `- `、区切り線 `---`
+/// - インライン: 太字 `**`、コード `` ` ``、色強調 `==`、アイコン `:name:`
+/// - フェンスブロック `:::variant` 〜 `:::`
+///   - `:::iconlist` … 円アイコン付きの行（`- :name: 本文`）を区切り線で並べる
+///   - `:::box` … 角丸の囲み（中央揃え）
+///   - `:::center` … 中央揃え（囲みなし）
+///
+/// 本格的な Markdown 表示が必要になったら flutter_markdown 等の導入を検討する。
 class MarkdownText extends StatelessWidget {
-  const MarkdownText({super.key, required this.text});
+  const MarkdownText({
+    super.key,
+    required this.text,
+    this.textAlign = TextAlign.start,
+  });
 
   final String text;
+
+  /// 段落・見出し・箇条書きの行揃え。`:::center` / `:::box` の中で中央寄せに使う。
+  final TextAlign textAlign;
+
+  CrossAxisAlignment get _crossAxis => switch (textAlign) {
+    TextAlign.center => CrossAxisAlignment.center,
+    TextAlign.end || TextAlign.right => CrossAxisAlignment.end,
+    _ => CrossAxisAlignment.start,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -64,79 +94,232 @@ class MarkdownText extends StatelessWidget {
     final lines = text.split('\n');
     final widgets = <Widget>[];
 
-    for (final line in lines) {
-      final trimmed = line.trimRight();
-      if (trimmed.isEmpty) {
-        widgets.add(const SizedBox(height: 8));
+    for (var i = 0; i < lines.length; i++) {
+      final trimmed = lines[i].trim();
+
+      // フェンスブロック（:::variant 〜 :::）。内側を集めてまとめて描画する。
+      if (trimmed.startsWith(':::')) {
+        final variant = trimmed.substring(3).trim();
+        final inner = <String>[];
+        i++;
+        while (i < lines.length && lines[i].trim() != ':::') {
+          inner.add(lines[i]);
+          i++;
+        }
+        widgets.add(_fenced(variant, inner.join('\n'), theme));
         continue;
       }
-      if (trimmed.startsWith('# ')) {
-        widgets.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Text(trimmed.substring(2), style: theme.textTheme.titleLarge),
-        ));
-      } else if (trimmed.startsWith('- ')) {
-        widgets.add(Padding(
-          padding: const EdgeInsets.only(left: 8, top: 2, bottom: 2),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('・'),
-              Expanded(child: _inline(trimmed.substring(2), theme)),
-            ],
+
+      if (trimmed.isEmpty) {
+        widgets.add(const SizedBox(height: 8));
+      } else if (trimmed == '---' || trimmed == '***') {
+        widgets.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Divider(
+              height: 0.5,
+              thickness: 0.5,
+              color: theme.dividerColor.withValues(alpha: 0.4),
+            ),
           ),
-        ));
+        );
+      } else if (trimmed.startsWith('# ')) {
+        widgets.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: _inline(
+              trimmed.substring(2),
+              theme,
+              style: theme.textTheme.titleLarge,
+            ),
+          ),
+        );
+      } else if (trimmed.startsWith('- ')) {
+        widgets.add(
+          Padding(
+            padding: const EdgeInsets.only(left: 8, top: 2, bottom: 2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('・'),
+                Expanded(child: _inline(trimmed.substring(2), theme)),
+              ],
+            ),
+          ),
+        );
       } else {
         widgets.add(_inline(trimmed, theme));
       }
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: widgets,
-    );
+    return Column(crossAxisAlignment: _crossAxis, children: widgets);
   }
 
-  /// `**bold**`・`` `code` ``・`==highlight==` の最小インライン対応。
-  Widget _inline(String source, ThemeData theme) {
-    final spans = <TextSpan>[];
-    final pattern = RegExp(r'\*\*(.+?)\*\*|`(.+?)`|==(.+?)==');
+  /// `:::variant` ブロックを種別ごとに描画する。
+  Widget _fenced(String variant, String inner, ThemeData theme) {
+    switch (variant) {
+      case 'iconlist':
+        return _IconList(source: inner);
+      case 'center':
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: MarkdownText(text: inner, textAlign: TextAlign.center),
+        );
+      case 'box':
+      default:
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: MarkdownText(text: inner, textAlign: TextAlign.center),
+          ),
+        );
+    }
+  }
+
+  /// `**bold**`・`` `code` ``・`==highlight==`・`:icon:` のインライン対応。
+  Widget _inline(String source, ThemeData theme, {TextStyle? style}) {
+    final raw = style ?? theme.textTheme.bodyLarge;
+    // 全体的に少し詰めたいので base のフォントサイズを 1.5pt 下げる。
+    final base = raw?.copyWith(fontSize: (raw.fontSize ?? 16) - 1.5);
+    final spans = <InlineSpan>[];
+    final pattern = RegExp(
+      r'\*\*(.+?)\*\*|`(.+?)`|==(.+?)==|:([a-z_][a-z0-9_]*):',
+    );
     var index = 0;
     for (final m in pattern.allMatches(source)) {
       if (m.start > index) {
         spans.add(TextSpan(text: source.substring(index, m.start)));
       }
       if (m.group(1) != null) {
-        spans.add(TextSpan(
-          text: m.group(1),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ));
+        spans.add(
+          TextSpan(
+            text: m.group(1),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        );
       } else if (m.group(2) != null) {
-        spans.add(TextSpan(
-          text: m.group(2),
-          style: TextStyle(
-            fontFamily: 'monospace',
-            backgroundColor: theme.colorScheme.surfaceContainerHighest,
+        spans.add(
+          TextSpan(
+            text: m.group(2),
+            style: TextStyle(
+              fontFamily: 'monospace',
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+            ),
           ),
-        ));
+        );
+      } else if (m.group(3) != null) {
+        spans.add(
+          TextSpan(
+            text: m.group(3),
+            style: TextStyle(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
       } else {
-        spans.add(TextSpan(
-          text: m.group(3),
-          style: TextStyle(
-            color: theme.colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ));
+        final icon = markdownIcons[m.group(4)];
+        if (icon == null) {
+          // 未登録のアイコン名はそのまま文字列として残す。
+          spans.add(TextSpan(text: m.group(0)));
+        } else {
+          spans.add(
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 1),
+                child: Icon(
+                  icon,
+                  size: (base?.fontSize ?? 16) * 1.15,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ),
+          );
+        }
       }
       index = m.end;
     }
     if (index < source.length) {
       spans.add(TextSpan(text: source.substring(index)));
     }
-    return Text.rich(TextSpan(
-      style: theme.textTheme.bodyLarge,
-      children: spans,
-    ));
+    return Text.rich(
+      TextSpan(style: base, children: spans),
+      textAlign: textAlign,
+    );
+  }
+}
+
+/// `:::iconlist` ブロック。`- :name: 本文` の各行を、円アイコンのバッジ付きで
+/// 縦に並べ、行間に薄い区切り線を入れる（スクショのヒト/モノ/カネ/情報のレイアウト）。
+class _IconList extends StatelessWidget {
+  const _IconList({required this.source});
+
+  final String source;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final rowPattern = RegExp(r'^-\s*:([a-z_][a-z0-9_]*):\s*(.*)$');
+    final rows = <({IconData icon, String text})>[];
+    for (final line in source.split('\n')) {
+      final m = rowPattern.firstMatch(line.trim());
+      if (m == null) continue;
+      final icon = markdownIcons[m.group(1)];
+      if (icon == null) continue;
+      rows.add((icon: icon, text: m.group(2) ?? ''));
+    }
+    if (rows.isEmpty) return const SizedBox.shrink();
+
+    final children = <Widget>[];
+    for (var i = 0; i < rows.length; i++) {
+      if (i > 0) {
+        children.add(
+          Divider(
+            height: 0.5,
+            thickness: 0.5,
+            color: theme.dividerColor.withValues(alpha: 0.4),
+          ),
+        );
+      }
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  rows[i].icon,
+                  color: theme.colorScheme.primary,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(child: MarkdownText(text: rows[i].text)),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
+    );
   }
 }
 
@@ -216,20 +399,20 @@ class _OptionTile extends StatelessWidget {
     final (Color border, Color? bg, IconData? icon) = switch (state) {
       _OptionState.idle => (theme.dividerColor, null, null),
       _OptionState.selected => (
-          theme.colorScheme.primary,
-          theme.colorScheme.primary.withValues(alpha: 0.08),
-          Icons.radio_button_checked,
-        ),
+        theme.colorScheme.primary,
+        theme.colorScheme.primary.withValues(alpha: 0.08),
+        Icons.radio_button_checked,
+      ),
       _OptionState.correct => (
-          Colors.green,
-          Colors.green.withValues(alpha: 0.1),
-          Icons.check_circle,
-        ),
+        Colors.green,
+        Colors.green.withValues(alpha: 0.1),
+        Icons.check_circle,
+      ),
       _OptionState.wrong => (
-          theme.colorScheme.error,
-          theme.colorScheme.error.withValues(alpha: 0.1),
-          Icons.cancel,
-        ),
+        theme.colorScheme.error,
+        theme.colorScheme.error.withValues(alpha: 0.1),
+        Icons.cancel,
+      ),
     };
 
     return Material(
@@ -263,11 +446,8 @@ class _OptionTile extends StatelessWidget {
 /// - 空欄をタップすると配置を解除して選択肢へ戻す（回答確定前のみ）。
 /// - 採点は「回答する」（[QuizController.submit]）で行う。
 class FillInTheBlankQuiz extends StatelessWidget {
-  FillInTheBlankQuiz({
-    super.key,
-    required this.quiz,
-    required this.controller,
-  }) : _segments = quiz.question.split('[__]');
+  FillInTheBlankQuiz({super.key, required this.quiz, required this.controller})
+    : _segments = quiz.question.split('[__]');
 
   final QuizFillInTheBlank quiz;
   final QuizController controller;
@@ -295,8 +475,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
           children: [
             for (var i = 0; i < _segments.length; i++) ...[
               if (_segments[i].isNotEmpty) Text(_segments[i]),
-              if (i < _blankCount)
-                _buildBlank(i, placed[i], submitted, theme),
+              if (i < _blankCount) _buildBlank(i, placed[i], submitted, theme),
             ],
           ],
         ),
@@ -307,8 +486,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
           runSpacing: 8,
           children: [
             for (var i = 0; i < quiz.options.length; i++)
-              if (!placed.contains(i))
-                _buildDraggableChip(i, submitted, theme),
+              if (!placed.contains(i)) _buildDraggableChip(i, submitted, theme),
           ],
         ),
         if (submitted)
@@ -330,9 +508,10 @@ class FillInTheBlankQuiz extends StatelessWidget {
   bool _isBlankCorrect(int blankIndex, int? optionIndex) =>
       optionIndex == quiz.correctOptionIndices[blankIndex];
 
-  bool _allCorrect(List<int?> placed) =>
-      List.generate(_blankCount, (i) => _isBlankCorrect(i, placed[i]))
-          .every((e) => e);
+  bool _allCorrect(List<int?> placed) => List.generate(
+    _blankCount,
+    (i) => _isBlankCorrect(i, placed[i]),
+  ).every((e) => e);
 
   Widget _buildBlank(
     int blankIndex,
