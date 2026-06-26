@@ -926,9 +926,9 @@ ContentBlock _$ContentBlockFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ContentBlock {
-  // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
-  String get text =>
-      throw _privateConstructorUsedError; // このブロックに添える画像（任意）。本文の上に表示する。
+  // 本文（Markdown）。テキストブロックのとき指定する。画像ブロックでは null。
+  String? get text =>
+      throw _privateConstructorUsedError; // 画像。画像ブロックのとき指定する。テキストブロックでは null。
   // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
   String? get imageUrl => throw _privateConstructorUsedError;
 
@@ -949,7 +949,7 @@ abstract class $ContentBlockCopyWith<$Res> {
     $Res Function(ContentBlock) then,
   ) = _$ContentBlockCopyWithImpl<$Res, ContentBlock>;
   @useResult
-  $Res call({String text, String? imageUrl});
+  $Res call({String? text, String? imageUrl});
 }
 
 /// @nodoc
@@ -966,13 +966,13 @@ class _$ContentBlockCopyWithImpl<$Res, $Val extends ContentBlock>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? text = null, Object? imageUrl = freezed}) {
+  $Res call({Object? text = freezed, Object? imageUrl = freezed}) {
     return _then(
       _value.copyWith(
-            text: null == text
+            text: freezed == text
                 ? _value.text
                 : text // ignore: cast_nullable_to_non_nullable
-                      as String,
+                      as String?,
             imageUrl: freezed == imageUrl
                 ? _value.imageUrl
                 : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -992,7 +992,7 @@ abstract class _$$ContentBlockImplCopyWith<$Res>
   ) = __$$ContentBlockImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String text, String? imageUrl});
+  $Res call({String? text, String? imageUrl});
 }
 
 /// @nodoc
@@ -1008,13 +1008,13 @@ class __$$ContentBlockImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? text = null, Object? imageUrl = freezed}) {
+  $Res call({Object? text = freezed, Object? imageUrl = freezed}) {
     return _then(
       _$ContentBlockImpl(
-        text: null == text
+        text: freezed == text
             ? _value.text
             : text // ignore: cast_nullable_to_non_nullable
-                  as String,
+                  as String?,
         imageUrl: freezed == imageUrl
             ? _value.imageUrl
             : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -1027,16 +1027,15 @@ class __$$ContentBlockImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ContentBlockImpl implements _ContentBlock {
-  const _$ContentBlockImpl({this.text = '', this.imageUrl});
+  const _$ContentBlockImpl({this.text, this.imageUrl});
 
   factory _$ContentBlockImpl.fromJson(Map<String, dynamic> json) =>
       _$$ContentBlockImplFromJson(json);
 
-  // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
+  // 本文（Markdown）。テキストブロックのとき指定する。画像ブロックでは null。
   @override
-  @JsonKey()
-  final String text;
-  // このブロックに添える画像（任意）。本文の上に表示する。
+  final String? text;
+  // 画像。画像ブロックのとき指定する。テキストブロックでは null。
   // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
   @override
   final String? imageUrl;
@@ -1075,15 +1074,15 @@ class _$ContentBlockImpl implements _ContentBlock {
 }
 
 abstract class _ContentBlock implements ContentBlock {
-  const factory _ContentBlock({final String text, final String? imageUrl}) =
+  const factory _ContentBlock({final String? text, final String? imageUrl}) =
       _$ContentBlockImpl;
 
   factory _ContentBlock.fromJson(Map<String, dynamic> json) =
       _$ContentBlockImpl.fromJson;
 
-  // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
+  // 本文（Markdown）。テキストブロックのとき指定する。画像ブロックでは null。
   @override
-  String get text; // このブロックに添える画像（任意）。本文の上に表示する。
+  String? get text; // 画像。画像ブロックのとき指定する。テキストブロックでは null。
   // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
   @override
   String? get imageUrl;

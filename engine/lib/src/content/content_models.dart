@@ -70,14 +70,14 @@ class ContentPage with _$ContentPage {
       _$ContentPageFromJson(json);
 }
 
-/// コンテンツページを構成するブロック。テキストと任意の画像を組み合わせ、
-/// ページ内に上から順（配列順）へ積み上げて一度に表示する。
+/// コンテンツページを構成するブロック。テキストか画像のどちらか一方を持つ
+/// 1アイテム（1ブロック＝1アイテム）。ページ内では配列順に縦へ積み上げる。
 @freezed
 class ContentBlock with _$ContentBlock {
   const factory ContentBlock({
-    // 本文（Markdown）。空文字も許可（画像だけのブロック等）。
-    @Default('') String text,
-    // このブロックに添える画像（任意）。本文の上に表示する。
+    // 本文（Markdown）。テキストブロックのとき指定する。画像ブロックでは null。
+    String? text,
+    // 画像。画像ブロックのとき指定する。テキストブロックでは null。
     // ローカルアセット相対パス（例 lessons/images/2-1.jpeg）。
     String? imageUrl,
   }) = _ContentBlock;

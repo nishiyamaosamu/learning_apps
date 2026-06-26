@@ -787,13 +787,13 @@ class _LessonCard extends StatelessWidget {
   }
 
   Widget _buildContent(ThemeData theme) {
-    // ブロックを定義順にそのまま並べる（テキスト・画像が混在してよい）。
+    // 各ブロックは1アイテム（テキストか画像のどちらか一方）。定義順にそのまま並べる。
     final blockWidgets = <Widget>[
       for (final b in page.blocks)
         if (b.imageUrl != null)
           ContentImage(assetPath: '$assetBasePath/${b.imageUrl}')
-        else if (b.text.isNotEmpty)
-          MarkdownText(text: b.text),
+        else if (b.text != null && b.text!.isNotEmpty)
+          MarkdownText(text: b.text!),
     ];
 
     final content = Padding(

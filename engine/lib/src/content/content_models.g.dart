@@ -91,7 +91,7 @@ Map<String, dynamic> _$$ContentPageImplToJson(_$ContentPageImpl instance) =>
 
 _$ContentBlockImpl _$$ContentBlockImplFromJson(Map<String, dynamic> json) =>
     _$ContentBlockImpl(
-      text: json['text'] as String? ?? '',
+      text: json['text'] as String?,
       imageUrl: json['imageUrl'] as String?,
     );
 
