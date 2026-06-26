@@ -78,6 +78,7 @@ void main() {
 - `lessons/{id}.json`: 1レッスンの中身（ページ列とミニクイズ）。構造の仕様は [docs/LESSON.md](docs/LESSON.md) を参照
 - `lessons/audios/`: レッスン本文のナレーション音声（mp3）
 - レッスンコンテンツは `type` を discriminator とするフラットなunion（text / image / quizMultipleChoice / quizFillInTheBlank）
+- **1ページの分量**: コンテンツページが iPhone 17 で1ページに収まる（縮小されない）かの設計指針と機械チェックは [docs/PAGE_FIT.md](docs/PAGE_FIT.md) を参照。レッスン作成後は `cd apps/ipa_ip && mise exec -- flutter test test/page_fit_test.dart` で各ページの usage を確認する
 
 ## コード生成
 engineパッケージでfreezed/riverpodのコードを変更した場合は再生成が必要：

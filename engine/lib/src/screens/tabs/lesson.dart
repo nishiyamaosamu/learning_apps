@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show FontFeature, ImageFilter;
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -469,7 +470,7 @@ class _HeaderBlur extends StatelessWidget {
 class _LessonHeader extends StatelessWidget {
   const _LessonHeader({required this.progress});
 
-  static const double height = 56;
+  static const double height = LessonCardMetrics.headerHeight;
 
   /// 進捗（0.0〜1.0）。
   final double progress;
@@ -511,7 +512,7 @@ class _LessonHeader extends StatelessWidget {
 class _AudioFooter extends ConsumerWidget {
   const _AudioFooter();
 
-  static const double height = 72;
+  static const double height = LessonCardMetrics.footerHeight;
   static const double minBottomGap = 24;
 
   @override
@@ -716,8 +717,8 @@ class _ContentPageView extends StatelessWidget {
               child: _LessonCard(
                 page: page,
                 assetBasePath: assetBasePath,
-                maxWidth: constraints.maxWidth - 32,
-                maxHeight: constraints.maxHeight - 40,
+                maxWidth: constraints.maxWidth - LessonCardMetrics.horizontalMargin,
+                maxHeight: constraints.maxHeight - LessonCardMetrics.pageVerticalInset,
               ),
             ),
             // 音声が止まったら次へのスワイプを促す控えめな記号を下部中央に出す。
@@ -796,39 +797,118 @@ class _LessonCard extends StatelessWidget {
           MarkdownText(text: b.text!),
     ];
 
-    final content = Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (page.title != null) ...[
-            Text(
-              page.title!,
-              style: theme.textTheme.labelMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 12),
-          ],
-          for (var i = 0; i < blockWidgets.length; i++)
-            Padding(
-              padding: EdgeInsets.only(top: i == 0 ? 0 : 16),
-              child: blockWidgets[i],
-            ),
-        ],
-      ),
+    // 本体レイアウトは buildLessonCardColumn に集約（分量チェックのテストと共有）。
+    final content = buildLessonCardColumn(
+      title: page.title,
+      blocks: blockWidgets,
+      theme: theme,
     );
 
     // 原寸で収まる間は縮小せず、与えられた上限を超えるときだけ全体を縮めて収める
-    // （縦 PageView との競合を避けるためスクロールは持たない）。
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: maxHeight),
+    // （縦 PageView との競合を避けるためスクロールは持たない）。デバッグ時のみ
+    // 使用率（本文の原寸高さ ÷ maxHeight）を右上に小さく表示する。
+    return _FittedContent(
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
+      child: content,
+    );
+  }
+}
+
+/// 本文を [FittedBox]（scaleDown）でカードに収める。デバッグビルドのときだけ、
+/// 本文の原寸高さが領域（[maxHeight]）の何％かを右上にバッジ表示する。
+///
+/// 100% を超えると実機でも縮小される（= 1ページに収まっていない）。リリース
+/// ビルドでは計測もバッジ表示も行わず、純粋な [FittedBox] と同じ。
+class _FittedContent extends StatefulWidget {
+  const _FittedContent({
+    required this.maxWidth,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  final double maxWidth;
+  final double maxHeight;
+  final Widget child;
+
+  @override
+  State<_FittedContent> createState() => _FittedContentState();
+}
+
+class _FittedContentState extends State<_FittedContent> {
+  final _childKey = GlobalKey();
+  double? _naturalHeight;
+
+  void _measure() {
+    // FittedBox は子を原寸でレイアウトし描画時に変換で縮める。よって子の
+    // RenderBox.size は縮小前（原寸）の高さになる。
+    final height = _childKey.currentContext?.size?.height;
+    if (height != null && height != _naturalHeight) {
+      setState(() => _naturalHeight = height);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fitted = ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: widget.maxHeight),
       child: FittedBox(
         fit: BoxFit.scaleDown,
         alignment: Alignment.topCenter,
-        child: SizedBox(width: maxWidth, child: content),
+        child: SizedBox(
+          key: _childKey,
+          width: widget.maxWidth,
+          child: widget.child,
+        ),
+      ),
+    );
+
+    if (!kDebugMode) return fitted;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
+    return Stack(
+      children: [
+        fitted,
+        if (_naturalHeight != null)
+          Positioned(
+            top: 6,
+            right: 6,
+            child: _FitBadge(usage: _naturalHeight! / widget.maxHeight),
+          ),
+      ],
+    );
+  }
+}
+
+/// デバッグ用の使用率バッジ。緑=余裕 / 橙=ギリギリ / 赤=超過（縮小される）。
+class _FitBadge extends StatelessWidget {
+  const _FitBadge({required this.usage});
+
+  final double usage;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = usage > 1.0
+        ? const Color(0xFFFF5252)
+        : usage >= 0.9
+        ? const Color(0xFFFFB300)
+        : const Color(0xFF66BB6A);
+    return IgnorePointer(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          '${(usage * 100).round()}%',
+          style: TextStyle(
+            color: color,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+        ),
       ),
     );
   }

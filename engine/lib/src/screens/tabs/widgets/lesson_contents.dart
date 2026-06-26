@@ -847,3 +847,94 @@ class _Chip extends StatelessWidget {
     );
   }
 }
+
+/// レッスンカードのレイアウト寸法。
+///
+/// 実際の描画（`_LessonCard` / `_ContentPageView`）と、分量が1ページに収まるかを
+/// 機械的に判定するテスト（apps/*/test/page_fit_test.dart）の双方が同じ値を参照
+/// できるよう、寸法をここに一元化する。値を変えると両方の挙動が同時に変わる。
+class LessonCardMetrics {
+  const LessonCardMetrics._();
+
+  /// 上部ヘッダー（進捗バー）の高さ。`_LessonHeader.height` の実体。
+  static const double headerHeight = 56;
+
+  /// 下部フッター（音声操作）の高さ。`_AudioFooter.height` の実体。
+  static const double footerHeight = 72;
+
+  /// 1ページ領域からカードへ渡すときに上下で控える余白の合計
+  /// （`_ContentPageView` の `constraints.maxHeight - 40`）。
+  static const double pageVerticalInset = 40;
+
+  /// カード左右のマージン合計（`constraints.maxWidth - 32`）。
+  static const double horizontalMargin = 32;
+
+  /// カード内側の余白。本文はこの内側でレイアウトされる。
+  static const EdgeInsets cardPadding = EdgeInsets.fromLTRB(20, 24, 20, 24);
+
+  /// ページタイトルと最初のブロックの間隔。
+  static const double titleGap = 12;
+
+  /// ブロック間の間隔。
+  static const double blockGap = 16;
+}
+
+/// カード本文（タイトル＋ブロック列）を組み立てる。
+///
+/// `_LessonCard` の本体レイアウトをこの関数に集約し、分量チェックのテストからも
+/// 同一のツリーを再構築して原寸の高さを計測できるようにする。[blocks] には
+/// テキストなら [MarkdownText]、画像なら [ContentImage]（テストでは寸法を再現した
+/// 代替ウィジェット）を、定義順で渡す。
+Widget buildLessonCardColumn({
+  String? title,
+  required List<Widget> blocks,
+  required ThemeData theme,
+}) {
+  return Padding(
+    padding: LessonCardMetrics.cardPadding,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (title != null) ...[
+          Text(
+            title,
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: LessonCardMetrics.titleGap),
+        ],
+        for (var i = 0; i < blocks.length; i++)
+          Padding(
+            padding: EdgeInsets.only(
+              top: i == 0 ? 0 : LessonCardMetrics.blockGap,
+            ),
+            child: blocks[i],
+          ),
+      ],
+    ),
+  );
+}
+
+/// 画面サイズとセーフエリアから、カードが原寸（縮小なし）で使える最大の
+/// 幅・高さを求める。
+///
+/// 本文の自然な高さがこの [maxHeight] を超えると `_LessonCard` の
+/// `FittedBox(scaleDown)` により全体が縮小される（＝1ページに収まっていない）。
+({double maxWidth, double maxHeight}) lessonCardFitBox({
+  required Size screen,
+  required EdgeInsets viewPadding,
+}) {
+  final pageHeight =
+      screen.height -
+      viewPadding.top -
+      LessonCardMetrics.headerHeight -
+      viewPadding.bottom -
+      LessonCardMetrics.footerHeight;
+  return (
+    maxWidth: screen.width - LessonCardMetrics.horizontalMargin,
+    maxHeight: pageHeight - LessonCardMetrics.pageVerticalInset,
+  );
+}
