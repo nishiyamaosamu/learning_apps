@@ -1,0 +1,4 @@
+interface:
+  display_name: "レッスン画像作成"
+  short_description: "日本語レッスン向け画像を統一した手描きスタイルで生成します"
+  default_prompt: "$create-lesson-image を使って、指定したレッスン内容から画像を作成してください。"
