@@ -275,6 +275,7 @@ class _ImageZoomViewState extends State<_ImageZoomView>
 /// 対応記法:
 /// - 見出し `# `、箇条書き `- `、区切り線 `---`
 /// - インライン: 太字 `**`、コード `` ` ``、色強調 `==`、アイコン `:name:`
+///   （太字・色強調は入れ子可。例: `**`code`と==強調==**`）
 /// - フェンスブロック `:::variant` 〜 `:::`
 ///   - `:::iconlist` … 円アイコン付きの行（`- :name: 本文`）を区切り線で並べる
 ///   - `:::box` … 角丸の囲み（中央揃え）
@@ -409,6 +410,17 @@ class MarkdownText extends StatelessWidget {
     final raw = style ?? theme.textTheme.bodyLarge;
     // 全体的に少し詰めたいので base のフォントサイズを 1.5pt 下げる。
     final base = raw?.copyWith(fontSize: (raw.fontSize ?? 16) - 1.5);
+    return Text.rich(
+      TextSpan(style: base, children: _spans(source, theme, base)),
+      textAlign: textAlign,
+    );
+  }
+
+  /// インライン記法を再帰的に解析する。`**...**` の中に `` `code` `` や
+  /// `==highlight==` が入れ子になっても、それぞれのスタイルを重ねて描画する。
+  List<InlineSpan> _spans(String source, ThemeData theme, TextStyle? base) {
+    final baseSize = base?.fontSize ?? 16;
+    final iconSize = baseSize * 1.15;
     final spans = <InlineSpan>[];
     final pattern = RegExp(
       r'\*\*(.+?)\*\*|`(.+?)`|==(.+?)==|:([a-z_][a-z0-9_]*):',
@@ -419,30 +431,49 @@ class MarkdownText extends StatelessWidget {
         spans.add(TextSpan(text: source.substring(index, m.start)));
       }
       if (m.group(1) != null) {
+        // 太字。中身も再帰的に解釈し、子スパンの上に bold を重ねる。
         spans.add(
           TextSpan(
-            text: m.group(1),
             style: const TextStyle(fontWeight: FontWeight.bold),
+            children: _spans(m.group(1)!, theme, base),
           ),
         );
       } else if (m.group(2) != null) {
+        // コードは中身をそのまま等幅で表示する（入れ子記法は解釈しない）。
+        // :::box に合わせて primary の薄い背景・ボーダー・角丸の枠付きチップにする。
         spans.add(
-          TextSpan(
-            text: m.group(2),
-            style: TextStyle(
-              fontFamily: 'monospace',
-              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withValues(alpha: 0.06),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                ),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Text(
+                m.group(2)!,
+                style: TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: baseSize * 0.92,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
             ),
           ),
         );
       } else if (m.group(3) != null) {
+        // 色強調。中身も再帰的に解釈する。
         spans.add(
           TextSpan(
-            text: m.group(3),
             style: TextStyle(
               color: theme.colorScheme.primary,
               fontWeight: FontWeight.bold,
             ),
+            children: _spans(m.group(3)!, theme, base),
           ),
         );
       } else {
@@ -458,7 +489,7 @@ class MarkdownText extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 1),
                 child: Icon(
                   icon,
-                  size: (base?.fontSize ?? 16) * 1.15,
+                  size: iconSize,
                   color: theme.colorScheme.primary,
                 ),
               ),
@@ -471,10 +502,7 @@ class MarkdownText extends StatelessWidget {
     if (index < source.length) {
       spans.add(TextSpan(text: source.substring(index)));
     }
-    return Text.rich(
-      TextSpan(style: base, children: spans),
-      textAlign: textAlign,
-    );
+    return spans;
   }
 }
 
