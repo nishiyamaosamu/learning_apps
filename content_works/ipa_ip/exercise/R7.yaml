@@ -1,0 +1,3685 @@
+exercise_id: R7
+exercise_title: 令和7年度
+
+categories:
+  - id: strategy
+    name: ストラテジ
+  - id: management
+    name: マネジメント
+  - id: technology
+    name: テクノロジー
+
+exercises:
+  - qid: R7001
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          A社がB社に作業の一部を請負契約で委託している。作業形態a〜cのうち，いわゆる偽装請負とみなされる状態だけを全て挙げたものはどれか。
+
+          a　B社の従業員が，A社内において，A社の責任者の指揮命令の下で，請負契約で取り決めた作業を行っている。
+          b　B社の従業員が，A社内において，B社の責任者の指揮命令の下で，請負契約で取り決めた作業を行っている。
+          c　B社の従業員が，B社内において，A社の責任者の指揮命令の下で，請負契約で取り決めた作業を行っている。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a"
+      - id: 2
+        content:
+          - type: text
+            text: "a, b"
+      - id: 3
+        content:
+          - type: text
+            text: "a, c"
+      - id: 4
+        content:
+          - type: text
+            text: "b, c"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          請負契約では受託側（B社）の責任者が自社従業員に指揮命令を行います。発注側（A社）が直接指揮命令する形態は、実態が労働者派遣に当たるのに請負と装うため偽装請負となります。
+          a：A社内でA社が指揮命令 → 偽装請負。
+          b：A社内でもB社の指揮命令下なので請負として適切。
+          c：B社内でもA社が指揮命令しているので偽装請負。
+          よって a, c の組合せ（ウ）が正解です。
+
+  - qid: R7002
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          従来の情報セキュリティマネジメントシステム規格を基礎に追加で制定されたもので，クラウドサービスに対応した情報セキュリティ管理体制を構築するためのガイドライン規格として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "ISO 14001"
+      - id: 2
+        content:
+          - type: text
+            text: "JIS Q 15001"
+      - id: 3
+        content:
+          - type: text
+            text: "ISO/IEC 27017"
+      - id: 4
+        content:
+          - type: text
+            text: "ISO 9001"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          ISO/IEC 27017 はクラウドサービスを対象とした情報セキュリティ管理策のガイドラインで、ISO/IEC 27002 をベースにクラウド固有の管理策を追加したものです。
+          ア：環境マネジメントシステム規格。
+          イ：個人情報保護マネジメントシステム規格。
+          エ：品質マネジメントシステム規格。
+
+  - qid: R7003
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          政府は，官民データ活用推進基本法に定められた"官民データ活用推進基本計画"を策定し，官民データの公開や活用の促進に取り組んでいる。次の組織体のうち，官民データを所有しているものだけを全て挙げたものはどれか。
+
+          a　県庁
+          b　大学
+          c　電力事業者
+          d　独立行政法人
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a, b, c"
+      - id: 2
+        content:
+          - type: text
+            text: "a, b, c, d"
+      - id: 3
+        content:
+          - type: text
+            text: "a, b, d"
+      - id: 4
+        content:
+          - type: text
+            text: "a, c, d"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          官民データ活用推進基本法における「官民データ」は、国・地方公共団体・独立行政法人・事業者が事務又は事業の遂行に当たって管理・利用・提供するデータを指します。県庁、大学、電力事業者、独立行政法人いずれも所有者となり得るため、a, b, c, d すべて該当します。
+
+  - qid: R7004
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          投資の優先度などの経営の戦略を策定するために，経済価値，希少性，模倣困難性及び組織の四つの要素で評価することによって，自社のもつ資源を分析する手法として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "4P"
+      - id: 2
+        content:
+          - type: text
+            text: "PPM"
+      - id: 3
+        content:
+          - type: text
+            text: "SWOT分析"
+      - id: 4
+        content:
+          - type: text
+            text: "VRIO分析"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          VRIO分析は、自社の経営資源を Value（経済価値）・Rarity（希少性）・Imitability（模倣困難性）・Organization（組織）の4観点で評価する手法です。
+          ア：マーケティング・ミックスのフレームワーク。
+          イ：事業ポートフォリオ分析手法。
+          ウ：強み・弱み・機会・脅威で外部内部環境を整理する手法。
+
+  - qid: R7005
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          A社ではB商品の仕入れと販売を行っている。ある期のB商品の仕入単価は期首から上昇し続け，期末に最も高くなった。当該期の売上原価を"期首棚卸高＋当期商品仕入高－期末棚卸高"で計算するとき，期末棚卸高の計算に期末の仕入単価を用いると，B商品の期末棚卸高及び売上原価は，期中の仕入単価の平均値を用いる場合に比べてどのようになるか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "期末棚卸高，売上原価ともに上がる。"
+      - id: 2
+        content:
+          - type: text
+            text: "期末棚卸高，売上原価ともに変わらない。"
+      - id: 3
+        content:
+          - type: text
+            text: "期末棚卸高は上がり，売上原価は下がる。"
+      - id: 4
+        content:
+          - type: text
+            text: "期末棚卸高は下がり，売上原価は上がる。"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          仕入単価が上昇し続け期末が最高なので、期末単価で評価すると期末棚卸高は平均単価で評価する場合より高くなります。売上原価＝期首＋仕入－期末なので、期末棚卸高が増えると売上原価は減ります。よって「期末棚卸高は上がり、売上原価は下がる」（ウ）が正解です。
+
+  - qid: R7006
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          特定電子メール法は，電子メールによる一方的な広告宣伝メールの送信を規制する法律である。企業担当者が行った次の電子メールの送信事例のうち，特定電子メール法の規制対象となり得るものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "広告宣伝メールの受信を拒否する旨の意思表示がないことを確認したのち，公表されている企業のメールアドレス宛てに広告宣伝メールを送信した。"
+      - id: 2
+        content:
+          - type: text
+            text: "受信者から拒否通知があった場合には，それ以降の送信を禁止すればよいと考え，広告宣伝メールを送信した。"
+      - id: 3
+        content:
+          - type: text
+            text: "内容は事務連絡と料金請求なので問題ないと考え，受信者本人の同意なく，メールを送信した。"
+      - id: 4
+        content:
+          - type: text
+            text: "長年の取引関係にある企業担当者に対して，これまで納入してきた製品の新バージョンが完成したので，その製品に関する広告宣伝メールを送信した。"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          特定電子メール法はオプトイン方式を採用しており、原則として事前同意を得た受信者にのみ広告宣伝メールを送信できます。
+          ア：公表メールアドレスへの送信は例外として認められる。
+          イ：オプトインを得ずに送信しているため違法（規制対象）。
+          ウ：事務連絡・料金請求は広告宣伝目的でないため対象外。
+          エ：取引関係のある相手への自社製品の通知は適用除外。
+
+  - qid: R7007
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          新しい概念やアイディアの実証を目的とした，開発の前段階における検証を表す用語はどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "CRM"
+      - id: 2
+        content:
+          - type: text
+            text: "PoC"
+      - id: 3
+        content:
+          - type: text
+            text: "RAS"
+      - id: 4
+        content:
+          - type: text
+            text: "SLA"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          PoC（Proof of Concept、概念実証）は、新しい概念や技術が実現可能か、有用かを検証する取組みです。
+          ア：顧客関係管理。
+          ウ：信頼性・可用性・保守性の総称。
+          エ：サービス品質保証契約。
+
+  - qid: R7008
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          AIの機械学習で利用するデータの取扱いに関する記述のうち，バイアスの低減やデータの品質を確保するために考えられる対策として，適切なものだけを全て挙げたものはどれか。
+
+          a　学習の目的に適したデータであることを確認する。
+          b　データの入手元・作成来歴を確認する。
+          c　データへのアノテーションの付与は学習目的に合わせて実施する。
+          d　人間の目でも同定が困難と考えられる画像認識用のデータは除外する。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a, b"
+      - id: 2
+        content:
+          - type: text
+            text: "a, b, c, d"
+      - id: 3
+        content:
+          - type: text
+            text: "a, d"
+      - id: 4
+        content:
+          - type: text
+            text: "b, c, d"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          a：学習目的に合うデータの選定はバイアス低減・品質確保の基本。
+          b：来歴の確認は信頼性とトレーサビリティの確保に有効。
+          c：目的に応じた適切なアノテーションは品質確保に有効。
+          d：人間にとって難しいデータでも除外すれば偏った学習になり、むしろバイアスを増やす可能性がある。
+          よって a, b, c が適切で、イが正解です。
+
+  - qid: R7009
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          ハッカソンに関する記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "定められたルールの下，ある主題について，肯定派と否定派といった異なる立場に分かれて議論する。"
+      - id: 2
+        content:
+          - type: text
+            text: "情報セキュリティ分野で活躍したいという意志をもった若者が，合宿形式で情報セキュリティに関する実践的な知識を学ぶ。"
+      - id: 3
+        content:
+          - type: text
+            text: "プログラマーやデザイナーなどから成る複数の参加チームが，与えられたテーマに関するプロトタイプを短期間で作成し，その成果を発表して競い合う。"
+      - id: 4
+        content:
+          - type: text
+            text: "問題解決や利用者獲得などゲーム的な要素のない分野に，デジタル技術を活用したゲームの要素を取り入れることによって，利用者の参加を動機づける。"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          ハッカソン（hack＋marathon）は短期間でアイデアを形にする開発イベントです。
+          ア：ディベート。
+          イ：セキュリティ・キャンプなどの取組み。
+          エ：ゲーミフィケーション。
+
+  - qid: R7010
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          生成AIにおいて，もっともらしいが事実とは異なる内容が出力されることを表す用語として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "エコーチェンバー"
+      - id: 2
+        content:
+          - type: text
+            text: "シンギュラリティ"
+      - id: 3
+        content:
+          - type: text
+            text: "ディープフェイク"
+      - id: 4
+        content:
+          - type: text
+            text: "ハルシネーション"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          ハルシネーション（hallucination）は、生成AIがもっともらしいが事実と異なる内容を出力する現象です。
+          ア：閉じた空間で同じ意見ばかり聞くこと。
+          イ：技術的特異点。
+          ウ：AIで合成された偽の映像・音声。
+
+  - qid: R7011
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          スマートファクトリーにおいても使用されている，FMS（Flexible Manufacturing System）に関する記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "技術革新を効果的に自社の経営に取り入れることによって，企業の成長を図る。"
+      - id: 2
+        content:
+          - type: text
+            text: "生産工程の各段階で，原材料から完成製品までの資材の流れを適時・適量に管理する。"
+      - id: 3
+        content:
+          - type: text
+            text: "生産時に必要となる部品などを必要な分だけ供給することによって，生産リードタイムを短縮する。"
+      - id: 4
+        content:
+          - type: text
+            text: "複数の工作機械や産業用ロボットなどを有機的に結合し，生産プロセス全体を統括的に制御・管理する。"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          FMS（フレキシブル生産システム）は、複数の工作機械や産業用ロボットなどを統合制御し、多品種少量生産に柔軟に対応する生産システムです。
+          ア：MOT。
+          イ：MRP/SCM。
+          ウ：JIT（ジャストインタイム）。
+
+  - qid: R7012
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          商標法におけるサービスマークを説明したものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "企業が，企業そのものを他社と区別するために表示する商標である。"
+      - id: 2
+        content:
+          - type: text
+            text: "製造業者，販売業者が提供する商品を，他社の商品と区別するために表示する商標である。"
+      - id: 3
+        content:
+          - type: text
+            text: "大規模小売業者が開発したプライベートブランドの商品を，他社の商品と区別するために表示する商標である。"
+      - id: 4
+        content:
+          - type: text
+            text: "輸送業者，金融業者などが提供する役務を，他社の役務と区別するために表示する商標である。"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          サービスマークは、役務（サービス）について使用される商標で、輸送・金融・通信など無形のサービスを他社のものと区別するために用いられます。
+
+  - qid: R7013
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          新しいITソリューションの活用の是非を判断するために，そのITソリューションの提供者に，活用事例や技術情報などの提供を依頼する文書として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "EDI"
+      - id: 2
+        content:
+          - type: text
+            text: "KPI"
+      - id: 3
+        content:
+          - type: text
+            text: "RFI"
+      - id: 4
+        content:
+          - type: text
+            text: "RFP"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          RFI（Request for Information、情報提供依頼書）は、ベンダーに対し製品・サービスの情報や活用事例の提供を依頼する文書です。
+          ア：電子データ交換。
+          イ：重要業績評価指標。
+          エ：提案依頼書。
+
+  - qid: R7014
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          事業，経営情報に知財情報を組み込んで分析し，現状の俯瞰や将来展望などの分析結果を事業責任者，経営者と共有し，事業戦略又は経営戦略に反映させることを表す用語として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "CVC（Corporate Venture Capital）"
+      - id: 2
+        content:
+          - type: text
+            text: "IPランドスケープ（Intellectual Property Landscape）"
+      - id: 3
+        content:
+          - type: text
+            text: "MOT（Management of Technology）"
+      - id: 4
+        content:
+          - type: text
+            text: "SWOT分析"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          IPランドスケープは、知財情報と事業・市場情報を組み合わせて分析し、その結果を経営戦略に反映させる手法です。
+          ア：事業会社が外部スタートアップへ投資する仕組み。
+          ウ：技術経営。
+          エ：内外環境を強み・弱み・機会・脅威で整理する分析。
+
+  - qid: R7015
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          事業運営における意思決定の迅速化，組織の独立採算の推進を目的とし，一つの企業の中に事業領域ごとに独立した組織を設置する組織形態はどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "カンパニー制組織"
+      - id: 2
+        content:
+          - type: text
+            text: "機能別組織"
+      - id: 3
+        content:
+          - type: text
+            text: "プロジェクト組織"
+      - id: 4
+        content:
+          - type: text
+            text: "マトリックス組織"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          カンパニー制は事業領域ごとに社内分社（カンパニー）を設け、独立採算で運営させ、意思決定の迅速化を図る組織形態です。
+          イ：職能別。
+          ウ：特定目的の臨時組織。
+          エ：機能別と事業別を交差させた二元的組織。
+
+  - qid: R7016
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          他人の電子メールの利用者IDとパスワードの取扱いに関する記述のうち，不正アクセス禁止法で規制されている行為だけを全て挙げたものはどれか。
+
+          a　正当な理由なく本人に無断で第三者に提供する。
+          b　他人の電子メールの利用者IDとパスワードを無効にするマルウェアを作成する。
+          c　本人に無断で使用して，メールサーバ上の電子メールを閲覧する。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a, b, c"
+      - id: 2
+        content:
+          - type: text
+            text: "a, c"
+      - id: 3
+        content:
+          - type: text
+            text: "b, c"
+      - id: 4
+        content:
+          - type: text
+            text: "c"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          不正アクセス禁止法は、不正取得・保管・提供（識別符号の不正譲渡等）と不正アクセス行為などを規制します。
+          a：他人の識別符号を無断で第三者に提供 → 規制対象。
+          b：マルウェア作成自体は不正指令電磁的記録に関する罪（刑法）で規制され、不正アクセス禁止法の対象ではない。
+          c：他人のIDで不正にログインして閲覧 → 不正アクセス行為で規制対象。
+          よって a, c が該当し、イが正解です。
+
+  - qid: R7017
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          プロセスマイニングに関する記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "一連の業務で実際に遂行したシステムの操作ログなどを収集し，現行の業務プロセスの可視化，分析，モニタリングによって業務の課題を特定して改善を図る手法やツールである。"
+      - id: 2
+        content:
+          - type: text
+            text: "業務プロセスをそれまでの習慣などにとらわれず，抜本的に再構築して業務効率の改善を図る手法である。"
+      - id: 3
+        content:
+          - type: text
+            text: "コンタクトセンターへの問合せ内容やSNSの投稿内容の分析などの業務プロセスで用いられる，膨大な文章データから必要な情報を抽出して分析する手法である。"
+      - id: 4
+        content:
+          - type: text
+            text: "大量の計算処理で正しい値を算出する一連のプロセスを通じて，暗号資産を取得する手段である。"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          プロセスマイニングは、情報システムに残るイベントログを分析して業務プロセスを可視化し、ボトルネックや非効率を発見・改善する手法です。
+          イ：BPR。
+          ウ：テキストマイニング。
+          エ：マイニング（暗号資産の採掘）。
+
+  - qid: R7018
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          ITにおけるアクセシビリティに関する記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "高齢者や障害者などを含め，様々な能力や特性をもつ幅広い層の人が等しく利用できるように配慮したソフトウェア製品の設計"
+      - id: 2
+        content:
+          - type: text
+            text: "顧客データを基に顧客を識別し，コールセンターやインターネットなどの様々なチャネルを用いて顧客との関係を深める手法"
+      - id: 3
+        content:
+          - type: text
+            text: "製品，システム，サービスなどにおいて，それらを使用する場面をイメージしたり実際に利用したりすることで得られる人の感じ方や反応"
+      - id: 4
+        content:
+          - type: text
+            text: "特定のファイルやデータベースなどの情報資産に対し，参照や更新などの権限の認可や制限を確実にする手段"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          アクセシビリティは、年齢や障害の有無にかかわらず誰もが情報やサービスを利用できる度合いを指します。
+          イ：CRM。
+          ウ：UX（ユーザー体験）。
+          エ：アクセス制御。
+
+  - qid: R7019
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          仮想環境を用いた技術であるAR又はVRの活用事例のうち，VRの活用事例として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "顔を覆うように頭部にゴーグルを装着し，そのゴーグル内に投影された仮想空間に広がる火災や地震の映像を見ながら避難方法をイメージすることによって，防災訓練が行える。"
+      - id: 2
+        content:
+          - type: text
+            text: "家具をオンラインで購入するときに，スマートフォンのカメラを通して画面に映っている現実の自分の部屋に，購入したい家具をリアルタイムに重ねて試し置きできる。"
+      - id: 3
+        content:
+          - type: text
+            text: "史跡などにスマートフォンを向けることによって，昔あった建物の画像や説明情報が現実の風景と重なって画面に表示される。"
+      - id: 4
+        content:
+          - type: text
+            text: "図鑑にスマートフォンをかざすことによって，図鑑の絵や写真に重なって生物の動画が見られる。"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          VRは現実世界から切り離された仮想空間を体験する技術で、ゴーグルで仮想空間に没入する例（ア）が該当します。
+          イ・ウ・エはいずれも現実空間に情報を重ね合わせるARの例です。
+
+  - qid: R7020
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          ソフトウェアライフサイクルを企画プロセス，要件定義プロセス，開発プロセス，保守プロセスに分けたとき，企画プロセスのシステム化構想の立案時にベンダー企業から収集する情報として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "システム化計画に基づいた開発コストの見積り"
+      - id: 2
+        content:
+          - type: text
+            text: "システム化する業務の分野に関する情報技術動向"
+      - id: 3
+        content:
+          - type: text
+            text: "システム構築を進めるに当たっての発注元企業の役割"
+      - id: 4
+        content:
+          - type: text
+            text: "ベンダー企業の技術者が保有している技術資格"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          システム化構想の段階では、まだ要件は確定していないため、構想立案に役立つ業界の情報技術動向などをベンダーから収集します。
+          ア：開発コスト見積りはRFPを出した後に得る情報。
+          ウ：発注元企業の役割は発注元自身で決める。
+          エ：技術資格情報はこの段階では重要ではない。
+
+  - qid: R7021
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          基本的な機能やサービスは無償で提供し，追加の機能やサービスを有償で提供することで利益を上げるビジネスモデルを表す用語として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "フリーウェア"
+      - id: 2
+        content:
+          - type: text
+            text: "フリーミアム"
+      - id: 3
+        content:
+          - type: text
+            text: "フリーライド"
+      - id: 4
+        content:
+          - type: text
+            text: "フリーランス"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          フリーミアム（free＋premium）は、基本機能は無料で提供し、高度な機能は有料で提供するビジネスモデルです。
+          ア：無料で配布されるソフトウェア。
+          ウ：ただ乗り。
+          エ：個人で独立して仕事を請け負う働き方。
+
+  - qid: R7022
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          営業部のAさんは，営業担当者10人の営業成績が一目で分かるように，各営業担当者が提出する営業見込みと実績を毎月集計してグラフ化したいと考えている。この問題を解決するために適用する技術やツールとして，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "データを学習し，分析するAI"
+      - id: 2
+        content:
+          - type: text
+            text: "データを自動収集し，データベースに蓄積するIoT"
+      - id: 3
+        content:
+          - type: text
+            text: "入力したデータを，加工して見せるオフィスツール"
+      - id: 4
+        content:
+          - type: text
+            text: "ビッグデータを，様々な手法で分析するデータサイエンス"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          10人分の見込みと実績の集計・グラフ化は、表計算ソフトなどのオフィスツールで十分対応できます。AIやIoT、データサイエンスは過剰な手段です。
+
+  - qid: R7023
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          コーポレートガバナンスの強化に有効な施策だけを全て挙げたものはどれか。
+
+          a　株式公開買付けによる企業の買収
+          b　執行役員制度の導入による経営と執行の分離
+          c　独立性の高い社外取締役の選任
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a, b"
+      - id: 2
+        content:
+          - type: text
+            text: "a, b, c"
+      - id: 3
+        content:
+          - type: text
+            text: "b, c"
+      - id: 4
+        content:
+          - type: text
+            text: "c"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          コーポレートガバナンスは、経営の監視・牽制を強化する仕組みです。
+          a：M&A手段でガバナンスとは無関係。
+          b：意思決定（経営）と業務執行を分け、監督機能を強化 → 有効。
+          c：独立社外取締役は経営をチェックする役割 → 有効。
+          よって b, c の組合せ（ウ）が正解です。
+
+  - qid: R7024
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          RPAに関する記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "企業の一部の業務を外部の組織に委託することによって，自社のリソースを重要な領域に集中したり，コストの最適化や業務の高効率化などを実現したりする。"
+      - id: 2
+        content:
+          - type: text
+            text: "組立てや搬送などにハードウェアのロボットを用いることによって，工場の生産活動の自動化を実現する。"
+      - id: 3
+        content:
+          - type: text
+            text: "システムの利用者が，主体的にシステム管理や運用を行うことによって，利用者のITリテラシーの向上や，システムベンダーへの依存の軽減などを実現する。"
+      - id: 4
+        content:
+          - type: text
+            text: "ホワイトカラーの定型的な事務作業を，ソフトウェアのロボットに代替させることによって，自動化や効率化を図る。"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          RPA（Robotic Process Automation）は、PC上の定型的な事務作業をソフトウェアロボットに代行させて自動化する技術です。
+          ア：BPO（業務プロセスのアウトソーシング）。
+          イ：FA（工場自動化）。
+          ウ：EUC（エンドユーザコンピューティング）。
+
+  - qid: R7025
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          ブロックチェーンを適用した事例として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "証券会社が，取引の改ざんや不整合の発生を防止することを目的として，従来の社債に代わり電子的手段を用いたデジタル社債を発行した。"
+      - id: 2
+        content:
+          - type: text
+            text: "商品先物取引所を運営する認可法人が，取引量を拡大することを目的として，現在およそ1秒以上要している注文受付の応答時間を，1秒未満に改善した。"
+      - id: 3
+        content:
+          - type: text
+            text: "ビジネス路線を中心に運航する航空会社が，顧客の利便性向上と競合他社に対する競争力強化を目的として，出発1時間前まで何回でも予約の変更を可能とする新しいサービスを開始した。"
+      - id: 4
+        content:
+          - type: text
+            text: "服飾雑貨製造会社が，自社の商品企画に活用することを目的として，過去の全ての自社商品に関する大量の画像及び社内会議の音声データをデータベースに保存し，従業員がいつでも検索できるようにした。"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          ブロックチェーンは取引の改ざん耐性に強みを持ち、デジタル社債（セキュリティトークン）の発行など金融取引の信頼性確保に応用されています。他の選択肢はブロックチェーン特有の特徴に依存しません。
+
+  - qid: R7026
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          4月1日から5月31日までに，取引①から取引⑤があった。各取引の受注，売上計上，現金回収の状況が表のとおりであるとき，この取引先に対する5月31日時点の売掛金は何万円か。ここで，4月1日時点で売掛金残高はないものとする。
+      - type: image
+        src: R7026_01.png
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "1,000"
+      - id: 2
+        content:
+          - type: text
+            text: "1,400"
+      - id: 3
+        content:
+          - type: text
+            text: "2,300"
+      - id: 4
+        content:
+          - type: text
+            text: "2,700"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          売掛金は売上計上済みかつ未回収の取引です。5/31時点で：
+          取引①：4/30回収済み → 0
+          取引②：4/30回収済み → 0
+          取引③：5/10売上1,300、未回収 → 1,300
+          取引④：5/15売上1,000、未回収 → 1,000
+          取引⑤：受注のみで売上未計上 → 0
+          合計 1,300 + 1,000 = 2,300 万円。よってウが正解。
+
+  - qid: R7027
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          業務と情報システムを最適にすることを目的として，業務と情報システムの現状の把握と目標とする理想像の設定から現状と理想との乖離を明確にし，目標に向けた改善活動を移行計画として定義したい。このときに用いられる手法として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "BI（Business Intelligence）"
+      - id: 2
+        content:
+          - type: text
+            text: "EA（Enterprise Architecture）"
+      - id: 3
+        content:
+          - type: text
+            text: "MOT（Management of Technology）"
+      - id: 4
+        content:
+          - type: text
+            text: "SOA（Service Oriented Architecture）"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          EA（エンタープライズアーキテクチャ）は、組織全体の業務と情報システムの現状（As-Is）と理想像（To-Be）を体系的に整理し、両者の差から移行計画を策定する手法です。
+          ア：データ分析による意思決定支援。
+          ウ：技術経営。
+          エ：サービス指向の設計手法。
+
+  - qid: R7028
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          生成AIに関する記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "一切の学習を必要とせずに，新しいコンテンツを生成する。"
+      - id: 2
+        content:
+          - type: text
+            text: "過去のデータから項目間の相関などを学習したモデルを用いて，現在のデータから将来の値を予測して出力する。"
+      - id: 3
+        content:
+          - type: text
+            text: "作成したシナリオに基づいて動作するソフトウェアロボットによって，業務を自動化する。"
+      - id: 4
+        content:
+          - type: text
+            text: "自然言語で指示された内容に従って，事前に学習したデータを基に，新しいコンテンツを生成する。"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          生成AIは、大量のデータを事前学習し、自然言語などの指示（プロンプト）に応じて新しい文章・画像などを生成します。
+          ア：学習なしでは生成不可。
+          イ：従来の予測AIの説明。
+          ウ：RPAの説明。
+
+  - qid: R7029
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          企業経営の中核となる考え方を，ミッション，ビジョン，バリューの三つに分けて示す場合，ビジョンとして示すものとして，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "企業の存在意義や使命"
+      - id: 2
+        content:
+          - type: text
+            text: "企業の存在意義や使命をふまえた，ある時点でのありたい姿"
+      - id: 3
+        content:
+          - type: text
+            text: "戦略を実現するために重要となる業績管理指標"
+      - id: 4
+        content:
+          - type: text
+            text: "戦略を実現するために重要となる成功要因"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          ビジョンは「ある時点でのありたい姿」を示すものです。
+          ア：ミッション。
+          ウ：KPI。
+          エ：CSF（重要成功要因）。
+
+  - qid: R7030
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          著作権に関して，次の記述中のa, bに入れる字句の適切な組合せはどれか。
+
+          a　は著作権法による保護の対象になるが， b　は対象にならない。
+      - type: image
+        src: R7030_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          著作権法は表現を保護し、アイデアやアルゴリズム、規約・プロトコル、操作マニュアルの中のアイデア部分などは保護対象になりません。ソースプログラムは著作物として保護されます。通信プロトコルは規約であり、著作権法の保護対象外です。よって a＝ソースプログラム、b＝通信プロトコル の組合せが正解。
+
+  - qid: R7031
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          ERPシステムの説明として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "企業内の個人がもつ営業に関する知識やノウハウを収集し，共有することによって，効率的，効果的な営業活動を支援するシステム"
+      - id: 2
+        content:
+          - type: text
+            text: "経理や人事，生産，販売などの基幹業務と関連する情報を一元管理し，経営資源を最適配分することによって，効率的な経営の実現を支援するシステム"
+      - id: 3
+        content:
+          - type: text
+            text: "原材料の調達から生産，販売に関する情報を，企業間で共有・管理することによって，ビジネスプロセスの全体最適を目指すシステム"
+      - id: 4
+        content:
+          - type: text
+            text: "個々の顧客に関する情報や対応履歴などを管理することによって，きめ細かい顧客対応を実施し，顧客満足度の向上を支援するシステム"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          ERP（Enterprise Resource Planning）は、企業の基幹業務（経理・人事・生産・販売など）の情報を統合管理し、経営資源を最適配分するシステムです。
+          ア：SFA。
+          ウ：SCM。
+          エ：CRM。
+
+  - qid: R7032
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          公共交通機関での移動履歴，Webサイトでの商品検索履歴，SNSやブログで発信したデータなど，個人の活動を記録する技術，又は記録そのものを表す用語として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "アクティビティ"
+      - id: 2
+        content:
+          - type: text
+            text: "トランザクション"
+      - id: 3
+        content:
+          - type: text
+            text: "ライフログ"
+      - id: 4
+        content:
+          - type: text
+            text: "レコードキーピング"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          ライフログは、人の行動・活動を継続的にデジタルデータとして記録する技術または記録そのものを指します。
+
+  - qid: R7033
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          自動運転の水準は，一般的に"レベル1"から"レベル5"に分けられている。"条件付運転自動化"と呼ばれる"レベル3"が示す自動運転の水準に関する記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "運転の主体はシステムであり，人間が運転する必要はないが，システムによる自動運転の継続が難しい場合は，人間が運転しなければならない。"
+      - id: 2
+        content:
+          - type: text
+            text: "運転の主体はシステムであり，人間が運転する必要はないので，ハンドルやペダルなどの運転装置は不要だが，自動運転できる地域は限られる。"
+      - id: 3
+        content:
+          - type: text
+            text: "運転の主体は人間であり，高速道路で車線を維持しながら前の自動車に付いて走る機能のように，ハンドルと加減速の操作をシステムが支援する。"
+      - id: 4
+        content:
+          - type: text
+            text: "運転の主体は人間であり，自動ブレーキや急発進防止システムのように，前方又は後方の状況によって，システムが運転の一部を支援する。"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          レベル3「条件付運転自動化」は、特定の条件下ではシステムが運転を担うが、システムが対応できない状況になれば人間が運転を引き継ぐ必要があります。
+          イ：レベル4・5。
+          ウ：レベル2。
+          エ：レベル1。
+
+  - qid: R7034
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          ある商品を5,000個販売したところ，売上げが6,000万円，利益が400万円となった。商品1個当たりの変動費が7,000円であるとき，利益を1,000万円以上にするためには，少なくともあと何個販売すればよいか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "500"
+      - id: 2
+        content:
+          - type: text
+            text: "1,200"
+      - id: 3
+        content:
+          - type: text
+            text: "6,200"
+      - id: 4
+        content:
+          - type: text
+            text: "7,500"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          販売単価＝6,000万円÷5,000個＝12,000円、変動費7,000円なので限界利益（1個あたり）＝5,000円。
+          固定費＝（売上 − 変動費）− 利益＝6,000万 − 7,000×5,000 − 400万＝6,000万 − 3,500万 − 400万＝2,100万円。
+          利益1,000万円のために必要な限界利益＝固定費＋利益＝3,100万円。
+          必要販売個数＝3,100万÷5,000＝6,200個。あと 6,200 − 5,000＝1,200個必要。よってイが正解。
+
+  - qid: R7035
+    category: strategy
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          マーケティング戦略の策定プロセスのうち，自社製品の差別化ポイントを明確化するものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "セグメンテーション"
+      - id: 2
+        content:
+          - type: text
+            text: "ターゲティング"
+      - id: 3
+        content:
+          - type: text
+            text: "プロモーション"
+      - id: 4
+        content:
+          - type: text
+            text: "ポジショニング"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          STPのうちポジショニングは、ターゲット市場の中で自社製品の差別化ポイント（ポジション）を明確化するプロセスです。
+          ア：市場の細分化。
+          イ：標的市場の選定。
+          ウ：4Pの一つで販売促進。
+
+  - qid: R7036
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          合意したサービス提供時間帯のうち，実際に顧客がITサービスを利用できた時間の割合で表されるものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "可用性"
+      - id: 2
+        content:
+          - type: text
+            text: "機能性"
+      - id: 3
+        content:
+          - type: text
+            text: "効率性"
+      - id: 4
+        content:
+          - type: text
+            text: "使用性"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          可用性（Availability）は、合意したサービス時間帯において実際に利用可能だった時間の割合を表す指標です。
+
+  - qid: R7037
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          ITサービスマネジメントに関して，次の記述中のa, bに入れる字句の適切な組合せはどれか。
+
+          a　はサービス提供者と顧客との間で合意されたサービス品質に関する合意書である。 a　の遵守状況を確認し，ITサービスの品質を維持・改善させるための活動が b　である。
+      - type: image
+        src: R7037_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          SLA（Service Level Agreement、サービスレベル合意書）は、サービス提供者と顧客で合意した品質に関する合意書です。SLM（Service Level Management）は、SLAの遵守状況をモニタリングし、サービス品質を維持・改善する活動です。よって a＝SLA、b＝SLM の組合せが正解（エ）。
+
+  - qid: R7038
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          情報セキュリティ監査の説明として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "一定の基準に基づいてITシステムの利活用に係る検証・評価を行い，ガバナンスの適切性などに対する保証や改善のための助言を行うもの"
+      - id: 2
+        content:
+          - type: text
+            text: "コンピュータの盗難や不正な持出しを物理的に防止し，情報セキュリティを確保するためのツール"
+      - id: 3
+        content:
+          - type: text
+            text: "組織体の価値及び組織体への信頼を向上させるために，組織体におけるITシステムの利活用のあるべき姿を示すIT戦略と方針の策定及びその実現のための活動"
+      - id: 4
+        content:
+          - type: text
+            text: "組織の情報資産に関わるリスクマネジメントが効果的に実施されているかどうかの検証又は評価"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          情報セキュリティ監査は、組織の情報資産に関するリスクマネジメントが効果的に実施されているかを独立した立場で検証・評価する活動です。
+          ア：システム監査。
+          イ：物理的セキュリティツール。
+          ウ：ITガバナンス。
+
+  - qid: R7039
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          ソフトウェア開発モデルであるアジャイルモデルの特徴に関して，次の記述中のa, bに入れる字句の適切な組合せはどれか。
+
+          アジャイルモデルとは，要件を確定してから開発を実施するウォーターフォールモデルの a　する形で提唱された， b　できるようにソフトウェアを開発するための手法の総称である。
+      - type: image
+        src: R7039_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          アジャイルは、要件確定後に逐次工程を進めるウォーターフォールの課題（変更への対応の難しさなど）を改善する形で提唱され、開発工程で生じる変更に迅速に対応できることが特徴です。よって a＝課題を改善、b＝開発工程で生じる種々の変更に迅速に対応 の組合せ（ア）が正解。
+
+  - qid: R7040
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          変更管理委員会が設置されているプロジェクトで変更要求が発生した場合の記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "変更管理委員会では，プロジェクトに関わるステークホルダ以外の第三者によって変更要求が審議される。"
+      - id: 2
+        content:
+          - type: text
+            text: "変更管理委員会は，コストの増加や期日の延期を理由に変更要求を却下してよい。"
+      - id: 3
+        content:
+          - type: text
+            text: "変更管理委員会は，スコープに変更が発生しない範囲で変更要求を受け付けなければならない。"
+      - id: 4
+        content:
+          - type: text
+            text: "変更要求は，全てプロジェクトマネージャが承認した後に変更管理委員会で審議される。"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          変更管理委員会（CCB）は、変更要求が及ぼすコスト・期日・スコープへの影響を評価し、却下または承認します。コスト増や期日延長を理由に却下することも妥当です。
+          ア：通常はステークホルダ代表が参加する。
+          ウ：スコープ変更も審議対象。
+          エ：PMの承認後ではなく、CCBの審議で決定する。
+
+  - qid: R7041
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          システム開発プロジェクトで使用される技法のうち，スケジュール作成に用いる技法として，適切なものだけを全て挙げたものはどれか。
+
+          a　DFD（Data Flow Diagram）
+          b　回帰分析
+          c　クリティカルパス法
+          d　プレシデンスダイアグラム法
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a, b"
+      - id: 2
+        content:
+          - type: text
+            text: "a, d"
+      - id: 3
+        content:
+          - type: text
+            text: "b, c"
+      - id: 4
+        content:
+          - type: text
+            text: "c, d"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          a：DFDはデータの流れを表す業務分析手法。スケジュールには使わない。
+          b：回帰分析は統計分析手法。
+          c：クリティカルパス法はネットワーク図上の最長経路を求めるスケジューリング手法。
+          d：プレシデンスダイアグラム法（PDM）はアクティビティの依存関係でスケジュールを表す手法。
+          よって c, d の組合せ（エ）が正解。
+
+  - qid: R7042
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          床下にネットワーク配線などのために一定の高さの空間をとり，容易に取り外しが可能なパネルを床板として並べたものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "フリーアクセスフロア"
+      - id: 2
+        content:
+          - type: text
+            text: "フリーアドレス"
+      - id: 3
+        content:
+          - type: text
+            text: "フリースペース"
+      - id: 4
+        content:
+          - type: text
+            text: "フリースポット"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          フリーアクセスフロアは床下に空間をとり、配線などを通せるようにした取り外し可能な床板構造です。
+          イ：固定席をなくす働き方。
+          ウ：自由に使える空間。
+          エ：公衆無線LANスポット。
+
+  - qid: R7043
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          営業部門の営業員が出張する際の出張旅費の手続に関して，組織間でけん制を日常的に実施している状況の記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "営業員が出張後に経理部門に提出した旅費精算の書類と証票類について，経理担当者が適切な内容であることを審査し，経理課長が承認する。"
+      - id: 2
+        content:
+          - type: text
+            text: "営業員が出張後に旅費の精算を行い，上長が承認を行う。経理部門では承認済みであるので支払を行う。"
+      - id: 3
+        content:
+          - type: text
+            text: "営業員は出張の事前申請を行って上長の承認を得た後に，切符や宿泊施設の手配を旅行会社に依頼する。"
+      - id: 4
+        content:
+          - type: text
+            text: "会計年度における営業部門の旅費精算の書類と証票類から，監査人がサンプリングして，営業員の処理内容の適切性を確認する。"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          組織間けん制とは、別組織が日常的に互いをチェックする仕組みです。営業部門の旅費を経理部門が審査・承認するアは、別組織同士の日常的なけん制に該当します。
+          イ：営業部門内で完結し、経理は確認していない。
+          ウ：申請のみで実費の妥当性は判断できない。
+          エ：監査人による事後監査は日常的けん制ではない。
+
+  - qid: R7044
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          システム開発の早い段階で，目に見える形で利用者の要求が確認できるように確認用のソフトウェアを作成するソフトウェア開発モデルとして，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "アジャイル"
+      - id: 2
+        content:
+          - type: text
+            text: "ウォーターフォール"
+      - id: 3
+        content:
+          - type: text
+            text: "スパイラル"
+      - id: 4
+        content:
+          - type: text
+            text: "プロトタイピング"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          プロトタイピングは、早期に試作品（プロトタイプ）を作って利用者と要件を確認しながら開発を進める手法です。
+
+  - qid: R7045
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          計画時の予算が2,000万円で，40日間で100本のプログラムを作成するプロジェクトがある。プロジェクトが20日経過した時点で全体の40％である40本のプログラムが完成し，1,000万円のコストが掛かった。プロジェクトの指標を次の評価式で算出する場合，プロジェクトの指標として適切な組合せはどれか。ここで，各プログラムの作成に必要な日数及びコストは全て同一で，プロジェクト期間中は常に同じ量の作業が実施されるものとする。
+
+          〔評価式〕
+          スケジュール（％）：（完成したプログラム本数÷評価時点での完成見込みプログラム本数）×100
+          コスト（％）：（完成したプログラムに掛かったコスト÷完成したプログラム分として計画したコスト）×100
+      - type: image
+        src: R7045_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          20日経過時点での見込み完成本数は 100×(20/40)＝50本。
+          スケジュール＝40÷50×100＝80%。
+          40本分の計画コスト＝2,000万円×(40/100)＝800万円。実際は1,000万円。
+          コスト＝1,000÷800×100＝125%。
+          よって 80%／125% の組合せ（ア）が正解。
+
+  - qid: R7046
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          開発が完了したソフトウェアを本番環境にインストールする手順を明確にし，それを実施する工程として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "ソフトウェア統合"
+      - id: 2
+        content:
+          - type: text
+            text: "ソフトウェア導入"
+      - id: 3
+        content:
+          - type: text
+            text: "妥当性確認"
+      - id: 4
+        content:
+          - type: text
+            text: "利用者教育"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          ソフトウェア導入（インストール）は、開発済みのソフトウェアを本番環境に組み込む手順を定めて実施する工程です。
+          ア：モジュールの統合。
+          ウ：要件を満たすかの確認。
+          エ：使用方法の教育。
+
+  - qid: R7047
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          利用者が銀行のATMのパネルを操作して入金処理を行う。この操作の要件を定義するときに，ソフトウェア開発の品質特性である使用性を考慮すべきインタフェースとして，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "OSとパネルのインタフェース"
+      - id: 2
+        content:
+          - type: text
+            text: "ソフトウェア間のインタフェース"
+      - id: 3
+        content:
+          - type: text
+            text: "ハードウェアとOSのインタフェース"
+      - id: 4
+        content:
+          - type: text
+            text: "利用者とパネルのインタフェース"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          使用性（ユーザビリティ）は利用者が使いやすいかに関する品質特性なので、利用者と接するパネル（ユーザインタフェース）が考慮対象になります。
+
+  - qid: R7048
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          顧客から委託されたシステム開発プロジェクトのスコープの対象として，適切なものだけを全て挙げたものはどれか。
+
+          a　プロジェクトで作成する成果物
+          b　プロジェクトで使用する市販のスケジュール管理ツール
+          c　プロジェクトの要求事項を顧客が記載した文書
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a"
+      - id: 2
+        content:
+          - type: text
+            text: "a, b"
+      - id: 3
+        content:
+          - type: text
+            text: "b, c"
+      - id: 4
+        content:
+          - type: text
+            text: "c"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          プロジェクトのスコープは「プロジェクトで何を作るか」「そのために必要な作業範囲」を指します。
+          a：成果物はスコープの対象。
+          b：プロジェクト管理用の市販ツールは成果物ではなく作業手段。
+          c：要求事項文書はスコープを決める入力資料であり、スコープ自体ではない。
+          よって a のみ（ア）が正解。
+
+  - qid: R7049
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          クラウドサービスを提供するA社では，操作に関する質問に対して，サービスデスクのオペレーターが電話で対応するだけでなく，ホームページ上にFAQを公開している。サービスデスクの受付時間は午前9時から午後6時までである。このたびサービスデスクのサービスレベルを向上させるために，顧客向けのチャットボットを導入することにした。チャットボット導入の効果として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "オペレーターのチャットのスキルが向上する。"
+      - id: 2
+        content:
+          - type: text
+            text: "オペレーターの電話対応のスキルが向上する。"
+      - id: 3
+        content:
+          - type: text
+            text: "問合せの受付時間を拡大することが可能になる。"
+      - id: 4
+        content:
+          - type: text
+            text: "ホームページ上に掲載しているFAQの内容が充実する。"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          チャットボットは24時間自動応答できるため、受付時間外の問合せにも対応でき、サービスデスクの実質的な受付時間を拡大できます。
+
+  - qid: R7050
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          チャットボットの説明として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "質問に対して，ソフトウェアがリアルタイムで自動応答する仕組み"
+      - id: 2
+        content:
+          - type: text
+            text: "センサーを搭載した機器や制御装置が直接インターネットにつながり，お互いに情報をやり取りする仕組み"
+      - id: 3
+        content:
+          - type: text
+            text: "人間に代わって荷物を運ぶなどの作業を行う機械的な仕組み"
+      - id: 4
+        content:
+          - type: text
+            text: "ルール化された定型的な操作を人間の代わりにソフトウェアが自動で行う仕組み"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          チャットボットは利用者からの質問にソフトウェアが自動で応答する仕組みです。
+          イ：IoT。
+          ウ：物流ロボット。
+          エ：RPA。
+
+  - qid: R7051
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          社内で開発及び運用を行っている経理システムの内部監査を実施するとき，システム監査人として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "経理システムの運用担当者"
+      - id: 2
+        content:
+          - type: text
+            text: "経理システムの開発を担当した委託会社の従業員"
+      - id: 3
+        content:
+          - type: text
+            text: "経理システムの利用者である経理担当者"
+      - id: 4
+        content:
+          - type: text
+            text: "経理とITの知識を有する経営者直轄組織の従業員"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          システム監査人には独立性と専門性が求められます。経営者直轄組織の従業員は、被監査部門から独立しており、経理とITの知識を有するため適切です。
+          ア・イ・ウは被監査対象に直接関係し独立性に欠ける。
+
+  - qid: R7052
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          A社は会計システムの再構築のプロジェクトを立ち上げ，システム開発をB社に外部委託している。B社から納品される成果物の検収において，プロジェクトの品質管理に係る手続を遵守しているかどうかのシステム監査を行う監査人として，適切な者は誰か。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "会計システムの再構築に関与しないA社の管理部門のリーダー"
+      - id: 2
+        content:
+          - type: text
+            text: "会計システムの再構築を担当するA社のプロジェクトマネージャ"
+      - id: 3
+        content:
+          - type: text
+            text: "会計システムの再構築を担当するB社のシステム開発リーダー"
+      - id: 4
+        content:
+          - type: text
+            text: "会計システムの再構築を担当するB社の品質管理責任者"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          システム監査人は被監査対象から独立している必要があります。プロジェクトに関与しないA社の管理部門のリーダー（ア）が適切です。イ〜エはいずれも当該プロジェクトに直接関与しており独立性を欠きます。
+
+  - qid: R7053
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          内部統制の基本的要素の一つである"ITへの対応"に関する記述として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "ITを活用すると業務処理を迅速化でき，不注意によるミスを全て防止できる。"
+      - id: 2
+        content:
+          - type: text
+            text: "既存のITの利用者の拡大や，使い方の変更などで組織目標を達成できるのであれば，新たなITシステムの導入やITシステムの更新を強いるものではない。"
+      - id: 3
+        content:
+          - type: text
+            text: "全ての業務プロセスをITで自動化することによって，業務プロセスを大幅に修正することが容易になる。"
+      - id: 4
+        content:
+          - type: text
+            text: "組織の業務がITに大きく依存すると，内部統制の目的を達成することが難しくなる。"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          「ITへの対応」は、組織目標達成のために必要かつ適切なIT環境への対応を求めるものであり、必ず新規導入や更新を強いるものではありません（イ）。
+          ア：ミスを完全には防げない。
+          ウ：自動化で逆に修正は困難になる場合もある。
+          エ：適切に対応すれば達成は可能。
+
+  - qid: R7054
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          あるコールセンターでは，顧客からの電話による問合せに対応するオペレーターを支援するシステムに，顧客とオペレーターの会話の音声を認識し，顧客の問合せに対する回答の候補をオペレーターのPCの画面に表示するAIを導入した。1日の対応件数は1,000件であり，問合せ内容によって二つのグループA，Bに分けた。AI導入前後の各グループの対応件数，対応時間が表のとおりであるとき，AI導入後に，1,000件の問合せに対応する時間は何％短縮できたか。
+      - type: image
+        src: R7054_01.png
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "30"
+      - id: 2
+        content:
+          - type: text
+            text: "40"
+      - id: 3
+        content:
+          - type: text
+            text: "50"
+      - id: 4
+        content:
+          - type: text
+            text: "60"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          AI導入前の総対応時間を1とすると、グループAが60%、Bが40%。
+          AI導入後：A＝60%×(1−0.5)＝30%。B＝40%×1＝40%。合計＝70%。
+          短縮率＝1−70%＝30%。よってアが正解。
+
+  - qid: R7055
+    category: management
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          システム開発プロジェクトの開始に当たり，人的資源に関する計画書を作成することにした。この計画において，要員を適切に配置し，より良いパフォーマンスを得るために考慮すべき事項として，適切なものだけを全て挙げたものはどれか。
+
+          a　プロジェクトに必要なスキルが要員に不足している場合は，トレーニングを計画する。
+          b　プロジェクトに必要なスキルよりも，要員の確保を常に優先するように計画する。
+          c　要員をフレキシブルに配置するために，要員の役割と責任は，プロジェクトの計画段階では明確にせず，プロジェクトの開始後に定める。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a"
+      - id: 2
+        content:
+          - type: text
+            text: "a, b, c"
+      - id: 3
+        content:
+          - type: text
+            text: "a, c"
+      - id: 4
+        content:
+          - type: text
+            text: "c"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          a：必要なスキルが不足する場合のトレーニング計画は適切。
+          b：スキルより人数の確保を常に優先するのは不適切。
+          c：役割と責任は計画段階で明確にすべきで、開始後に定めるのは不適切。
+          よって a のみ（ア）が正解。
+
+  - qid: R7056
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          Bluetoothに追加された仕様の一つであり，省電力性に優れているので，IoTシステムを長期間運用でき，送受信デバイス間の距離を知ることにも使われているものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "BLE"
+      - id: 2
+        content:
+          - type: text
+            text: "IrDA"
+      - id: 3
+        content:
+          - type: text
+            text: "NFC"
+      - id: 4
+        content:
+          - type: text
+            text: "PLC"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          BLE（Bluetooth Low Energy）はBluetoothに追加された省電力仕様で、IoT機器や距離測定（位置推定）にも利用されます。
+          イ：赤外線通信。
+          ウ：近距離無線通信。
+          エ：電力線通信。
+
+  - qid: R7057
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          HTTPプロキシサーバの機能に関する記述として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "IPアドレス割当て要求をPCから受け付けて，割り当てるグローバルIPアドレスを返す。"
+      - id: 2
+        content:
+          - type: text
+            text: "PCから，インターネット上のWebサーバへの接続要求を中継役として受けて，PCに代わって当該のWebサーバに接続し，送受信データを中継する。"
+      - id: 3
+        content:
+          - type: text
+            text: "WebサーバのURLに対応するIPアドレスを求める要求をPCから受け付けて，そのIPアドレスを返す。"
+      - id: 4
+        content:
+          - type: text
+            text: "Webサーバのコンテンツが検索結果の上位に表示されるように，そのWebサーバが管理するコンテンツを書き換える。"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          HTTPプロキシサーバは、PCの代理として目的のWebサーバに接続し、データを中継します。
+          ア：DHCP。
+          ウ：DNS。
+          エ：SEO（の不正手法）。
+
+  - qid: R7058
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          DNSの説明として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "IPネットワークに接続しようとするコンピュータに，IPアドレスなどを自動的に割り当てるプロトコルである。"
+      - id: 2
+        content:
+          - type: text
+            text: "ブラウザとWebサーバ間の通信を暗号化して，セキュリティを高めるために利用されるプロトコルである。"
+      - id: 3
+        content:
+          - type: text
+            text: "ホスト名やドメイン名と，IPアドレスを対応付ける仕組みである。"
+      - id: 4
+        content:
+          - type: text
+            text: "ホスト名やドメイン名と，MACアドレスを対応付ける仕組みである。"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          DNS（Domain Name System）はホスト名やドメイン名とIPアドレスを対応付ける仕組みです。
+          ア：DHCP。
+          イ：HTTPS。
+          エ：MACアドレスとの対応はARP。
+
+  - qid: R7059
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          ISMSにおける内部監査に関する記述のうち，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "JIS Q 27001の要求事項及び組織自体が規定した要求事項によって定める監査基準への適合性だけでなく，ISMS活動の組織に対する有効性も判定する。"
+      - id: 2
+        content:
+          - type: text
+            text: "JIS Q 27001の要求事項ではなく，組織自体が規定した要求事項を監査基準とする。"
+      - id: 3
+        content:
+          - type: text
+            text: "内部監査の実施のためのプログラムを確立するときには，前回の内部監査の結果は考慮しない。"
+      - id: 4
+        content:
+          - type: text
+            text: "不定期かつ抜き打ちでの実施を原則とする。"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          ISMSの内部監査は、規格と組織独自の要求事項への適合性に加え、ISMSの有効性も評価します。
+          イ：規格の要求事項も含む。
+          ウ：前回結果も考慮する。
+          エ：計画的に実施する。
+
+  - qid: R7060
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          TCP/IPネットワークで用いられるプロトコルであるFTPの役割として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "正確な現在時刻を取得する。"
+      - id: 2
+        content:
+          - type: text
+            text: "電子メールを転送する。"
+      - id: 3
+        content:
+          - type: text
+            text: "ネットワーク接続に必要なIPアドレスなどの情報を自動的に割り当てる。"
+      - id: 4
+        content:
+          - type: text
+            text: "ファイルをPC間で転送する。"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          FTP（File Transfer Protocol）はファイル転送プロトコルです。
+          ア：NTP。
+          イ：SMTP。
+          ウ：DHCP。
+
+  - qid: R7061
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          DBMSのトランザクションに関する記述として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "あるデータベースの内容を他のデータベースに複製し，内容の同期をとる。"
+      - id: 2
+        content:
+          - type: text
+            text: "データベースに対して行った操作を，順次記録する。"
+      - id: 3
+        content:
+          - type: text
+            text: "データベースに対する一連の処理が全て成功したら変更結果を確定し，途中で失敗したら処理前の状態に戻す。"
+      - id: 4
+        content:
+          - type: text
+            text: "データベースの表の索引を作成し，検索時には索引を使用する。"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          トランザクションは「全て成功すれば確定（コミット）、失敗すれば戻す（ロールバック）」というアトミックな処理単位です。
+          ア：レプリケーション。
+          イ：ジャーナル/ログ。
+          エ：インデックス。
+
+  - qid: R7062
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          OSの仮想記憶方式に関する次の記述中のa〜cに入れる字句の適切な組合せはどれか。
+
+          プログラムの実行時に，コンピュータの a　装置の b　な容量に制約されない， c　なアドレス空間を提供する。
+      - type: image
+        src: R7062_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          仮想記憶方式は、主記憶（物理メモリ）の物理的な容量に制約されず、論理的なアドレス空間をプログラムに提供します。よって a＝主記憶、b＝物理的、c＝論理的（ア）が正解。
+
+  - qid: R7063
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          データの尺度を名義尺度，順序尺度，間隔尺度，比例尺度の四つに分類したとき，間隔尺度に該当するものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "学年"
+      - id: 2
+        content:
+          - type: text
+            text: "血液型"
+      - id: 3
+        content:
+          - type: text
+            text: "時刻"
+      - id: 4
+        content:
+          - type: text
+            text: "睡眠時間"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          間隔尺度は、差に意味があり比には意味がないデータです。時刻（例：10時、11時）は差はあるが0時を絶対零点としないので比例尺度ではなく間隔尺度です。
+          ア：順序尺度。
+          イ：名義尺度。
+          エ：比例尺度。
+
+  - qid: R7064
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          WebサイトなどでRSSの表記を見かけることがある。このRSSの説明として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "Webページの統一的なデザインやレイアウトを定義するための規格"
+      - id: 2
+        content:
+          - type: text
+            text: "Webページの見出しやリンク，要約などを記述するフォーマット"
+      - id: 3
+        content:
+          - type: text
+            text: "ネットワーク上にブックマークを登録することによって，利用価値の高いWebサイト情報を他の利用者と共有するサービス"
+      - id: 4
+        content:
+          - type: text
+            text: "ブラウザとWebサーバ間で，データを暗号化して安全に送受信するためのプロトコル"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          RSSは、Webサイトの更新情報（見出し、リンク、要約など）を配信するためのXMLベースのフォーマットです。
+          ア：CSS。
+          ウ：ソーシャルブックマーク。
+          エ：HTTPS。
+
+  - qid: R7065
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          DBMSにおいて，データの検索を高速に行う目的で，必要に応じて設定して利用する情報はどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "インデックス"
+      - id: 2
+        content:
+          - type: text
+            text: "外部キー"
+      - id: 3
+        content:
+          - type: text
+            text: "主キー"
+      - id: 4
+        content:
+          - type: text
+            text: "スキーマ"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          インデックス（索引）はデータ検索を高速化するために任意に設定される情報です。
+          イ：他表との関連を表す制約。
+          ウ：行を一意に識別する制約。
+          エ：データベースの構造定義。
+
+  - qid: R7066
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          関係データベースで管理している次の"ログイン記録"表及び"部署"表において，ログイン結果が失敗となったことのある，又は，2022年4月10日09:00:00以前にログイン結果が成功となったことのある従業員が所属する部署名だけを全て挙げたものはどれか。
+      - type: image
+        src: R7066_01.png
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "営業部, システム部"
+      - id: 2
+        content:
+          - type: text
+            text: "営業部, システム部, 人事部"
+      - id: 3
+        content:
+          - type: text
+            text: "営業部, 人事部"
+      - id: 4
+        content:
+          - type: text
+            text: "システム部, 人事部"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          失敗のある従業員：10004（人事部）、10005（人事部）、10011（営業部）。
+          09:00:00以前に成功のある従業員：10004（08:53、人事部）、10002（08:55、システム部）。
+          対象部署は 営業部・システム部・人事部の3つすべて。よってイが正解。
+
+  - qid: R7067
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          3次元画像処理の高速化や，動画をなめらかにするなどの機能をもつ，描画処理のためのハードウェアはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "CGI"
+      - id: 2
+        content:
+          - type: text
+            text: "GPU"
+      - id: 3
+        content:
+          - type: text
+            text: "GUI"
+      - id: 4
+        content:
+          - type: text
+            text: "UPS"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          GPU（Graphics Processing Unit）は、3D画像や動画の描画処理を高速に行う専用ハードウェアです。
+          ア：Webサーバの動的処理規格。
+          ウ：グラフィカルなユーザインタフェース。
+          エ：無停電電源装置。
+
+  - qid: R7068
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          CSIRTとして行う活動の例として，最も適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "OSやアプリケーションソフトウェアのセキュリティパッチを定期的に適用する。"
+      - id: 2
+        content:
+          - type: text
+            text: "地震や洪水などの自然災害を想定し，情報資産を守るために全社的な事業継続計画を策定する。"
+      - id: 3
+        content:
+          - type: text
+            text: "セキュリティ事故の発生時に影響範囲を調査して，被害拡大を防止するための対策実施を支援する。"
+      - id: 4
+        content:
+          - type: text
+            text: "保守業者がサーバ室で作業した日に，作業員の入退出が適切に記録されていたことを監査する。"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          CSIRT（Computer Security Incident Response Team）は、セキュリティインシデント発生時の対応を専門に行う組織で、影響調査と被害拡大防止支援が中心活動です。
+          ア：脆弱性対策（運用部門）。
+          イ：BCP策定。
+          エ：監査活動。
+
+  - qid: R7069
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          バイオメトリクス認証の他人受入率と本人拒否率に関する次の記述中のa, bに入れる字句の適切な組合せはどれか。
+
+          バイオメトリクス認証の認証精度において，他人受入率を低く抑えようとすると a　が高くなり，本人拒否率を低く抑えようとすると b　が高くなる。
+      - type: image
+        src: R7069_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          他人受入率を抑えると判定が厳しくなり、本人拒否率が上がるため利便性が下がります。本人拒否率を抑えると判定が緩くなり、他人受入率が上がるため安全性が下がります。よって a＝安全性、b＝利便性（イ）が正解。
+
+  - qid: R7070
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          情報セキュリティにおける脅威のうち，脆弱性を是正するセキュリティパッチをソフトウェアに適用することが最も有効な対策になるものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "総当たり攻撃"
+      - id: 2
+        content:
+          - type: text
+            text: "ソーシャルエンジニアリング"
+      - id: 3
+        content:
+          - type: text
+            text: "パスワードリスト攻撃"
+      - id: 4
+        content:
+          - type: text
+            text: "バッファオーバーフロー"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          バッファオーバーフローはソフトウェアの脆弱性を悪用する攻撃で、修正パッチの適用が最も有効な対策です。ア・ウはパスワード対策、イは人的対策が中心。
+
+  - qid: R7071
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          携帯電話で用いられる電波に関する次の記述中のa, bに入れる字句の適切な組合せはどれか。
+
+          電波には，周波数が a　ほど回り込みやすくなり障害物の裏にも届きやすいという性質がある。日本国内の携帯電話で使用される周波数のうち，700 b　帯〜900 b　帯の周波数帯域はこの性質をもつながりやすいことなどから，プラチナバンドと呼ばれている。
+      - type: image
+        src: R7071_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          電波は周波数が低いほど回折しやすく障害物の裏に届きやすい性質を持ちます。プラチナバンドの700〜900は MHz 帯です。よって a＝低い、b＝MHz の組合せ（エ）が正解。
+
+  - qid: R7072
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          見る人に意図が伝わりやすいデザインにするための四つの原則に関する次の記述中のa, bに入れる字句の適切な組合せはどれか。
+
+          〔四つの原則〕
+          ・近接：互いに関連する要素は近づけてグループにする。
+          ・a　：要素を意図したルールに基づき配置する。
+          ・反復：要素ごとにデザインルールを繰り返す。
+          ・b　：要素ごとの大小や強弱などの違いを明確にする。
+      - type: image
+        src: R7072_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          デザインの4原則は「近接」「整列」「反復」「対比（コントラスト）」です。よって a＝整列、b＝対比（イ）が正解。
+
+  - qid: R7073
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          Webサービスを狙った攻撃に関する記述と攻撃の名称の適切な組合せはどれか。
+
+          a　Webサービスが利用しているソフトウェアに脆弱性の存在が判明したとき，その修正プログラムが提供される前に，この脆弱性を突いて攻撃する。
+          b　複数のコンピュータから大量のパケットを一斉に送り付けることによって，Webサービスを正常に提供できなくさせる。
+          c　理論的にあり得るパスワードのパターンを順次試すことによって，正しいパスワードを見つけ，攻撃対象のWebサービスに侵入する。
+      - type: image
+        src: R7073_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          a：修正プログラム提供前の脆弱性を狙う攻撃 → ゼロデイ攻撃。
+          b：多数のコンピュータから大量のパケットを送る攻撃 → DDoS攻撃。
+          c：あり得るパスワードを順次試す攻撃 → ブルートフォース攻撃。
+          よって ゼロデイ攻撃／DDoS攻撃／ブルートフォース攻撃 の組合せ（ウ）が正解。
+
+  - qid: R7074
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          デジタルフォレンジックスの説明として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "コンピュータに関する犯罪や法的紛争が生じた際に，コンピュータから削除された電子メールを復元するなどして，証拠を収集し保全すること"
+      - id: 2
+        content:
+          - type: text
+            text: "システムを実際に攻撃して脆弱性の有無を調べること"
+      - id: 3
+        content:
+          - type: text
+            text: "通信経路を暗号化するなどして，公衆回線をあたかも専用回線であるかのように利用すること"
+      - id: 4
+        content:
+          - type: text
+            text: "電子メールやファイルなどのハッシュデータを本人の秘密鍵で暗号化すること"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          デジタルフォレンジックスは、不正アクセスや犯罪などの調査でコンピュータ上の電子的証拠を収集・分析・保全する手法です。
+          イ：ペネトレーションテスト。
+          ウ：VPN。
+          エ：デジタル署名。
+
+  - qid: R7075
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          次の記憶媒体のうち，記憶素子として半導体メモリを用いているものだけを全て挙げたものはどれか。
+
+          a　CD-ROM
+          b　DVD-RAM
+          c　RAM
+          d　SSD
+          e　USBメモリ
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a, b, c"
+      - id: 2
+        content:
+          - type: text
+            text: "a, b, e"
+      - id: 3
+        content:
+          - type: text
+            text: "c, d, e"
+      - id: 4
+        content:
+          - type: text
+            text: "c, e"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          a：光ディスク。
+          b：光ディスク。
+          c：RAMは半導体メモリ。
+          d：SSDはフラッシュメモリ（半導体）。
+          e：USBメモリもフラッシュメモリ（半導体）。
+          よって c, d, e の組合せ（ウ）が正解。
+
+  - qid: R7076
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          商品の税込価格を計算する表計算のワークシートがある。セルB1には消費税率が入力されており，セルB4〜B6には税抜価格が入力されている。セルC4〜C6に税込価格を表示するために，セルC4に式を入力し，セルC5，C6に複写する。セルC4に入力する式はどれか。ここで，セルB1は，パーセント形式で表示している。
+      - type: image
+        src: R7076_01.png
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "B$4*(1+B$1)"
+      - id: 2
+        content:
+          - type: text
+            text: "B$4*(1+B1)"
+      - id: 3
+        content:
+          - type: text
+            text: "B4*(1+B$1)"
+      - id: 4
+        content:
+          - type: text
+            text: "B4*(1+B1)"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          C5、C6 に複写した時、税抜価格は B5、B6 を参照する必要があるので、税抜価格部分は相対参照（B4）。一方、消費税率は常に B1 を参照する必要があるので絶対参照（B$1）。よって B4*(1+B$1)（ウ）が正解。
+
+  - qid: R7077
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          ネットワークやホストを監視することによって，不正アクセスや不審な通信を発見し，報告する仕組みはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "DMZ"
+      - id: 2
+        content:
+          - type: text
+            text: "IDS"
+      - id: 3
+        content:
+          - type: text
+            text: "アンチパスバック"
+      - id: 4
+        content:
+          - type: text
+            text: "ボット"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          IDS（Intrusion Detection System、侵入検知システム）は不正アクセスや不審な通信を検知し管理者に通報する仕組みです。
+          ア：内外ネットの中間に置く区画。
+          ウ：物理セキュリティの入退室制御方式。
+          エ：自動化された不正プログラム。
+
+  - qid: R7078
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          手続calcMod3を呼び出したときの出力はどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "2"
+      - id: 2
+        content:
+          - type: text
+            text: "3"
+      - id: 3
+        content:
+          - type: text
+            text: "7"
+      - id: 4
+        content:
+          - type: text
+            text: "9"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          i が 1 から 7 の中で 3 で割って余りが 0 となるのは i = 3 と 6。3 + 6 = 9。よってエが正解。
+
+  - qid: R7079
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          サムネイルの説明として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "画像や文書ファイルの内容を縮小して表示したもの"
+      - id: 2
+        content:
+          - type: text
+            text: "処理の内容や対象が分かる小さな絵や記号のこと"
+      - id: 3
+        content:
+          - type: text
+            text: "ネット上で利用者の分身として動作するキャラクターのこと"
+      - id: 4
+        content:
+          - type: text
+            text: "複数のファイルを一つのファイルにまとめたもの"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          サムネイルは画像や文書の内容を縮小して一覧表示する小さなプレビュー画像です。
+          イ：アイコン。
+          ウ：アバター。
+          エ：アーカイブ。
+
+  - qid: R7080
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          AIにおいて，広範囲かつ大量のデータで訓練されたものであり，ファインチューニングなどによって文章生成AIのような様々な用途に適応できる特徴をもつものを何というか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "アノテーション"
+      - id: 2
+        content:
+          - type: text
+            text: "エキスパートシステム"
+      - id: 3
+        content:
+          - type: text
+            text: "基盤モデル"
+      - id: 4
+        content:
+          - type: text
+            text: "畳み込みニューラルネットワーク"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          基盤モデル（Foundation Model）は、大量・多様なデータで事前学習され、ファインチューニングによってさまざまな用途に適応できるAIモデルです。
+          ア：データへの正解ラベル付与。
+          イ：専門家の知識を再現するシステム。
+          エ：画像認識に強いNN構造の一つ。
+
+  - qid: R7081
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          イメージスキャナーで読み取った紙の書類の画像から，印刷文字や手書きの文字を読み取り，テキストデータに変換する技術を何と呼ぶか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "CCD"
+      - id: 2
+        content:
+          - type: text
+            text: "DVI"
+      - id: 3
+        content:
+          - type: text
+            text: "GPU"
+      - id: 4
+        content:
+          - type: text
+            text: "OCR"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          OCR（Optical Character Recognition、光学的文字認識）は、画像中の文字を読み取りテキストデータ化する技術です。
+          ア：撮像素子。
+          イ：映像インタフェース規格。
+          ウ：描画処理装置。
+
+  - qid: R7082
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          あるコンピュータのデータベースの内容を他のコンピュータのデータベースに複製して，両者の内容が一致するように同期させるDBMSの機能はどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "アーカイブ"
+      - id: 2
+        content:
+          - type: text
+            text: "バックアップ"
+      - id: 3
+        content:
+          - type: text
+            text: "レプリケーション"
+      - id: 4
+        content:
+          - type: text
+            text: "ロールバック"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          レプリケーションはデータベースを別のサーバに複製し、内容を同期させる機能です。
+          ア：長期保存。
+          イ：障害復旧用の複製取得。
+          エ：トランザクション失敗時に処理前に戻す機能。
+
+  - qid: R7083
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          ISMSの運用にPDCAモデルを採用している組織において，サーバ監視に関する次の作業を実施する。各作業とPDCAモデルの各フェーズの組合せとして，適切なものはどれか。
+
+          〔作業〕
+          (1) サーバ監視の具体的な目的及び手順を定める。
+          (2) サーバ監視の作業内容を第三者が客観的に評価する。
+          (3) 定められている手順に従ってサーバを監視する。
+          (4) 発見された問題点の是正処置として，サーバの監視方法を変更する。
+      - type: image
+        src: R7083_01.png
+
+    options:
+      - id: 1
+        content: []
+      - id: 2
+        content: []
+      - id: 3
+        content: []
+      - id: 4
+        content: []
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          (1) 計画策定 → P（Plan）
+          (3) 計画に基づく実施 → D（Do）
+          (2) 客観的な評価 → C（Check）
+          (4) 問題への是正処置 → A（Act）
+          よって P/D/C/A ＝ (1)/(3)/(2)/(4) の組合せ（ウ）が正解。
+
+  - qid: R7084
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          ISMSにおける情報セキュリティ方針に関する記述として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "機密事項が記載されているので，伝達する範囲を社内に限定する必要がある。"
+      - id: 2
+        content:
+          - type: text
+            text: "情報セキュリティ対策は一度実施したら終わりではないので，ISMSを継続的に改善するコミットメントを含める必要がある。"
+      - id: 3
+        content:
+          - type: text
+            text: "部門の特性に応じて最適化するので，ISMSを適用する組織全体ではなく，部門ごとに定める必要がある。"
+      - id: 4
+        content:
+          - type: text
+            text: "ボトムアップを前提としているので，各職場の管理者によって承認される必要がある。"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          情報セキュリティ方針はトップマネジメントが定め、継続的改善のコミットメントを含めるべきものです。
+          ア：原則公開する。
+          ウ：組織全体で定める。
+          エ：トップマネジメントが承認する。
+
+  - qid: R7085
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          問題を解いて解答群の中から正解を選ぶ，あるAIシステムがある。このシステムは，1回の学習の過程を経るごとに，学習の過程の前後の比較において，誤り率が5%低下する（前回の誤り率の95%になる）。現在の正解率が30%であるとき，正解率が35%を超えるためには，少なくともあと何回の学習の過程が必要か。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "1"
+      - id: 2
+        content:
+          - type: text
+            text: "2"
+      - id: 3
+        content:
+          - type: text
+            text: "3"
+      - id: 4
+        content:
+          - type: text
+            text: "4"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          誤り率：1−0.30＝0.70。35%を超えるには誤り率を 1−0.35＝0.65 未満にする必要がある。
+          1回後：0.70×0.95＝0.665（>0.65）。
+          2回後：0.665×0.95＝0.63175（<0.65）→ 正解率約36.8%。
+          よって2回必要。イが正解。
+
+  - qid: R7086
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          動物が写っている大量の画像から犬や猫などの特徴を自動的に抽出して，動物の種類を識別できるようにするAIの技術はどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "e-ラーニング"
+      - id: 2
+        content:
+          - type: text
+            text: "アクティブラーニング"
+      - id: 3
+        content:
+          - type: text
+            text: "アダプティブラーニング"
+      - id: 4
+        content:
+          - type: text
+            text: "ディープラーニング"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          ディープラーニングは多層ニューラルネットワークを用いて、画像などの特徴を自動抽出して識別するAIの技術です。ア・イ・ウは人間向けの学習形態。
+
+  - qid: R7087
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          PKIにおいて，ある条件に当てはまるデジタル証明書の情報が公開されているリストとしてCRLがある。このリストに掲載される条件として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "有効期間が満了している。"
+      - id: 2
+        content:
+          - type: text
+            text: "有効期間が無期限である。"
+      - id: 3
+        content:
+          - type: text
+            text: "有効期間内に失効している。"
+      - id: 4
+        content:
+          - type: text
+            text: "有効期間を延長している。"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          CRL（Certificate Revocation List、証明書失効リスト）には、有効期間内であるにもかかわらず失効した証明書が掲載されます。
+
+  - qid: R7088
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          情報セキュリティ対策を，"技術的セキュリティ対策"，"人的セキュリティ対策"及び"物理的セキュリティ対策"に分類したとき，"物理的セキュリティ対策"の例として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "業務に関係のない掲示板やSNSなどへの従業員による書込み，閲覧を防止するために，Webサーバへのアクセスログを取得し，必要に応じて通信を遮断する。"
+      - id: 2
+        content:
+          - type: text
+            text: "サーバ室，執務室などの場所ごとにセキュリティレベルを設定し，従業員ごとのアクセス権が付与されたICカードで入退室管理を行う。"
+      - id: 3
+        content:
+          - type: text
+            text: "従業員の採用時には，守秘義務に関する契約書を取り交わし，在籍中は機密情報の取扱いに関する教育，啓発を実施する。"
+      - id: 4
+        content:
+          - type: text
+            text: "退職者が，在籍中のアカウントを用いた不正アクセスを行わないように，従業員の退職時にアカウントを削除する。"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          ICカードによる入退室管理は物理的セキュリティ対策の典型例です。
+          ア・エ：技術的対策。
+          ウ：人的対策。
+
+  - qid: R7089
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          Aさんは，Bさんから次の4種類のメッセージを受け取った。Aさんが，受け取ったメッセージを復号して読むことができるものだけを全て挙げたものはどれか。
+
+          a　AさんとBさんとの共通鍵で暗号化したメッセージ
+          b　Aさんの公開鍵で暗号化したメッセージ
+          c　Bさんの公開鍵で暗号化したメッセージ
+          d　Bさんの秘密鍵で暗号化したメッセージ
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a, b, d"
+      - id: 2
+        content:
+          - type: text
+            text: "a, c, d"
+      - id: 3
+        content:
+          - type: text
+            text: "b, d"
+      - id: 4
+        content:
+          - type: text
+            text: "c, d"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          a：共通鍵をAさんも持つので復号可。
+          b：Aさんの公開鍵で暗号化されたものはAさんの秘密鍵で復号可。
+          c：Bさんの公開鍵で暗号化されたものはBさんの秘密鍵が必要で、Aさんは復号不可。
+          d：Bさんの秘密鍵で暗号化されたものはBさんの公開鍵で復号可（デジタル署名）。
+          よって a, b, d の組合せ（ア）が正解。
+
+  - qid: R7090
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          無線LANのセキュリティ対策に関する記述として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "APIは，複数のアクセスポイントをグループ化して管理するIDである。"
+      - id: 2
+        content:
+          - type: text
+            text: "SSHは，アクセスポイントをステルス化することで無線LANネットワークを隠蔽する機能である。"
+      - id: 3
+        content:
+          - type: text
+            text: "VPNは，アクセスポイントに登録したMACアドレスをもつ機器以外からの接続を拒否する機能である。"
+      - id: 4
+        content:
+          - type: text
+            text: "WPA2は，WEPよりも高い信頼性をもつ，無線通信の暗号化技術である。"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          WPA2はWEPの脆弱性を改善した、より安全な無線LAN暗号化規格です。
+          ア：APIはアプリ間連携の仕組みで、無線LAN管理用のIDではない。
+          イ：SSHはリモートログイン用の暗号化通信プロトコル。
+          ウ：VPNは仮想専用線で、MACアドレスフィルタリングとは別。
+
+  - qid: R7091
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          情報セキュリティのリスクマネジメントにおけるリスク対応を，リスク移転，リスク回避，リスク低減及びリスク保有の四つに分けて実施することにしたとき，これらに関する記述として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "リスク対応の実施手順であり，リスク回避，リスク移転，リスク低減，リスク保有の順番で進める。"
+      - id: 2
+        content:
+          - type: text
+            text: "リスク対応の実施手順であり，リスク保有，リスク低減，リスク移転，リスク回避の順番で進める。"
+      - id: 3
+        content:
+          - type: text
+            text: "リスク対応の選択肢であり，管理対象としたリスクの顕在化に備えて保険を掛けておくことは，リスク回避に該当する。"
+      - id: 4
+        content:
+          - type: text
+            text: "リスク対応の選択肢であり，ノートPCの紛失や盗難に備えて社外への持出しをより厳重に管理することは，リスク低減に該当する。"
+
+    answer_option_id: 4
+
+    explanation:
+      - type: text
+        text: |-
+          リスク対応は順序を強制せず、状況に応じて選択するものです。持出し管理を厳しくすることは発生確率を下げる「リスク低減」に当たります（エ）。
+          ア・イ：固定の手順ではない。
+          ウ：保険はリスク移転（の一例）であり、リスク回避ではない。
+
+  - qid: R7092
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          従業員が使用するPCがランサムウェアに感染した場合の損害を軽減する対策例として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "PCが接続するファイルサーバのHDDのバックアップデータを定期的に取得し，ネットワークから切り離して保管する。"
+      - id: 2
+        content:
+          - type: text
+            text: "PCに多要素認証の仕組みを導入する。"
+      - id: 3
+        content:
+          - type: text
+            text: "PCのHDDを暗号化する。"
+      - id: 4
+        content:
+          - type: text
+            text: "PCへのログイン時に，パスワードを複数回間違えたら，当該IDをロックする。"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          ランサムウェア感染時の損害軽減には、暗号化前の状態に復旧できるバックアップが有効で、攻撃者がアクセスできないようネットワーク切り離して保管することが重要です。イ・エは認証強化、ウは情報漏えい対策で、感染後の損害軽減には直接効きません。
+
+  - qid: R7093
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          情報セキュリティにおける脅威の説明として，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "攻撃者が付け込むことのできる情報システムの弱点"
+      - id: 2
+        content:
+          - type: text
+            text: "情報資産が被害に遭う確率と被害規模の組合せ"
+      - id: 3
+        content:
+          - type: text
+            text: "情報資産に損害を与える原因となるもの"
+      - id: 4
+        content:
+          - type: text
+            text: "情報システムの弱点を利用した攻撃によって被害を受ける可能性"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          脅威は「情報資産に損害を与える原因となるもの」です。
+          ア：脆弱性。
+          イ：リスクの大きさ。
+          エ：リスク。
+
+  - qid: R7094
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          稼働率0.9の装置で並列システムを構成したい。このシステムの稼働率を0.999とするためには，最低何台の装置で並列システムを構成する必要があるか。ここで，並列システムを構成したときに，少なくとも1台の装置が稼働していればシステムは正常に稼働しているものとする。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "2"
+      - id: 2
+        content:
+          - type: text
+            text: "3"
+      - id: 3
+        content:
+          - type: text
+            text: "4"
+      - id: 4
+        content:
+          - type: text
+            text: "5"
+
+    answer_option_id: 2
+
+    explanation:
+      - type: text
+        text: |-
+          並列システムの稼働率＝1 − (1 − 0.9)^n。0.999以上にするには (0.1)^n ≦ 0.001。
+          n=2：0.01。n=3：0.001。よって最低3台で 0.999 となる。イが正解。
+
+  - qid: R7095
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          データベース設計におけるデータ分析で行うこととして，適切なものはどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "データウェアハウスから業務ごとに必要な情報を抽出する。"
+      - id: 2
+        content:
+          - type: text
+            text: "データ項目の内容が，指定された条件を満足する行だけを抽出する。"
+      - id: 3
+        content:
+          - type: text
+            text: "必要なデータ項目を洗い出し，項目間の関連を整理する。"
+      - id: 4
+        content:
+          - type: text
+            text: "膨大な情報から統計的手法などを用いて，ビジネスに活用できる情報を探索する。"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          データベース設計のデータ分析（概念設計）では、必要なデータ項目を洗い出し、項目間の関連（実体間関連）を整理します。
+          ア：データマート構築。
+          イ：選択演算。
+          エ：データマイニング。
+
+  - qid: R7096
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          OSS（Open Source Software）に関する次の記述のうち，適切なものだけを全て挙げたものはどれか。
+
+          a　個人だけではなく，企業や団体が開発したソフトウェアもある。
+          b　著作権が放棄されている。
+          c　入手したソフトウェアは，自由に再配布してもよい。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a, b"
+      - id: 2
+        content:
+          - type: text
+            text: "a, b, c"
+      - id: 3
+        content:
+          - type: text
+            text: "a, c"
+      - id: 4
+        content:
+          - type: text
+            text: "b, c"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          a：OSSは個人・企業・団体・コミュニティなどが開発する。適切。
+          b：OSSは著作権を放棄しておらず、ライセンスに基づき利用許諾している。
+          c：OSSの定義として再配布の自由が認められている。
+          よって a, c の組合せ（ウ）が正解。
+
+  - qid: R7097
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          情報セキュリティにおいて，可用性が損なわれた事象だけを全て挙げたものはどれか。
+
+          a　関連取引先との電子決済システムがDoS攻撃を受け，処理ができなくなった。
+          b　顧客情報管理システムの顧客情報が誤った内容のまま運用されていた。
+          c　社内のサーバに不正侵入されて，社外秘の情報が漏えいした。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "a"
+      - id: 2
+        content:
+          - type: text
+            text: "a, b"
+      - id: 3
+        content:
+          - type: text
+            text: "b, c"
+      - id: 4
+        content:
+          - type: text
+            text: "c"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          情報セキュリティの3要素は機密性・完全性・可用性。
+          a：DoS攻撃で処理不可 → 可用性の喪失。
+          b：誤った内容のまま運用 → 完全性の喪失。
+          c：情報漏えい → 機密性の喪失。
+          よって可用性が損なわれたのは a のみ（ア）が正解。
+
+  - qid: R7098
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: |-
+          4個の要素から成るデータの並びを，次の手順を繰り返して昇順に整列するとき，整列が終了するまでに(1)から(3)の一連の手順は，何回実行されるか。ここで，最初はデータの並び全体を整列対象とする。
+
+          データの並び：[27, 42, 33, 12]
+
+          〔手順〕
+          (1) 整列対象中の要素の最大の値を選び，最後の要素と入れ替える。
+          (2) 最後の要素を整列対象から外す。
+          (3) 整列対象に要素が1個以上残っていれば，(1)から(3)の一連の手順を実行する。残っていなければ，整列完了なので終了する。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "2"
+      - id: 2
+        content:
+          - type: text
+            text: "3"
+      - id: 3
+        content:
+          - type: text
+            text: "4"
+      - id: 4
+        content:
+          - type: text
+            text: "5"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          1回目：[27,42,33,12]→max=42→[27,12,33,42]→対象外す→[27,12,33]
+          2回目：max=33→[27,12,33]→[27,12]
+          3回目：max=27→[12,27]→[12]
+          4回目：要素1個。max=12→[12]→対象外し→空。
+          4回目で対象が0個になり次は実行されないため、(1)〜(3)は計4回実行される。よってウが正解。
+
+  - qid: R7099
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          関数calculateAmountOfPrizeは，業務改善の効果における改善額と短縮期間を，それぞれimprovementとperiodで受け取り，賞金額を戻り値とする。改善額が20万円で短縮期間が3日の業務改善と，改善額が5万円で短縮期間が14日の業務改善があった。この二つの賞金額の合計は何円か。ここで，改善額と短縮期間の値はそれぞれ0以上とする。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "1,000"
+      - id: 2
+        content:
+          - type: text
+            text: "1,500"
+      - id: 3
+        content:
+          - type: text
+            text: "3,000"
+      - id: 4
+        content:
+          - type: text
+            text: "5,500"
+
+    answer_option_id: 3
+
+    explanation:
+      - type: text
+        text: |-
+          改善額20万円(=200,000)≥100,000、期間3日<7 → prize=2,000円。
+          改善額5万円(=50,000)<100,000、期間14日≥7 → prize=1,000円。
+          合計 2,000+1,000=3,000円。よってウが正解。
+
+  - qid: R7100
+    category: technology
+    question_type: single_choice
+
+    content:
+      - type: text
+        text: >-
+          個人の認証に用いる要素を，知識，所有物及びバイオメトリクスの三つに分類したとき，所有物を要素として用いた認証の例はどれか。
+
+    options:
+      - id: 1
+        content:
+          - type: text
+            text: "SMSを用いた認証"
+      - id: 2
+        content:
+          - type: text
+            text: "虹彩の特徴を用いた認証"
+      - id: 3
+        content:
+          - type: text
+            text: "筆跡や筆圧，スピードなど，文字を書くときの特徴を用いた認証"
+      - id: 4
+        content:
+          - type: text
+            text: "本人が事前に設定した質問とそれに対する答えを用いた認証"
+
+    answer_option_id: 1
+
+    explanation:
+      - type: text
+        text: |-
+          SMS認証は本人が所持する携帯電話（SIM）に届いたコードを利用するため、所有物による認証に該当します。
+          イ・ウ：バイオメトリクス。
+          エ：知識。
