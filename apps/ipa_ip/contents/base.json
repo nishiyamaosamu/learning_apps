@@ -1,8 +1,56 @@
 {
   "lessons": [
-    { "id": "1", "title": "企業活動と経営管理" },
-    { "id": "2", "title": "2進数と10進数の基数変換" },
-    { "id": "3", "title": "暗号技術の基本" }
+    {
+      "id": "strategy",
+      "title": "ストラテジ系",
+      "majorCategories": [
+        {
+          "id": "1",
+          "title": "企業と法務",
+          "middleCategories": [
+            {
+              "id": "1",
+              "title": "企業活動",
+              "lessons": [
+                { "id": "1", "title": "企業活動と経営管理" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "technology",
+      "title": "テクノロジ系",
+      "majorCategories": [
+        {
+          "id": "7",
+          "title": "基礎理論",
+          "middleCategories": [
+            {
+              "id": "13",
+              "title": "基礎理論",
+              "lessons": [
+                { "id": "2", "title": "2進数と10進数の基数変換" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "9",
+          "title": "技術要素",
+          "middleCategories": [
+            {
+              "id": "23",
+              "title": "セキュリティ",
+              "lessons": [
+                { "id": "3", "title": "暗号技術の基本" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   ],
   "exercises": [
     { "id": "R8", "title": "令和8年度 問題集" },

@@ -6,20 +6,57 @@ part 'content_models.g.dart';
 /// 一覧表示用のサマリ。base.json に含まれる。
 @freezed
 class ContentSummary with _$ContentSummary {
-  const factory ContentSummary({
-    required String id,
-    required String title,
-  }) = _ContentSummary;
+  const factory ContentSummary({required String id, required String title}) =
+      _ContentSummary;
 
   factory ContentSummary.fromJson(Map<String, dynamic> json) =>
       _$ContentSummaryFromJson(json);
+}
+
+/// 講座の「系」。大分類をまとめ、base.json の配列順で表示する。
+@freezed
+class LessonDomain with _$LessonDomain {
+  const factory LessonDomain({
+    required String id,
+    required String title,
+    required List<LessonMajorCategory> majorCategories,
+  }) = _LessonDomain;
+
+  factory LessonDomain.fromJson(Map<String, dynamic> json) =>
+      _$LessonDomainFromJson(json);
+}
+
+/// 講座の大分類。講座一覧ではこの単位を開閉する。
+@freezed
+class LessonMajorCategory with _$LessonMajorCategory {
+  const factory LessonMajorCategory({
+    required String id,
+    required String title,
+    required List<LessonMiddleCategory> middleCategories,
+  }) = _LessonMajorCategory;
+
+  factory LessonMajorCategory.fromJson(Map<String, dynamic> json) =>
+      _$LessonMajorCategoryFromJson(json);
+}
+
+/// 講座の中分類。配下の講座を一覧表示する見出しとなる。
+@freezed
+class LessonMiddleCategory with _$LessonMiddleCategory {
+  const factory LessonMiddleCategory({
+    required String id,
+    required String title,
+    required List<ContentSummary> lessons,
+  }) = _LessonMiddleCategory;
+
+  factory LessonMiddleCategory.fromJson(Map<String, dynamic> json) =>
+      _$LessonMiddleCategoryFromJson(json);
 }
 
 /// base.json の内容。各タブの一覧を初期ロードで提供する。
 @freezed
 class ContentIndex with _$ContentIndex {
   const factory ContentIndex({
-    @Default(<ContentSummary>[]) List<ContentSummary> lessons,
+    @Default(<LessonDomain>[]) List<LessonDomain> lessons,
     @Default(<ContentSummary>[]) List<ContentSummary> exercises,
     @Default(<ContentSummary>[]) List<ContentSummary> anki,
   }) = _ContentIndex;
@@ -175,10 +212,8 @@ class ExerciseQuestion with _$ExerciseQuestion {
 /// 分野（カテゴリ）の定義。表示名は「系」付きラベルに別途マッピングする。
 @freezed
 class ExerciseCategory with _$ExerciseCategory {
-  const factory ExerciseCategory({
-    required String id,
-    required String name,
-  }) = _ExerciseCategory;
+  const factory ExerciseCategory({required String id, required String name}) =
+      _ExerciseCategory;
 
   factory ExerciseCategory.fromJson(Map<String, dynamic> json) =>
       _$ExerciseCategoryFromJson(json);
@@ -203,10 +238,8 @@ class Exercise with _$Exercise {
 /// 暗記カードの1枚。
 @freezed
 class AnkiCard with _$AnkiCard {
-  const factory AnkiCard({
-    required String front,
-    required String back,
-  }) = _AnkiCard;
+  const factory AnkiCard({required String front, required String back}) =
+      _AnkiCard;
 
   factory AnkiCard.fromJson(Map<String, dynamic> json) =>
       _$AnkiCardFromJson(json);

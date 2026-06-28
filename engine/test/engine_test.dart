@@ -35,14 +35,52 @@ void main() {
   test('ContentIndex.fromJson が一覧をパースできる', () {
     final index = ContentIndex.fromJson({
       'lessons': [
-        {'id': '1', 'title': '講座1'},
+        {
+          'id': 'strategy',
+          'title': 'ストラテジ系',
+          'majorCategories': [
+            {
+              'id': '1',
+              'title': '企業と法務',
+              'middleCategories': [
+                {
+                  'id': '1',
+                  'title': '企業活動',
+                  'lessons': [
+                    {'id': '1', 'title': '講座1'},
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       ],
       'exercises': [],
       'anki': [],
     });
     expect(index.lessons.length, 1);
-    expect(index.lessons.first.title, '講座1');
+    final domain = index.lessons.first;
+    expect(domain.id, 'strategy');
+    expect(domain.title, 'ストラテジ系');
+    final majorCategory = domain.majorCategories.single;
+    expect(majorCategory.id, '1');
+    expect(majorCategory.title, '企業と法務');
+    final middleCategory = majorCategory.middleCategories.single;
+    expect(middleCategory.id, '1');
+    expect(middleCategory.title, '企業活動');
+    expect(middleCategory.lessons.single.title, '講座1');
     expect(index.exercises, isEmpty);
+  });
+
+  test('ContentIndex.fromJson は旧フラット講座形式を受理しない', () {
+    expect(
+      () => ContentIndex.fromJson({
+        'lessons': [
+          {'id': '1', 'title': '旧形式の講座'},
+        ],
+      }),
+      throwsA(anything),
+    );
   });
 
   test('Lesson.fromJson が pages と quizzes をパースできる', () {
@@ -86,10 +124,9 @@ void main() {
     expect(content.blocks.last.imageUrl, isNull);
 
     expect((lesson.quizzes.first as QuizMultipleChoice).correctOptionIndex, 1);
-    expect(
-      (lesson.quizzes.last as QuizFillInTheBlank).correctOptionIndices,
-      [0],
-    );
+    expect((lesson.quizzes.last as QuizFillInTheBlank).correctOptionIndices, [
+      0,
+    ]);
   });
 
   test('pages / quizzes を持たないレッスンは空配列になる', () {

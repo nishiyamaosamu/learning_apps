@@ -16,13 +16,65 @@ Map<String, dynamic> _$$ContentSummaryImplToJson(
   _$ContentSummaryImpl instance,
 ) => <String, dynamic>{'id': instance.id, 'title': instance.title};
 
+_$LessonDomainImpl _$$LessonDomainImplFromJson(Map<String, dynamic> json) =>
+    _$LessonDomainImpl(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      majorCategories: (json['majorCategories'] as List<dynamic>)
+          .map((e) => LessonMajorCategory.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$$LessonDomainImplToJson(_$LessonDomainImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'majorCategories': instance.majorCategories,
+    };
+
+_$LessonMajorCategoryImpl _$$LessonMajorCategoryImplFromJson(
+  Map<String, dynamic> json,
+) => _$LessonMajorCategoryImpl(
+  id: json['id'] as String,
+  title: json['title'] as String,
+  middleCategories: (json['middleCategories'] as List<dynamic>)
+      .map((e) => LessonMiddleCategory.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$$LessonMajorCategoryImplToJson(
+  _$LessonMajorCategoryImpl instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'title': instance.title,
+  'middleCategories': instance.middleCategories,
+};
+
+_$LessonMiddleCategoryImpl _$$LessonMiddleCategoryImplFromJson(
+  Map<String, dynamic> json,
+) => _$LessonMiddleCategoryImpl(
+  id: json['id'] as String,
+  title: json['title'] as String,
+  lessons: (json['lessons'] as List<dynamic>)
+      .map((e) => ContentSummary.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$$LessonMiddleCategoryImplToJson(
+  _$LessonMiddleCategoryImpl instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'title': instance.title,
+  'lessons': instance.lessons,
+};
+
 _$ContentIndexImpl _$$ContentIndexImplFromJson(Map<String, dynamic> json) =>
     _$ContentIndexImpl(
       lessons:
           (json['lessons'] as List<dynamic>?)
-              ?.map((e) => ContentSummary.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => LessonDomain.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <ContentSummary>[],
+          const <LessonDomain>[],
       exercises:
           (json['exercises'] as List<dynamic>?)
               ?.map((e) => ContentSummary.fromJson(e as Map<String, dynamic>))

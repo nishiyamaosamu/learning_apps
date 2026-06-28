@@ -186,13 +186,655 @@ abstract class _ContentSummary implements ContentSummary {
       throw _privateConstructorUsedError;
 }
 
+LessonDomain _$LessonDomainFromJson(Map<String, dynamic> json) {
+  return _LessonDomain.fromJson(json);
+}
+
+/// @nodoc
+mixin _$LessonDomain {
+  String get id => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
+  List<LessonMajorCategory> get majorCategories =>
+      throw _privateConstructorUsedError;
+
+  /// Serializes this LessonDomain to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of LessonDomain
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $LessonDomainCopyWith<LessonDomain> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $LessonDomainCopyWith<$Res> {
+  factory $LessonDomainCopyWith(
+    LessonDomain value,
+    $Res Function(LessonDomain) then,
+  ) = _$LessonDomainCopyWithImpl<$Res, LessonDomain>;
+  @useResult
+  $Res call({
+    String id,
+    String title,
+    List<LessonMajorCategory> majorCategories,
+  });
+}
+
+/// @nodoc
+class _$LessonDomainCopyWithImpl<$Res, $Val extends LessonDomain>
+    implements $LessonDomainCopyWith<$Res> {
+  _$LessonDomainCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of LessonDomain
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? majorCategories = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            majorCategories: null == majorCategories
+                ? _value.majorCategories
+                : majorCategories // ignore: cast_nullable_to_non_nullable
+                      as List<LessonMajorCategory>,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$LessonDomainImplCopyWith<$Res>
+    implements $LessonDomainCopyWith<$Res> {
+  factory _$$LessonDomainImplCopyWith(
+    _$LessonDomainImpl value,
+    $Res Function(_$LessonDomainImpl) then,
+  ) = __$$LessonDomainImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String id,
+    String title,
+    List<LessonMajorCategory> majorCategories,
+  });
+}
+
+/// @nodoc
+class __$$LessonDomainImplCopyWithImpl<$Res>
+    extends _$LessonDomainCopyWithImpl<$Res, _$LessonDomainImpl>
+    implements _$$LessonDomainImplCopyWith<$Res> {
+  __$$LessonDomainImplCopyWithImpl(
+    _$LessonDomainImpl _value,
+    $Res Function(_$LessonDomainImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of LessonDomain
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? majorCategories = null,
+  }) {
+    return _then(
+      _$LessonDomainImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        majorCategories: null == majorCategories
+            ? _value._majorCategories
+            : majorCategories // ignore: cast_nullable_to_non_nullable
+                  as List<LessonMajorCategory>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$LessonDomainImpl implements _LessonDomain {
+  const _$LessonDomainImpl({
+    required this.id,
+    required this.title,
+    required final List<LessonMajorCategory> majorCategories,
+  }) : _majorCategories = majorCategories;
+
+  factory _$LessonDomainImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LessonDomainImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String title;
+  final List<LessonMajorCategory> _majorCategories;
+  @override
+  List<LessonMajorCategory> get majorCategories {
+    if (_majorCategories is EqualUnmodifiableListView) return _majorCategories;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_majorCategories);
+  }
+
+  @override
+  String toString() {
+    return 'LessonDomain(id: $id, title: $title, majorCategories: $majorCategories)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LessonDomainImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(
+              other._majorCategories,
+              _majorCategories,
+            ));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    title,
+    const DeepCollectionEquality().hash(_majorCategories),
+  );
+
+  /// Create a copy of LessonDomain
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LessonDomainImplCopyWith<_$LessonDomainImpl> get copyWith =>
+      __$$LessonDomainImplCopyWithImpl<_$LessonDomainImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$LessonDomainImplToJson(this);
+  }
+}
+
+abstract class _LessonDomain implements LessonDomain {
+  const factory _LessonDomain({
+    required final String id,
+    required final String title,
+    required final List<LessonMajorCategory> majorCategories,
+  }) = _$LessonDomainImpl;
+
+  factory _LessonDomain.fromJson(Map<String, dynamic> json) =
+      _$LessonDomainImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get title;
+  @override
+  List<LessonMajorCategory> get majorCategories;
+
+  /// Create a copy of LessonDomain
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$LessonDomainImplCopyWith<_$LessonDomainImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+LessonMajorCategory _$LessonMajorCategoryFromJson(Map<String, dynamic> json) {
+  return _LessonMajorCategory.fromJson(json);
+}
+
+/// @nodoc
+mixin _$LessonMajorCategory {
+  String get id => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
+  List<LessonMiddleCategory> get middleCategories =>
+      throw _privateConstructorUsedError;
+
+  /// Serializes this LessonMajorCategory to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of LessonMajorCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $LessonMajorCategoryCopyWith<LessonMajorCategory> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $LessonMajorCategoryCopyWith<$Res> {
+  factory $LessonMajorCategoryCopyWith(
+    LessonMajorCategory value,
+    $Res Function(LessonMajorCategory) then,
+  ) = _$LessonMajorCategoryCopyWithImpl<$Res, LessonMajorCategory>;
+  @useResult
+  $Res call({
+    String id,
+    String title,
+    List<LessonMiddleCategory> middleCategories,
+  });
+}
+
+/// @nodoc
+class _$LessonMajorCategoryCopyWithImpl<$Res, $Val extends LessonMajorCategory>
+    implements $LessonMajorCategoryCopyWith<$Res> {
+  _$LessonMajorCategoryCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of LessonMajorCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? middleCategories = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            middleCategories: null == middleCategories
+                ? _value.middleCategories
+                : middleCategories // ignore: cast_nullable_to_non_nullable
+                      as List<LessonMiddleCategory>,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$LessonMajorCategoryImplCopyWith<$Res>
+    implements $LessonMajorCategoryCopyWith<$Res> {
+  factory _$$LessonMajorCategoryImplCopyWith(
+    _$LessonMajorCategoryImpl value,
+    $Res Function(_$LessonMajorCategoryImpl) then,
+  ) = __$$LessonMajorCategoryImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String id,
+    String title,
+    List<LessonMiddleCategory> middleCategories,
+  });
+}
+
+/// @nodoc
+class __$$LessonMajorCategoryImplCopyWithImpl<$Res>
+    extends _$LessonMajorCategoryCopyWithImpl<$Res, _$LessonMajorCategoryImpl>
+    implements _$$LessonMajorCategoryImplCopyWith<$Res> {
+  __$$LessonMajorCategoryImplCopyWithImpl(
+    _$LessonMajorCategoryImpl _value,
+    $Res Function(_$LessonMajorCategoryImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of LessonMajorCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? middleCategories = null,
+  }) {
+    return _then(
+      _$LessonMajorCategoryImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        middleCategories: null == middleCategories
+            ? _value._middleCategories
+            : middleCategories // ignore: cast_nullable_to_non_nullable
+                  as List<LessonMiddleCategory>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$LessonMajorCategoryImpl implements _LessonMajorCategory {
+  const _$LessonMajorCategoryImpl({
+    required this.id,
+    required this.title,
+    required final List<LessonMiddleCategory> middleCategories,
+  }) : _middleCategories = middleCategories;
+
+  factory _$LessonMajorCategoryImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LessonMajorCategoryImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String title;
+  final List<LessonMiddleCategory> _middleCategories;
+  @override
+  List<LessonMiddleCategory> get middleCategories {
+    if (_middleCategories is EqualUnmodifiableListView)
+      return _middleCategories;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_middleCategories);
+  }
+
+  @override
+  String toString() {
+    return 'LessonMajorCategory(id: $id, title: $title, middleCategories: $middleCategories)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LessonMajorCategoryImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(
+              other._middleCategories,
+              _middleCategories,
+            ));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    title,
+    const DeepCollectionEquality().hash(_middleCategories),
+  );
+
+  /// Create a copy of LessonMajorCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LessonMajorCategoryImplCopyWith<_$LessonMajorCategoryImpl> get copyWith =>
+      __$$LessonMajorCategoryImplCopyWithImpl<_$LessonMajorCategoryImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$LessonMajorCategoryImplToJson(this);
+  }
+}
+
+abstract class _LessonMajorCategory implements LessonMajorCategory {
+  const factory _LessonMajorCategory({
+    required final String id,
+    required final String title,
+    required final List<LessonMiddleCategory> middleCategories,
+  }) = _$LessonMajorCategoryImpl;
+
+  factory _LessonMajorCategory.fromJson(Map<String, dynamic> json) =
+      _$LessonMajorCategoryImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get title;
+  @override
+  List<LessonMiddleCategory> get middleCategories;
+
+  /// Create a copy of LessonMajorCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$LessonMajorCategoryImplCopyWith<_$LessonMajorCategoryImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+LessonMiddleCategory _$LessonMiddleCategoryFromJson(Map<String, dynamic> json) {
+  return _LessonMiddleCategory.fromJson(json);
+}
+
+/// @nodoc
+mixin _$LessonMiddleCategory {
+  String get id => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
+  List<ContentSummary> get lessons => throw _privateConstructorUsedError;
+
+  /// Serializes this LessonMiddleCategory to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of LessonMiddleCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $LessonMiddleCategoryCopyWith<LessonMiddleCategory> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $LessonMiddleCategoryCopyWith<$Res> {
+  factory $LessonMiddleCategoryCopyWith(
+    LessonMiddleCategory value,
+    $Res Function(LessonMiddleCategory) then,
+  ) = _$LessonMiddleCategoryCopyWithImpl<$Res, LessonMiddleCategory>;
+  @useResult
+  $Res call({String id, String title, List<ContentSummary> lessons});
+}
+
+/// @nodoc
+class _$LessonMiddleCategoryCopyWithImpl<
+  $Res,
+  $Val extends LessonMiddleCategory
+>
+    implements $LessonMiddleCategoryCopyWith<$Res> {
+  _$LessonMiddleCategoryCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of LessonMiddleCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? title = null, Object? lessons = null}) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            lessons: null == lessons
+                ? _value.lessons
+                : lessons // ignore: cast_nullable_to_non_nullable
+                      as List<ContentSummary>,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$LessonMiddleCategoryImplCopyWith<$Res>
+    implements $LessonMiddleCategoryCopyWith<$Res> {
+  factory _$$LessonMiddleCategoryImplCopyWith(
+    _$LessonMiddleCategoryImpl value,
+    $Res Function(_$LessonMiddleCategoryImpl) then,
+  ) = __$$LessonMiddleCategoryImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String id, String title, List<ContentSummary> lessons});
+}
+
+/// @nodoc
+class __$$LessonMiddleCategoryImplCopyWithImpl<$Res>
+    extends _$LessonMiddleCategoryCopyWithImpl<$Res, _$LessonMiddleCategoryImpl>
+    implements _$$LessonMiddleCategoryImplCopyWith<$Res> {
+  __$$LessonMiddleCategoryImplCopyWithImpl(
+    _$LessonMiddleCategoryImpl _value,
+    $Res Function(_$LessonMiddleCategoryImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of LessonMiddleCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? title = null, Object? lessons = null}) {
+    return _then(
+      _$LessonMiddleCategoryImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        lessons: null == lessons
+            ? _value._lessons
+            : lessons // ignore: cast_nullable_to_non_nullable
+                  as List<ContentSummary>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$LessonMiddleCategoryImpl implements _LessonMiddleCategory {
+  const _$LessonMiddleCategoryImpl({
+    required this.id,
+    required this.title,
+    required final List<ContentSummary> lessons,
+  }) : _lessons = lessons;
+
+  factory _$LessonMiddleCategoryImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LessonMiddleCategoryImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String title;
+  final List<ContentSummary> _lessons;
+  @override
+  List<ContentSummary> get lessons {
+    if (_lessons is EqualUnmodifiableListView) return _lessons;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_lessons);
+  }
+
+  @override
+  String toString() {
+    return 'LessonMiddleCategory(id: $id, title: $title, lessons: $lessons)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LessonMiddleCategoryImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(other._lessons, _lessons));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    title,
+    const DeepCollectionEquality().hash(_lessons),
+  );
+
+  /// Create a copy of LessonMiddleCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LessonMiddleCategoryImplCopyWith<_$LessonMiddleCategoryImpl>
+  get copyWith =>
+      __$$LessonMiddleCategoryImplCopyWithImpl<_$LessonMiddleCategoryImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$LessonMiddleCategoryImplToJson(this);
+  }
+}
+
+abstract class _LessonMiddleCategory implements LessonMiddleCategory {
+  const factory _LessonMiddleCategory({
+    required final String id,
+    required final String title,
+    required final List<ContentSummary> lessons,
+  }) = _$LessonMiddleCategoryImpl;
+
+  factory _LessonMiddleCategory.fromJson(Map<String, dynamic> json) =
+      _$LessonMiddleCategoryImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get title;
+  @override
+  List<ContentSummary> get lessons;
+
+  /// Create a copy of LessonMiddleCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$LessonMiddleCategoryImplCopyWith<_$LessonMiddleCategoryImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
 ContentIndex _$ContentIndexFromJson(Map<String, dynamic> json) {
   return _ContentIndex.fromJson(json);
 }
 
 /// @nodoc
 mixin _$ContentIndex {
-  List<ContentSummary> get lessons => throw _privateConstructorUsedError;
+  List<LessonDomain> get lessons => throw _privateConstructorUsedError;
   List<ContentSummary> get exercises => throw _privateConstructorUsedError;
   List<ContentSummary> get anki => throw _privateConstructorUsedError;
 
@@ -214,7 +856,7 @@ abstract class $ContentIndexCopyWith<$Res> {
   ) = _$ContentIndexCopyWithImpl<$Res, ContentIndex>;
   @useResult
   $Res call({
-    List<ContentSummary> lessons,
+    List<LessonDomain> lessons,
     List<ContentSummary> exercises,
     List<ContentSummary> anki,
   });
@@ -244,7 +886,7 @@ class _$ContentIndexCopyWithImpl<$Res, $Val extends ContentIndex>
             lessons: null == lessons
                 ? _value.lessons
                 : lessons // ignore: cast_nullable_to_non_nullable
-                      as List<ContentSummary>,
+                      as List<LessonDomain>,
             exercises: null == exercises
                 ? _value.exercises
                 : exercises // ignore: cast_nullable_to_non_nullable
@@ -269,7 +911,7 @@ abstract class _$$ContentIndexImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    List<ContentSummary> lessons,
+    List<LessonDomain> lessons,
     List<ContentSummary> exercises,
     List<ContentSummary> anki,
   });
@@ -298,7 +940,7 @@ class __$$ContentIndexImplCopyWithImpl<$Res>
         lessons: null == lessons
             ? _value._lessons
             : lessons // ignore: cast_nullable_to_non_nullable
-                  as List<ContentSummary>,
+                  as List<LessonDomain>,
         exercises: null == exercises
             ? _value._exercises
             : exercises // ignore: cast_nullable_to_non_nullable
@@ -316,7 +958,7 @@ class __$$ContentIndexImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ContentIndexImpl implements _ContentIndex {
   const _$ContentIndexImpl({
-    final List<ContentSummary> lessons = const <ContentSummary>[],
+    final List<LessonDomain> lessons = const <LessonDomain>[],
     final List<ContentSummary> exercises = const <ContentSummary>[],
     final List<ContentSummary> anki = const <ContentSummary>[],
   }) : _lessons = lessons,
@@ -326,10 +968,10 @@ class _$ContentIndexImpl implements _ContentIndex {
   factory _$ContentIndexImpl.fromJson(Map<String, dynamic> json) =>
       _$$ContentIndexImplFromJson(json);
 
-  final List<ContentSummary> _lessons;
+  final List<LessonDomain> _lessons;
   @override
   @JsonKey()
-  List<ContentSummary> get lessons {
+  List<LessonDomain> get lessons {
     if (_lessons is EqualUnmodifiableListView) return _lessons;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_lessons);
@@ -396,7 +1038,7 @@ class _$ContentIndexImpl implements _ContentIndex {
 
 abstract class _ContentIndex implements ContentIndex {
   const factory _ContentIndex({
-    final List<ContentSummary> lessons,
+    final List<LessonDomain> lessons,
     final List<ContentSummary> exercises,
     final List<ContentSummary> anki,
   }) = _$ContentIndexImpl;
@@ -405,7 +1047,7 @@ abstract class _ContentIndex implements ContentIndex {
       _$ContentIndexImpl.fromJson;
 
   @override
-  List<ContentSummary> get lessons;
+  List<LessonDomain> get lessons;
   @override
   List<ContentSummary> get exercises;
   @override
