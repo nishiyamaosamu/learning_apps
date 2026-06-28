@@ -119,24 +119,80 @@ sealed class LessonQuiz with _$LessonQuiz {
       _$LessonQuizFromJson(json);
 }
 
+/// 問題文・選択肢・解説を構成するブロック。`type` を discriminator とする
+/// フラットなunion（[LessonQuiz] と同じ流儀。`data:` でネストしない）。
+@Freezed(unionKey: 'type')
+sealed class ExerciseBlock with _$ExerciseBlock {
+  /// テキストブロック。
+  @FreezedUnionValue('text')
+  const factory ExerciseBlock.text({required String text}) = ExerciseTextBlock;
+
+  /// 画像ブロック。[src] は contentBasePath 起点の相対パス
+  /// （例 'exercises/images/R8003_01.png'）。
+  @FreezedUnionValue('image')
+  const factory ExerciseBlock.image({required String src}) = ExerciseImageBlock;
+
+  factory ExerciseBlock.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseBlockFromJson(json);
+}
+
+/// 4択の1選択肢。`content` は空配列のことがある（選択肢が設問画像内にある場合）。
+/// その場合はフッターの「アイウエ」ボタンが唯一の解答手段になる。
+@freezed
+class ExerciseOption with _$ExerciseOption {
+  const factory ExerciseOption({
+    // 選択肢ID。1=ア, 2=イ, 3=ウ, 4=エ。
+    required int id,
+    @Default(<ExerciseBlock>[]) List<ExerciseBlock> content,
+  }) = _ExerciseOption;
+
+  factory ExerciseOption.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseOptionFromJson(json);
+}
+
 /// 問題の1問。
 @freezed
 class ExerciseQuestion with _$ExerciseQuestion {
   const factory ExerciseQuestion({
-    required String prompt,
-    required String answer,
+    // 問題ID（例 'R8001'）。
+    required String qid,
+    // 分野ID（'strategy' | 'management' | 'technology'）。
+    required String category,
+    // 問題文（テキスト・画像ブロックの列）。
+    @Default(<ExerciseBlock>[]) List<ExerciseBlock> content,
+    // 4つの選択肢。
+    @Default(<ExerciseOption>[]) List<ExerciseOption> options,
+    // 正解の選択肢ID（1..4）。
+    required int answerOptionId,
+    // 解説（テキスト・画像ブロックの列）。
+    @Default(<ExerciseBlock>[]) List<ExerciseBlock> explanation,
   }) = _ExerciseQuestion;
 
   factory ExerciseQuestion.fromJson(Map<String, dynamic> json) =>
       _$ExerciseQuestionFromJson(json);
 }
 
-/// 問題内容。contents/exercises/{id}.json を都度ロード。
+/// 分野（カテゴリ）の定義。表示名は「系」付きラベルに別途マッピングする。
+@freezed
+class ExerciseCategory with _$ExerciseCategory {
+  const factory ExerciseCategory({
+    required String id,
+    required String name,
+  }) = _ExerciseCategory;
+
+  factory ExerciseCategory.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseCategoryFromJson(json);
+}
+
+/// 問題集（1年度分）。contents/exercises/{id}.json を都度ロード。
 @freezed
 class Exercise with _$Exercise {
   const factory Exercise({
+    // 年度ID（例 'R8'）。
     required String id,
+    // 表示タイトル（例 '令和8年度'）。
     required String title,
+    @Default(<ExerciseCategory>[]) List<ExerciseCategory> categories,
     @Default(<ExerciseQuestion>[]) List<ExerciseQuestion> questions,
   }) = _Exercise;
 

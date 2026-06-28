@@ -1803,14 +1803,613 @@ abstract class QuizFillInTheBlank implements LessonQuiz {
       throw _privateConstructorUsedError;
 }
 
+ExerciseBlock _$ExerciseBlockFromJson(Map<String, dynamic> json) {
+  switch (json['type']) {
+    case 'text':
+      return ExerciseTextBlock.fromJson(json);
+    case 'image':
+      return ExerciseImageBlock.fromJson(json);
+
+    default:
+      throw CheckedFromJsonException(
+        json,
+        'type',
+        'ExerciseBlock',
+        'Invalid union type "${json['type']}"!',
+      );
+  }
+}
+
+/// @nodoc
+mixin _$ExerciseBlock {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String text) text,
+    required TResult Function(String src) image,
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String text)? text,
+    TResult? Function(String src)? image,
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String text)? text,
+    TResult Function(String src)? image,
+    required TResult orElse(),
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ExerciseTextBlock value) text,
+    required TResult Function(ExerciseImageBlock value) image,
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ExerciseTextBlock value)? text,
+    TResult? Function(ExerciseImageBlock value)? image,
+  }) => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ExerciseTextBlock value)? text,
+    TResult Function(ExerciseImageBlock value)? image,
+    required TResult orElse(),
+  }) => throw _privateConstructorUsedError;
+
+  /// Serializes this ExerciseBlock to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ExerciseBlockCopyWith<$Res> {
+  factory $ExerciseBlockCopyWith(
+    ExerciseBlock value,
+    $Res Function(ExerciseBlock) then,
+  ) = _$ExerciseBlockCopyWithImpl<$Res, ExerciseBlock>;
+}
+
+/// @nodoc
+class _$ExerciseBlockCopyWithImpl<$Res, $Val extends ExerciseBlock>
+    implements $ExerciseBlockCopyWith<$Res> {
+  _$ExerciseBlockCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ExerciseBlock
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+abstract class _$$ExerciseTextBlockImplCopyWith<$Res> {
+  factory _$$ExerciseTextBlockImplCopyWith(
+    _$ExerciseTextBlockImpl value,
+    $Res Function(_$ExerciseTextBlockImpl) then,
+  ) = __$$ExerciseTextBlockImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String text});
+}
+
+/// @nodoc
+class __$$ExerciseTextBlockImplCopyWithImpl<$Res>
+    extends _$ExerciseBlockCopyWithImpl<$Res, _$ExerciseTextBlockImpl>
+    implements _$$ExerciseTextBlockImplCopyWith<$Res> {
+  __$$ExerciseTextBlockImplCopyWithImpl(
+    _$ExerciseTextBlockImpl _value,
+    $Res Function(_$ExerciseTextBlockImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ExerciseBlock
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? text = null}) {
+    return _then(
+      _$ExerciseTextBlockImpl(
+        text: null == text
+            ? _value.text
+            : text // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ExerciseTextBlockImpl implements ExerciseTextBlock {
+  const _$ExerciseTextBlockImpl({required this.text, final String? $type})
+    : $type = $type ?? 'text';
+
+  factory _$ExerciseTextBlockImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ExerciseTextBlockImplFromJson(json);
+
+  @override
+  final String text;
+
+  @JsonKey(name: 'type')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'ExerciseBlock.text(text: $text)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ExerciseTextBlockImpl &&
+            (identical(other.text, text) || other.text == text));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, text);
+
+  /// Create a copy of ExerciseBlock
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ExerciseTextBlockImplCopyWith<_$ExerciseTextBlockImpl> get copyWith =>
+      __$$ExerciseTextBlockImplCopyWithImpl<_$ExerciseTextBlockImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String text) text,
+    required TResult Function(String src) image,
+  }) {
+    return text(this.text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String text)? text,
+    TResult? Function(String src)? image,
+  }) {
+    return text?.call(this.text);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String text)? text,
+    TResult Function(String src)? image,
+    required TResult orElse(),
+  }) {
+    if (text != null) {
+      return text(this.text);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ExerciseTextBlock value) text,
+    required TResult Function(ExerciseImageBlock value) image,
+  }) {
+    return text(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ExerciseTextBlock value)? text,
+    TResult? Function(ExerciseImageBlock value)? image,
+  }) {
+    return text?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ExerciseTextBlock value)? text,
+    TResult Function(ExerciseImageBlock value)? image,
+    required TResult orElse(),
+  }) {
+    if (text != null) {
+      return text(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ExerciseTextBlockImplToJson(this);
+  }
+}
+
+abstract class ExerciseTextBlock implements ExerciseBlock {
+  const factory ExerciseTextBlock({required final String text}) =
+      _$ExerciseTextBlockImpl;
+
+  factory ExerciseTextBlock.fromJson(Map<String, dynamic> json) =
+      _$ExerciseTextBlockImpl.fromJson;
+
+  String get text;
+
+  /// Create a copy of ExerciseBlock
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ExerciseTextBlockImplCopyWith<_$ExerciseTextBlockImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ExerciseImageBlockImplCopyWith<$Res> {
+  factory _$$ExerciseImageBlockImplCopyWith(
+    _$ExerciseImageBlockImpl value,
+    $Res Function(_$ExerciseImageBlockImpl) then,
+  ) = __$$ExerciseImageBlockImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String src});
+}
+
+/// @nodoc
+class __$$ExerciseImageBlockImplCopyWithImpl<$Res>
+    extends _$ExerciseBlockCopyWithImpl<$Res, _$ExerciseImageBlockImpl>
+    implements _$$ExerciseImageBlockImplCopyWith<$Res> {
+  __$$ExerciseImageBlockImplCopyWithImpl(
+    _$ExerciseImageBlockImpl _value,
+    $Res Function(_$ExerciseImageBlockImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ExerciseBlock
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? src = null}) {
+    return _then(
+      _$ExerciseImageBlockImpl(
+        src: null == src
+            ? _value.src
+            : src // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ExerciseImageBlockImpl implements ExerciseImageBlock {
+  const _$ExerciseImageBlockImpl({required this.src, final String? $type})
+    : $type = $type ?? 'image';
+
+  factory _$ExerciseImageBlockImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ExerciseImageBlockImplFromJson(json);
+
+  @override
+  final String src;
+
+  @JsonKey(name: 'type')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'ExerciseBlock.image(src: $src)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ExerciseImageBlockImpl &&
+            (identical(other.src, src) || other.src == src));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, src);
+
+  /// Create a copy of ExerciseBlock
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ExerciseImageBlockImplCopyWith<_$ExerciseImageBlockImpl> get copyWith =>
+      __$$ExerciseImageBlockImplCopyWithImpl<_$ExerciseImageBlockImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String text) text,
+    required TResult Function(String src) image,
+  }) {
+    return image(src);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String text)? text,
+    TResult? Function(String src)? image,
+  }) {
+    return image?.call(src);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String text)? text,
+    TResult Function(String src)? image,
+    required TResult orElse(),
+  }) {
+    if (image != null) {
+      return image(src);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ExerciseTextBlock value) text,
+    required TResult Function(ExerciseImageBlock value) image,
+  }) {
+    return image(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ExerciseTextBlock value)? text,
+    TResult? Function(ExerciseImageBlock value)? image,
+  }) {
+    return image?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ExerciseTextBlock value)? text,
+    TResult Function(ExerciseImageBlock value)? image,
+    required TResult orElse(),
+  }) {
+    if (image != null) {
+      return image(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ExerciseImageBlockImplToJson(this);
+  }
+}
+
+abstract class ExerciseImageBlock implements ExerciseBlock {
+  const factory ExerciseImageBlock({required final String src}) =
+      _$ExerciseImageBlockImpl;
+
+  factory ExerciseImageBlock.fromJson(Map<String, dynamic> json) =
+      _$ExerciseImageBlockImpl.fromJson;
+
+  String get src;
+
+  /// Create a copy of ExerciseBlock
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ExerciseImageBlockImplCopyWith<_$ExerciseImageBlockImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+ExerciseOption _$ExerciseOptionFromJson(Map<String, dynamic> json) {
+  return _ExerciseOption.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ExerciseOption {
+  // 選択肢ID。1=ア, 2=イ, 3=ウ, 4=エ。
+  int get id => throw _privateConstructorUsedError;
+  List<ExerciseBlock> get content => throw _privateConstructorUsedError;
+
+  /// Serializes this ExerciseOption to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ExerciseOption
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ExerciseOptionCopyWith<ExerciseOption> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ExerciseOptionCopyWith<$Res> {
+  factory $ExerciseOptionCopyWith(
+    ExerciseOption value,
+    $Res Function(ExerciseOption) then,
+  ) = _$ExerciseOptionCopyWithImpl<$Res, ExerciseOption>;
+  @useResult
+  $Res call({int id, List<ExerciseBlock> content});
+}
+
+/// @nodoc
+class _$ExerciseOptionCopyWithImpl<$Res, $Val extends ExerciseOption>
+    implements $ExerciseOptionCopyWith<$Res> {
+  _$ExerciseOptionCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ExerciseOption
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? content = null}) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as int,
+            content: null == content
+                ? _value.content
+                : content // ignore: cast_nullable_to_non_nullable
+                      as List<ExerciseBlock>,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ExerciseOptionImplCopyWith<$Res>
+    implements $ExerciseOptionCopyWith<$Res> {
+  factory _$$ExerciseOptionImplCopyWith(
+    _$ExerciseOptionImpl value,
+    $Res Function(_$ExerciseOptionImpl) then,
+  ) = __$$ExerciseOptionImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int id, List<ExerciseBlock> content});
+}
+
+/// @nodoc
+class __$$ExerciseOptionImplCopyWithImpl<$Res>
+    extends _$ExerciseOptionCopyWithImpl<$Res, _$ExerciseOptionImpl>
+    implements _$$ExerciseOptionImplCopyWith<$Res> {
+  __$$ExerciseOptionImplCopyWithImpl(
+    _$ExerciseOptionImpl _value,
+    $Res Function(_$ExerciseOptionImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ExerciseOption
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? content = null}) {
+    return _then(
+      _$ExerciseOptionImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as int,
+        content: null == content
+            ? _value._content
+            : content // ignore: cast_nullable_to_non_nullable
+                  as List<ExerciseBlock>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ExerciseOptionImpl implements _ExerciseOption {
+  const _$ExerciseOptionImpl({
+    required this.id,
+    final List<ExerciseBlock> content = const <ExerciseBlock>[],
+  }) : _content = content;
+
+  factory _$ExerciseOptionImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ExerciseOptionImplFromJson(json);
+
+  // 選択肢ID。1=ア, 2=イ, 3=ウ, 4=エ。
+  @override
+  final int id;
+  final List<ExerciseBlock> _content;
+  @override
+  @JsonKey()
+  List<ExerciseBlock> get content {
+    if (_content is EqualUnmodifiableListView) return _content;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_content);
+  }
+
+  @override
+  String toString() {
+    return 'ExerciseOption(id: $id, content: $content)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ExerciseOptionImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            const DeepCollectionEquality().equals(other._content, _content));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    const DeepCollectionEquality().hash(_content),
+  );
+
+  /// Create a copy of ExerciseOption
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ExerciseOptionImplCopyWith<_$ExerciseOptionImpl> get copyWith =>
+      __$$ExerciseOptionImplCopyWithImpl<_$ExerciseOptionImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ExerciseOptionImplToJson(this);
+  }
+}
+
+abstract class _ExerciseOption implements ExerciseOption {
+  const factory _ExerciseOption({
+    required final int id,
+    final List<ExerciseBlock> content,
+  }) = _$ExerciseOptionImpl;
+
+  factory _ExerciseOption.fromJson(Map<String, dynamic> json) =
+      _$ExerciseOptionImpl.fromJson;
+
+  // 選択肢ID。1=ア, 2=イ, 3=ウ, 4=エ。
+  @override
+  int get id;
+  @override
+  List<ExerciseBlock> get content;
+
+  /// Create a copy of ExerciseOption
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ExerciseOptionImplCopyWith<_$ExerciseOptionImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 ExerciseQuestion _$ExerciseQuestionFromJson(Map<String, dynamic> json) {
   return _ExerciseQuestion.fromJson(json);
 }
 
 /// @nodoc
 mixin _$ExerciseQuestion {
-  String get prompt => throw _privateConstructorUsedError;
-  String get answer => throw _privateConstructorUsedError;
+  // 問題ID（例 'R8001'）。
+  String get qid =>
+      throw _privateConstructorUsedError; // 分野ID（'strategy' | 'management' | 'technology'）。
+  String get category =>
+      throw _privateConstructorUsedError; // 問題文（テキスト・画像ブロックの列）。
+  List<ExerciseBlock> get content =>
+      throw _privateConstructorUsedError; // 4つの選択肢。
+  List<ExerciseOption> get options =>
+      throw _privateConstructorUsedError; // 正解の選択肢ID（1..4）。
+  int get answerOptionId =>
+      throw _privateConstructorUsedError; // 解説（テキスト・画像ブロックの列）。
+  List<ExerciseBlock> get explanation => throw _privateConstructorUsedError;
 
   /// Serializes this ExerciseQuestion to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1829,7 +2428,14 @@ abstract class $ExerciseQuestionCopyWith<$Res> {
     $Res Function(ExerciseQuestion) then,
   ) = _$ExerciseQuestionCopyWithImpl<$Res, ExerciseQuestion>;
   @useResult
-  $Res call({String prompt, String answer});
+  $Res call({
+    String qid,
+    String category,
+    List<ExerciseBlock> content,
+    List<ExerciseOption> options,
+    int answerOptionId,
+    List<ExerciseBlock> explanation,
+  });
 }
 
 /// @nodoc
@@ -1846,17 +2452,40 @@ class _$ExerciseQuestionCopyWithImpl<$Res, $Val extends ExerciseQuestion>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? prompt = null, Object? answer = null}) {
+  $Res call({
+    Object? qid = null,
+    Object? category = null,
+    Object? content = null,
+    Object? options = null,
+    Object? answerOptionId = null,
+    Object? explanation = null,
+  }) {
     return _then(
       _value.copyWith(
-            prompt: null == prompt
-                ? _value.prompt
-                : prompt // ignore: cast_nullable_to_non_nullable
+            qid: null == qid
+                ? _value.qid
+                : qid // ignore: cast_nullable_to_non_nullable
                       as String,
-            answer: null == answer
-                ? _value.answer
-                : answer // ignore: cast_nullable_to_non_nullable
+            category: null == category
+                ? _value.category
+                : category // ignore: cast_nullable_to_non_nullable
                       as String,
+            content: null == content
+                ? _value.content
+                : content // ignore: cast_nullable_to_non_nullable
+                      as List<ExerciseBlock>,
+            options: null == options
+                ? _value.options
+                : options // ignore: cast_nullable_to_non_nullable
+                      as List<ExerciseOption>,
+            answerOptionId: null == answerOptionId
+                ? _value.answerOptionId
+                : answerOptionId // ignore: cast_nullable_to_non_nullable
+                      as int,
+            explanation: null == explanation
+                ? _value.explanation
+                : explanation // ignore: cast_nullable_to_non_nullable
+                      as List<ExerciseBlock>,
           )
           as $Val,
     );
@@ -1872,7 +2501,14 @@ abstract class _$$ExerciseQuestionImplCopyWith<$Res>
   ) = __$$ExerciseQuestionImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String prompt, String answer});
+  $Res call({
+    String qid,
+    String category,
+    List<ExerciseBlock> content,
+    List<ExerciseOption> options,
+    int answerOptionId,
+    List<ExerciseBlock> explanation,
+  });
 }
 
 /// @nodoc
@@ -1888,17 +2524,40 @@ class __$$ExerciseQuestionImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? prompt = null, Object? answer = null}) {
+  $Res call({
+    Object? qid = null,
+    Object? category = null,
+    Object? content = null,
+    Object? options = null,
+    Object? answerOptionId = null,
+    Object? explanation = null,
+  }) {
     return _then(
       _$ExerciseQuestionImpl(
-        prompt: null == prompt
-            ? _value.prompt
-            : prompt // ignore: cast_nullable_to_non_nullable
+        qid: null == qid
+            ? _value.qid
+            : qid // ignore: cast_nullable_to_non_nullable
                   as String,
-        answer: null == answer
-            ? _value.answer
-            : answer // ignore: cast_nullable_to_non_nullable
+        category: null == category
+            ? _value.category
+            : category // ignore: cast_nullable_to_non_nullable
                   as String,
+        content: null == content
+            ? _value._content
+            : content // ignore: cast_nullable_to_non_nullable
+                  as List<ExerciseBlock>,
+        options: null == options
+            ? _value._options
+            : options // ignore: cast_nullable_to_non_nullable
+                  as List<ExerciseOption>,
+        answerOptionId: null == answerOptionId
+            ? _value.answerOptionId
+            : answerOptionId // ignore: cast_nullable_to_non_nullable
+                  as int,
+        explanation: null == explanation
+            ? _value._explanation
+            : explanation // ignore: cast_nullable_to_non_nullable
+                  as List<ExerciseBlock>,
       ),
     );
   }
@@ -1907,19 +2566,65 @@ class __$$ExerciseQuestionImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ExerciseQuestionImpl implements _ExerciseQuestion {
-  const _$ExerciseQuestionImpl({required this.prompt, required this.answer});
+  const _$ExerciseQuestionImpl({
+    required this.qid,
+    required this.category,
+    final List<ExerciseBlock> content = const <ExerciseBlock>[],
+    final List<ExerciseOption> options = const <ExerciseOption>[],
+    required this.answerOptionId,
+    final List<ExerciseBlock> explanation = const <ExerciseBlock>[],
+  }) : _content = content,
+       _options = options,
+       _explanation = explanation;
 
   factory _$ExerciseQuestionImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExerciseQuestionImplFromJson(json);
 
+  // 問題ID（例 'R8001'）。
   @override
-  final String prompt;
+  final String qid;
+  // 分野ID（'strategy' | 'management' | 'technology'）。
   @override
-  final String answer;
+  final String category;
+  // 問題文（テキスト・画像ブロックの列）。
+  final List<ExerciseBlock> _content;
+  // 問題文（テキスト・画像ブロックの列）。
+  @override
+  @JsonKey()
+  List<ExerciseBlock> get content {
+    if (_content is EqualUnmodifiableListView) return _content;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_content);
+  }
+
+  // 4つの選択肢。
+  final List<ExerciseOption> _options;
+  // 4つの選択肢。
+  @override
+  @JsonKey()
+  List<ExerciseOption> get options {
+    if (_options is EqualUnmodifiableListView) return _options;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_options);
+  }
+
+  // 正解の選択肢ID（1..4）。
+  @override
+  final int answerOptionId;
+  // 解説（テキスト・画像ブロックの列）。
+  final List<ExerciseBlock> _explanation;
+  // 解説（テキスト・画像ブロックの列）。
+  @override
+  @JsonKey()
+  List<ExerciseBlock> get explanation {
+    if (_explanation is EqualUnmodifiableListView) return _explanation;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_explanation);
+  }
 
   @override
   String toString() {
-    return 'ExerciseQuestion(prompt: $prompt, answer: $answer)';
+    return 'ExerciseQuestion(qid: $qid, category: $category, content: $content, options: $options, answerOptionId: $answerOptionId, explanation: $explanation)';
   }
 
   @override
@@ -1927,13 +2632,30 @@ class _$ExerciseQuestionImpl implements _ExerciseQuestion {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ExerciseQuestionImpl &&
-            (identical(other.prompt, prompt) || other.prompt == prompt) &&
-            (identical(other.answer, answer) || other.answer == answer));
+            (identical(other.qid, qid) || other.qid == qid) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
+            const DeepCollectionEquality().equals(other._content, _content) &&
+            const DeepCollectionEquality().equals(other._options, _options) &&
+            (identical(other.answerOptionId, answerOptionId) ||
+                other.answerOptionId == answerOptionId) &&
+            const DeepCollectionEquality().equals(
+              other._explanation,
+              _explanation,
+            ));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, prompt, answer);
+  int get hashCode => Object.hash(
+    runtimeType,
+    qid,
+    category,
+    const DeepCollectionEquality().hash(_content),
+    const DeepCollectionEquality().hash(_options),
+    answerOptionId,
+    const DeepCollectionEquality().hash(_explanation),
+  );
 
   /// Create a copy of ExerciseQuestion
   /// with the given fields replaced by the non-null parameter values.
@@ -1954,17 +2676,30 @@ class _$ExerciseQuestionImpl implements _ExerciseQuestion {
 
 abstract class _ExerciseQuestion implements ExerciseQuestion {
   const factory _ExerciseQuestion({
-    required final String prompt,
-    required final String answer,
+    required final String qid,
+    required final String category,
+    final List<ExerciseBlock> content,
+    final List<ExerciseOption> options,
+    required final int answerOptionId,
+    final List<ExerciseBlock> explanation,
   }) = _$ExerciseQuestionImpl;
 
   factory _ExerciseQuestion.fromJson(Map<String, dynamic> json) =
       _$ExerciseQuestionImpl.fromJson;
 
+  // 問題ID（例 'R8001'）。
   @override
-  String get prompt;
+  String get qid; // 分野ID（'strategy' | 'management' | 'technology'）。
   @override
-  String get answer;
+  String get category; // 問題文（テキスト・画像ブロックの列）。
+  @override
+  List<ExerciseBlock> get content; // 4つの選択肢。
+  @override
+  List<ExerciseOption> get options; // 正解の選択肢ID（1..4）。
+  @override
+  int get answerOptionId; // 解説（テキスト・画像ブロックの列）。
+  @override
+  List<ExerciseBlock> get explanation;
 
   /// Create a copy of ExerciseQuestion
   /// with the given fields replaced by the non-null parameter values.
@@ -1974,14 +2709,187 @@ abstract class _ExerciseQuestion implements ExerciseQuestion {
       throw _privateConstructorUsedError;
 }
 
+ExerciseCategory _$ExerciseCategoryFromJson(Map<String, dynamic> json) {
+  return _ExerciseCategory.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ExerciseCategory {
+  String get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+
+  /// Serializes this ExerciseCategory to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ExerciseCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ExerciseCategoryCopyWith<ExerciseCategory> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ExerciseCategoryCopyWith<$Res> {
+  factory $ExerciseCategoryCopyWith(
+    ExerciseCategory value,
+    $Res Function(ExerciseCategory) then,
+  ) = _$ExerciseCategoryCopyWithImpl<$Res, ExerciseCategory>;
+  @useResult
+  $Res call({String id, String name});
+}
+
+/// @nodoc
+class _$ExerciseCategoryCopyWithImpl<$Res, $Val extends ExerciseCategory>
+    implements $ExerciseCategoryCopyWith<$Res> {
+  _$ExerciseCategoryCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ExerciseCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? name = null}) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            name: null == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ExerciseCategoryImplCopyWith<$Res>
+    implements $ExerciseCategoryCopyWith<$Res> {
+  factory _$$ExerciseCategoryImplCopyWith(
+    _$ExerciseCategoryImpl value,
+    $Res Function(_$ExerciseCategoryImpl) then,
+  ) = __$$ExerciseCategoryImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String id, String name});
+}
+
+/// @nodoc
+class __$$ExerciseCategoryImplCopyWithImpl<$Res>
+    extends _$ExerciseCategoryCopyWithImpl<$Res, _$ExerciseCategoryImpl>
+    implements _$$ExerciseCategoryImplCopyWith<$Res> {
+  __$$ExerciseCategoryImplCopyWithImpl(
+    _$ExerciseCategoryImpl _value,
+    $Res Function(_$ExerciseCategoryImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ExerciseCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? name = null}) {
+    return _then(
+      _$ExerciseCategoryImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        name: null == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ExerciseCategoryImpl implements _ExerciseCategory {
+  const _$ExerciseCategoryImpl({required this.id, required this.name});
+
+  factory _$ExerciseCategoryImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ExerciseCategoryImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String name;
+
+  @override
+  String toString() {
+    return 'ExerciseCategory(id: $id, name: $name)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ExerciseCategoryImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name);
+
+  /// Create a copy of ExerciseCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ExerciseCategoryImplCopyWith<_$ExerciseCategoryImpl> get copyWith =>
+      __$$ExerciseCategoryImplCopyWithImpl<_$ExerciseCategoryImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ExerciseCategoryImplToJson(this);
+  }
+}
+
+abstract class _ExerciseCategory implements ExerciseCategory {
+  const factory _ExerciseCategory({
+    required final String id,
+    required final String name,
+  }) = _$ExerciseCategoryImpl;
+
+  factory _ExerciseCategory.fromJson(Map<String, dynamic> json) =
+      _$ExerciseCategoryImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get name;
+
+  /// Create a copy of ExerciseCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ExerciseCategoryImplCopyWith<_$ExerciseCategoryImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
   return _Exercise.fromJson(json);
 }
 
 /// @nodoc
 mixin _$Exercise {
-  String get id => throw _privateConstructorUsedError;
+  // 年度ID（例 'R8'）。
+  String get id => throw _privateConstructorUsedError; // 表示タイトル（例 '令和8年度'）。
   String get title => throw _privateConstructorUsedError;
+  List<ExerciseCategory> get categories => throw _privateConstructorUsedError;
   List<ExerciseQuestion> get questions => throw _privateConstructorUsedError;
 
   /// Serializes this Exercise to a JSON map.
@@ -1999,7 +2907,12 @@ abstract class $ExerciseCopyWith<$Res> {
   factory $ExerciseCopyWith(Exercise value, $Res Function(Exercise) then) =
       _$ExerciseCopyWithImpl<$Res, Exercise>;
   @useResult
-  $Res call({String id, String title, List<ExerciseQuestion> questions});
+  $Res call({
+    String id,
+    String title,
+    List<ExerciseCategory> categories,
+    List<ExerciseQuestion> questions,
+  });
 }
 
 /// @nodoc
@@ -2019,6 +2932,7 @@ class _$ExerciseCopyWithImpl<$Res, $Val extends Exercise>
   $Res call({
     Object? id = null,
     Object? title = null,
+    Object? categories = null,
     Object? questions = null,
   }) {
     return _then(
@@ -2031,6 +2945,10 @@ class _$ExerciseCopyWithImpl<$Res, $Val extends Exercise>
                 ? _value.title
                 : title // ignore: cast_nullable_to_non_nullable
                       as String,
+            categories: null == categories
+                ? _value.categories
+                : categories // ignore: cast_nullable_to_non_nullable
+                      as List<ExerciseCategory>,
             questions: null == questions
                 ? _value.questions
                 : questions // ignore: cast_nullable_to_non_nullable
@@ -2050,7 +2968,12 @@ abstract class _$$ExerciseImplCopyWith<$Res>
   ) = __$$ExerciseImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String title, List<ExerciseQuestion> questions});
+  $Res call({
+    String id,
+    String title,
+    List<ExerciseCategory> categories,
+    List<ExerciseQuestion> questions,
+  });
 }
 
 /// @nodoc
@@ -2069,6 +2992,7 @@ class __$$ExerciseImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = null,
+    Object? categories = null,
     Object? questions = null,
   }) {
     return _then(
@@ -2081,6 +3005,10 @@ class __$$ExerciseImplCopyWithImpl<$Res>
             ? _value.title
             : title // ignore: cast_nullable_to_non_nullable
                   as String,
+        categories: null == categories
+            ? _value._categories
+            : categories // ignore: cast_nullable_to_non_nullable
+                  as List<ExerciseCategory>,
         questions: null == questions
             ? _value._questions
             : questions // ignore: cast_nullable_to_non_nullable
@@ -2096,16 +3024,29 @@ class _$ExerciseImpl implements _Exercise {
   const _$ExerciseImpl({
     required this.id,
     required this.title,
+    final List<ExerciseCategory> categories = const <ExerciseCategory>[],
     final List<ExerciseQuestion> questions = const <ExerciseQuestion>[],
-  }) : _questions = questions;
+  }) : _categories = categories,
+       _questions = questions;
 
   factory _$ExerciseImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExerciseImplFromJson(json);
 
+  // 年度ID（例 'R8'）。
   @override
   final String id;
+  // 表示タイトル（例 '令和8年度'）。
   @override
   final String title;
+  final List<ExerciseCategory> _categories;
+  @override
+  @JsonKey()
+  List<ExerciseCategory> get categories {
+    if (_categories is EqualUnmodifiableListView) return _categories;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_categories);
+  }
+
   final List<ExerciseQuestion> _questions;
   @override
   @JsonKey()
@@ -2117,7 +3058,7 @@ class _$ExerciseImpl implements _Exercise {
 
   @override
   String toString() {
-    return 'Exercise(id: $id, title: $title, questions: $questions)';
+    return 'Exercise(id: $id, title: $title, categories: $categories, questions: $questions)';
   }
 
   @override
@@ -2127,6 +3068,10 @@ class _$ExerciseImpl implements _Exercise {
             other is _$ExerciseImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(
+              other._categories,
+              _categories,
+            ) &&
             const DeepCollectionEquality().equals(
               other._questions,
               _questions,
@@ -2139,6 +3084,7 @@ class _$ExerciseImpl implements _Exercise {
     runtimeType,
     id,
     title,
+    const DeepCollectionEquality().hash(_categories),
     const DeepCollectionEquality().hash(_questions),
   );
 
@@ -2160,16 +3106,20 @@ abstract class _Exercise implements Exercise {
   const factory _Exercise({
     required final String id,
     required final String title,
+    final List<ExerciseCategory> categories,
     final List<ExerciseQuestion> questions,
   }) = _$ExerciseImpl;
 
   factory _Exercise.fromJson(Map<String, dynamic> json) =
       _$ExerciseImpl.fromJson;
 
+  // 年度ID（例 'R8'）。
   @override
-  String get id;
+  String get id; // 表示タイトル（例 '令和8年度'）。
   @override
   String get title;
+  @override
+  List<ExerciseCategory> get categories;
   @override
   List<ExerciseQuestion> get questions;
 

@@ -140,21 +140,96 @@ Map<String, dynamic> _$$QuizFillInTheBlankImplToJson(
   'type': instance.$type,
 };
 
+_$ExerciseTextBlockImpl _$$ExerciseTextBlockImplFromJson(
+  Map<String, dynamic> json,
+) => _$ExerciseTextBlockImpl(
+  text: json['text'] as String,
+  $type: json['type'] as String?,
+);
+
+Map<String, dynamic> _$$ExerciseTextBlockImplToJson(
+  _$ExerciseTextBlockImpl instance,
+) => <String, dynamic>{'text': instance.text, 'type': instance.$type};
+
+_$ExerciseImageBlockImpl _$$ExerciseImageBlockImplFromJson(
+  Map<String, dynamic> json,
+) => _$ExerciseImageBlockImpl(
+  src: json['src'] as String,
+  $type: json['type'] as String?,
+);
+
+Map<String, dynamic> _$$ExerciseImageBlockImplToJson(
+  _$ExerciseImageBlockImpl instance,
+) => <String, dynamic>{'src': instance.src, 'type': instance.$type};
+
+_$ExerciseOptionImpl _$$ExerciseOptionImplFromJson(Map<String, dynamic> json) =>
+    _$ExerciseOptionImpl(
+      id: (json['id'] as num).toInt(),
+      content:
+          (json['content'] as List<dynamic>?)
+              ?.map((e) => ExerciseBlock.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <ExerciseBlock>[],
+    );
+
+Map<String, dynamic> _$$ExerciseOptionImplToJson(
+  _$ExerciseOptionImpl instance,
+) => <String, dynamic>{'id': instance.id, 'content': instance.content};
+
 _$ExerciseQuestionImpl _$$ExerciseQuestionImplFromJson(
   Map<String, dynamic> json,
 ) => _$ExerciseQuestionImpl(
-  prompt: json['prompt'] as String,
-  answer: json['answer'] as String,
+  qid: json['qid'] as String,
+  category: json['category'] as String,
+  content:
+      (json['content'] as List<dynamic>?)
+          ?.map((e) => ExerciseBlock.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <ExerciseBlock>[],
+  options:
+      (json['options'] as List<dynamic>?)
+          ?.map((e) => ExerciseOption.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <ExerciseOption>[],
+  answerOptionId: (json['answerOptionId'] as num).toInt(),
+  explanation:
+      (json['explanation'] as List<dynamic>?)
+          ?.map((e) => ExerciseBlock.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <ExerciseBlock>[],
 );
 
 Map<String, dynamic> _$$ExerciseQuestionImplToJson(
   _$ExerciseQuestionImpl instance,
-) => <String, dynamic>{'prompt': instance.prompt, 'answer': instance.answer};
+) => <String, dynamic>{
+  'qid': instance.qid,
+  'category': instance.category,
+  'content': instance.content,
+  'options': instance.options,
+  'answerOptionId': instance.answerOptionId,
+  'explanation': instance.explanation,
+};
+
+_$ExerciseCategoryImpl _$$ExerciseCategoryImplFromJson(
+  Map<String, dynamic> json,
+) => _$ExerciseCategoryImpl(
+  id: json['id'] as String,
+  name: json['name'] as String,
+);
+
+Map<String, dynamic> _$$ExerciseCategoryImplToJson(
+  _$ExerciseCategoryImpl instance,
+) => <String, dynamic>{'id': instance.id, 'name': instance.name};
 
 _$ExerciseImpl _$$ExerciseImplFromJson(Map<String, dynamic> json) =>
     _$ExerciseImpl(
       id: json['id'] as String,
       title: json['title'] as String,
+      categories:
+          (json['categories'] as List<dynamic>?)
+              ?.map((e) => ExerciseCategory.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <ExerciseCategory>[],
       questions:
           (json['questions'] as List<dynamic>?)
               ?.map((e) => ExerciseQuestion.fromJson(e as Map<String, dynamic>))
@@ -166,6 +241,7 @@ Map<String, dynamic> _$$ExerciseImplToJson(_$ExerciseImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
+      'categories': instance.categories,
       'questions': instance.questions,
     };
 

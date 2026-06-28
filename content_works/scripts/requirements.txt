@@ -1,1 +1,2 @@
 google-cloud-texttospeech>=2.16.0
+pyyaml>=6.0
