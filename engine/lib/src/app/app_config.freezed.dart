@@ -20,7 +20,7 @@ mixin _$AppConfig {
   String get title => throw _privateConstructorUsedError;
   Color get primaryColor => throw _privateConstructorUsedError;
   AppDesignScheme? get designScheme =>
-      throw _privateConstructorUsedError; // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
+      throw _privateConstructorUsedError; // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   List<EngineTab> get tabs =>
       throw _privateConstructorUsedError; // コンテンツ（JSON）を格納したアプリ側アセットのベースパス。
   // 例: 'contents' → contents/base.json, contents/lessons/1.json
@@ -169,7 +169,6 @@ class _$AppConfigImpl implements _AppConfig {
     this.primaryColor = Colors.indigo,
     this.designScheme,
     final List<EngineTab> tabs = const [
-      EngineTab.home,
       EngineTab.lesson,
       EngineTab.exercise,
       EngineTab.anki,
@@ -185,9 +184,9 @@ class _$AppConfigImpl implements _AppConfig {
   final Color primaryColor;
   @override
   final AppDesignScheme? designScheme;
-  // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
+  // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   final List<EngineTab> _tabs;
-  // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
+  // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   @override
   @JsonKey()
   List<EngineTab> get tabs {
@@ -255,7 +254,7 @@ abstract class _AppConfig implements AppConfig {
   @override
   Color get primaryColor;
   @override
-  AppDesignScheme? get designScheme; // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
+  AppDesignScheme? get designScheme; // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   @override
   List<EngineTab> get tabs; // コンテンツ（JSON）を格納したアプリ側アセットのベースパス。
   // 例: 'contents' → contents/base.json, contents/lessons/1.json

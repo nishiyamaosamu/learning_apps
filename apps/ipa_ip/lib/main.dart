@@ -10,7 +10,6 @@ void main() {
         title: 'ITパスポート',
         designScheme: ipaIpDesignScheme,
         tabs: [
-          EngineTab.home,
           EngineTab.lesson,
           EngineTab.exercise,
           EngineTab.anki,

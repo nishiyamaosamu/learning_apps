@@ -9,7 +9,7 @@ GoRouter buildRouter(AppConfig config) {
   return GoRouter(
     initialLocation: '/',
     routes: [
-      // ホーム（タブシェル）を起点に固定。詳細画面は home のサブルートとして
+      // タブシェルを起点に固定。詳細画面はシェルのサブルートとして
       // ルートNavigator上に全画面でpushされ、タブバーを含む画面全体が遷移する。
       GoRoute(
         path: '/',

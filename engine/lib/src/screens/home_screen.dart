@@ -5,7 +5,6 @@ import '../app/app_config.dart';
 import '../content/content_providers.dart';
 import 'tabs/anki_top.dart';
 import 'tabs/exercise_top.dart';
-import 'tabs/home_tab.dart';
 import 'tabs/lesson_top.dart';
 import 'tabs/settings_top.dart';
 
@@ -27,8 +26,6 @@ class _TabItem {
 /// [EngineTab] からタブの中身（ラベル・アイコン・画面）への対応。
 /// タブのロジックは engine が保持し、採用するタブは app 側が選ぶ。
 _TabItem _itemFor(EngineTab tab) => switch (tab) {
-      EngineTab.home =>
-        const _TabItem(label: 'ホーム', icon: Icons.home, root: HomeTab()),
       EngineTab.lesson =>
         const _TabItem(label: '講座', icon: Icons.menu_book, root: LessonTop()),
       EngineTab.exercise =>

@@ -3,9 +3,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'app_config.freezed.dart';
 
-/// ホーム画面下部のタブ。タブのロジック（画面・アイコン・ラベル）は engine が
+/// 下部に表示するタブ。タブのロジック（画面・アイコン・ラベル）は engine が
 /// 保持し、どのタブをどの順で採用するかは app 側が [AppConfig.tabs] で指定する。
-enum EngineTab { home, lesson, exercise, anki, settings }
+/// 先頭のタブが初期表示（メイン）になる。
+enum EngineTab { lesson, exercise, anki, settings }
 
 /// アプリごとのデザイン色。
 ///
@@ -165,9 +166,8 @@ class AppConfig with _$AppConfig {
     required String title,
     @Default(Colors.indigo) Color primaryColor,
     AppDesignScheme? designScheme,
-    // ホーム下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
+    // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
     @Default([
-      EngineTab.home,
       EngineTab.lesson,
       EngineTab.exercise,
       EngineTab.anki,

@@ -35,8 +35,8 @@ leaning_apps/
 
 ## 設計方針
 - 個別アプリは `main.dart` で `EngineApp` に `AppConfig` を渡すだけで動く
-- 画面はホーム（タブシェル）を起点に固定。下部タブはengineが提供し、アプリは使うタブと並び順を `AppConfig.tabs` で選択する
-- レッスン等の詳細画面はホームのサブルートとして全画面pushされる（`/lessons/:id`, `/exercises/:id`, `/anki/:id`）
+- 画面はタブシェルを起点に固定。下部タブはengineが提供し、アプリは使うタブと並び順を `AppConfig.tabs` で選択する（先頭のタブが初期表示＝メイン）
+- レッスン等の詳細画面はタブシェルのサブルートとして全画面pushされる（`/lessons/:id`, `/exercises/:id`, `/anki/:id`）
 - UIテーマ・タイトルも `AppConfig` で設定する
 - 表示するコンテンツはアプリ側アセット（JSON）として持ち、engineが都度ロードする
 
@@ -45,15 +45,14 @@ leaning_apps/
 AppConfig({
   required String title,            // アプリ名
   Color primaryColor,              // テーマカラー（デフォルト: Colors.indigo）
-  List<EngineTab> tabs,            // ホーム下部のタブと並び順（デフォルト: 全タブ）
+  List<EngineTab> tabs,            // 下部のタブと並び順（デフォルト: 全タブ／先頭がメイン）
   String contentBasePath,         // コンテンツアセットのベースパス（デフォルト: 'contents'）
 })
 ```
 
-## EngineTab（ホーム下部のタブ一覧）
+## EngineTab（下部のタブ一覧）
 | enum値 | ラベル | 説明 |
 |--------|--------|------|
-| `EngineTab.home` | ホーム | ホーム |
 | `EngineTab.lesson` | 講座 | レッスン一覧 |
 | `EngineTab.exercise` | 問題集 | 演習一覧 |
 | `EngineTab.anki` | 暗記カード | 暗記カード一覧 |
@@ -66,7 +65,7 @@ void main() {
     config: AppConfig(
       title: 'アプリ名',
       primaryColor: Colors.teal,
-      tabs: [EngineTab.home, EngineTab.lesson, EngineTab.exercise, EngineTab.anki, EngineTab.settings],
+      tabs: [EngineTab.lesson, EngineTab.exercise, EngineTab.anki, EngineTab.settings],
     ),
   ));
 }
@@ -88,7 +87,7 @@ cd engine && mise exec -- dart run build_runner build --delete-conflicting-outpu
 
 # ipa_ipアプリ
 - ITパスポート試験対策アプリ
-- タブ: ホーム・講座・問題集・暗記カード・設定
+- タブ: 講座・問題集・暗記カード・設定
 - コンテンツは `apps/ipa_ip/contents/` 配下にJSONで管理（`base.json` と `lessons/{id}.json` など）
 
 # 画像生成
