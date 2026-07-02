@@ -1,0 +1,25 @@
+{
+  "lessons": [
+    {
+      "id": "kamoku_a",
+      "title": "科目A（知識）",
+      "majorCategories": [
+        {
+          "id": "1",
+          "title": "第1章 情報セキュリティの基礎",
+          "middleCategories": [
+            {
+              "id": "1-1",
+              "title": "情報セキュリティの基礎",
+              "lessons": [
+                { "id": "1", "title": "情報セキュリティとは" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "exercises": [],
+  "anki": []
+}
