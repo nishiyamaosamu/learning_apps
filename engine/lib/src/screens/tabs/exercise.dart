@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/app_config.dart';
 import '../../content/content_models.dart';
 import '../../content/content_providers.dart';
 import '../../settings/exercise_results.dart';
@@ -47,7 +48,10 @@ class Exercise extends ConsumerWidget {
                     final tile = ListTile(
                       title: Text(chunk.rangeLabel),
                       trailing: done
-                          ? const Icon(Icons.check_circle, color: Colors.green)
+                          ? Icon(
+                              Icons.check_circle,
+                              color: Theme.of(context).semantic.success,
+                            )
                           : const Icon(Icons.chevron_right),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
@@ -139,7 +143,7 @@ class _ProgressPanel extends StatelessWidget {
                   if (correct > 0)
                     Expanded(
                       flex: correct,
-                      child: const ColoredBox(color: Colors.green),
+                      child: ColoredBox(color: theme.semantic.success),
                     ),
                   if (wrong > 0)
                     Expanded(
@@ -159,7 +163,11 @@ class _ProgressPanel extends StatelessWidget {
           // 件数の凡例。
           Row(
             children: [
-              _LegendItem(color: Colors.green, label: '正解', count: correct),
+              _LegendItem(
+                color: theme.semantic.success,
+                label: '正解',
+                count: correct,
+              ),
               const SizedBox(width: 16),
               _LegendItem(
                 color: theme.colorScheme.error,

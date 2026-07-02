@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/app_config.dart';
 import '../../content/content_models.dart';
 import '../../settings/exercise_results.dart';
 import 'widgets/lesson_contents.dart';
@@ -348,6 +349,7 @@ class _OptionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final success = theme.semantic.success;
     final (
       Color border,
       Color? bg,
@@ -356,10 +358,10 @@ class _OptionRow extends StatelessWidget {
     ) = switch (state) {
       _OptionVisualState.idle => (theme.dividerColor, null, null, null),
       _OptionVisualState.correct => (
-        Colors.green,
-        Colors.green.withValues(alpha: 0.1),
+        success,
+        success.withValues(alpha: 0.12),
         Icons.check_circle,
-        Colors.green,
+        success,
       ),
       _OptionVisualState.wrong => (
         theme.colorScheme.error,
@@ -443,7 +445,7 @@ class _AnswerArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = correct ? Colors.green : theme.colorScheme.error;
+    final accent = correct ? theme.semantic.success : theme.colorScheme.error;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

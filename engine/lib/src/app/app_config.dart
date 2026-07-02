@@ -20,6 +20,7 @@ class AppDesignScheme {
     this.tertiary,
     this.accent,
     this.error,
+    this.success,
     this.surface,
     this.surfaceContainerLow,
     this.surfaceContainerHighest,
@@ -27,6 +28,7 @@ class AppDesignScheme {
     this.onSecondary,
     this.onTertiary,
     this.onAccent,
+    this.onSuccess,
     this.onSurface,
     this.onSurfaceVariant,
     this.outline,
@@ -38,6 +40,10 @@ class AppDesignScheme {
   final Color? tertiary;
   final Color? accent;
   final Color? error;
+
+  /// 正解・完了などの肯定的な状態を示す色。Material の `ColorScheme` には
+  /// 該当する役割がないため [AppSemanticColors] 拡張で配布する。
+  final Color? success;
   final Color? surface;
   final Color? surfaceContainerLow;
   final Color? surfaceContainerHighest;
@@ -45,6 +51,7 @@ class AppDesignScheme {
   final Color? onSecondary;
   final Color? onTertiary;
   final Color? onAccent;
+  final Color? onSuccess;
   final Color? onSurface;
   final Color? onSurfaceVariant;
   final Color? outline;
@@ -79,12 +86,17 @@ class AppDesignScheme {
     );
   }
 
-  AppAccentColors? toAccentColors() => accent == null
-      ? null
-      : AppAccentColors(
-          accent: accent!,
-          onAccent: onAccent ?? _foregroundFor(accent!),
-        );
+  /// `ColorScheme` に載らないアプリ固有の意味色（success / accent）をまとめた
+  /// テーマ拡張を作る。success は常に既定（mialab グリーン）を持つ。
+  AppSemanticColors toSemanticColors() {
+    final successColor = success ?? AppSemanticColors.fallback.success;
+    return AppSemanticColors(
+      success: successColor,
+      onSuccess: onSuccess ?? _foregroundFor(successColor),
+      accent: accent,
+      onAccent: accent == null ? null : (onAccent ?? _foregroundFor(accent!)),
+    );
+  }
 
   static Color _foregroundFor(Color color) =>
       ThemeData.estimateBrightnessForColor(color) == Brightness.dark
@@ -101,6 +113,7 @@ class AppDesignScheme {
           tertiary == other.tertiary &&
           accent == other.accent &&
           error == other.error &&
+          success == other.success &&
           surface == other.surface &&
           surfaceContainerLow == other.surfaceContainerLow &&
           surfaceContainerHighest == other.surfaceContainerHighest &&
@@ -108,6 +121,7 @@ class AppDesignScheme {
           onSecondary == other.onSecondary &&
           onTertiary == other.onTertiary &&
           onAccent == other.onAccent &&
+          onSuccess == other.onSuccess &&
           onSurface == other.onSurface &&
           onSurfaceVariant == other.onSurfaceVariant &&
           outline == other.outline &&
@@ -120,6 +134,7 @@ class AppDesignScheme {
     tertiary,
     accent,
     error,
+    success,
     surface,
     surfaceContainerLow,
     surfaceContainerHighest,
@@ -127,6 +142,7 @@ class AppDesignScheme {
     onSecondary,
     onTertiary,
     onAccent,
+    onSuccess,
     onSurface,
     onSurfaceVariant,
     outline,
@@ -134,30 +150,65 @@ class AppDesignScheme {
   ]);
 }
 
+/// `ColorScheme` に役割が無い、アプリ固有の意味色を運ぶテーマ拡張。
+///
+/// - [success] / [onSuccess]: 正解・完了などの肯定的な状態（クイズの正解表示や
+///   進捗バーの「正解」セグメントなど）。常に値を持つ。
+/// - [accent] / [onAccent]: バッジ・連続記録などローカルな強調用のポイント色。
+///   採用するアプリだけが指定するため null になり得る。
 @immutable
-class AppAccentColors extends ThemeExtension<AppAccentColors> {
-  const AppAccentColors({required this.accent, required this.onAccent});
+class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
+  const AppSemanticColors({
+    required this.success,
+    required this.onSuccess,
+    this.accent,
+    this.onAccent,
+  });
 
-  final Color accent;
-  final Color onAccent;
+  final Color success;
+  final Color onSuccess;
+  final Color? accent;
+  final Color? onAccent;
+
+  /// `designScheme` を指定しないアプリ向けの既定値（mialab の success グリーン）。
+  static const AppSemanticColors fallback = AppSemanticColors(
+    success: Color(0xFF16B364),
+    onSuccess: Colors.white,
+  );
 
   @override
-  AppAccentColors copyWith({Color? accent, Color? onAccent}) => AppAccentColors(
+  AppSemanticColors copyWith({
+    Color? success,
+    Color? onSuccess,
+    Color? accent,
+    Color? onAccent,
+  }) => AppSemanticColors(
+    success: success ?? this.success,
+    onSuccess: onSuccess ?? this.onSuccess,
     accent: accent ?? this.accent,
     onAccent: onAccent ?? this.onAccent,
   );
 
   @override
-  AppAccentColors lerp(ThemeExtension<AppAccentColors>? other, double t) {
-    if (other is! AppAccentColors) {
+  AppSemanticColors lerp(ThemeExtension<AppSemanticColors>? other, double t) {
+    if (other is! AppSemanticColors) {
       return this;
     }
 
-    return AppAccentColors(
-      accent: Color.lerp(accent, other.accent, t)!,
-      onAccent: Color.lerp(onAccent, other.onAccent, t)!,
+    return AppSemanticColors(
+      success: Color.lerp(success, other.success, t)!,
+      onSuccess: Color.lerp(onSuccess, other.onSuccess, t)!,
+      accent: Color.lerp(accent, other.accent, t),
+      onAccent: Color.lerp(onAccent, other.onAccent, t),
     );
   }
+}
+
+/// `Theme.of(context).semantic.success` のように意味色へ手軽にアクセスするための
+/// 拡張。拡張が未登録のテーマでも [AppSemanticColors.fallback] を返すので安全。
+extension AppSemanticColorsTheme on ThemeData {
+  AppSemanticColors get semantic =>
+      extension<AppSemanticColors>() ?? AppSemanticColors.fallback;
 }
 
 @freezed

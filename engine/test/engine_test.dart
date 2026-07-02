@@ -17,19 +17,29 @@ void main() {
       secondary: Color(0xFF0A457B),
       tertiary: Color(0xFF4B9CFB),
       accent: Color(0xFFF84F65),
+      success: Color(0xFF16B364),
       surface: Colors.white,
       onSurface: Color(0xFF393C41),
     );
 
     final scheme = design.toColorScheme();
-    final accentColors = design.toAccentColors();
+    final semanticColors = design.toSemanticColors();
 
     expect(scheme.primary, const Color(0xFF1F7ACC));
     expect(scheme.secondary, const Color(0xFF0A457B));
     expect(scheme.tertiary, const Color(0xFF4B9CFB));
     expect(scheme.surface, Colors.white);
     expect(scheme.onSurface, const Color(0xFF393C41));
-    expect(accentColors?.accent, const Color(0xFFF84F65));
+    expect(semanticColors.accent, const Color(0xFFF84F65));
+    expect(semanticColors.success, const Color(0xFF16B364));
+  });
+
+  test('AppDesignScheme は success 未指定でも既定の success を配布する', () {
+    const design = AppDesignScheme(primary: Color(0xFF1F7ACC));
+    expect(
+      design.toSemanticColors().success,
+      AppSemanticColors.fallback.success,
+    );
   });
 
   test('ContentIndex.fromJson が一覧をパースできる', () {

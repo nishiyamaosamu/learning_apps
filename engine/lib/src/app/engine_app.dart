@@ -26,7 +26,8 @@ class _EngineAppState extends State<EngineApp> {
   Widget build(BuildContext context) {
     final config = widget.config;
     final colorScheme = config.resolvedColorScheme;
-    final accentColors = config.designScheme?.toAccentColors();
+    final semanticColors =
+        config.designScheme?.toSemanticColors() ?? AppSemanticColors.fallback;
 
     return ProviderScope(
       overrides: [appConfigProvider.overrideWithValue(config)],
@@ -36,7 +37,7 @@ class _EngineAppState extends State<EngineApp> {
           useMaterial3: true,
           colorScheme: colorScheme,
           scaffoldBackgroundColor: colorScheme.surface,
-          extensions: <ThemeExtension<dynamic>>[?accentColors],
+          extensions: <ThemeExtension<dynamic>>[semanticColors],
         ),
         routerConfig: _router,
       ),

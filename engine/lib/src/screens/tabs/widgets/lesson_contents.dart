@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/app_config.dart';
 import '../../../content/content_models.dart';
 import 'markdown_icons.dart';
 import 'quiz_controller.dart';
@@ -630,7 +631,7 @@ class MultipleChoiceQuiz extends StatelessWidget {
               selected == quiz.correctOptionIndex ? '正解！' : '不正解',
               style: theme.textTheme.titleSmall?.copyWith(
                 color: selected == quiz.correctOptionIndex
-                    ? Colors.green
+                    ? theme.semantic.success
                     : theme.colorScheme.error,
               ),
             ),
@@ -666,6 +667,7 @@ class _OptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final success = theme.semantic.success;
     final (Color border, Color? bg, IconData? icon) = switch (state) {
       _OptionState.idle => (theme.dividerColor, null, null),
       _OptionState.selected => (
@@ -674,8 +676,8 @@ class _OptionTile extends StatelessWidget {
         Icons.radio_button_checked,
       ),
       _OptionState.correct => (
-        Colors.green,
-        Colors.green.withValues(alpha: 0.1),
+        success,
+        success.withValues(alpha: 0.12),
         Icons.check_circle,
       ),
       _OptionState.wrong => (
@@ -766,7 +768,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
               _allCorrect(placed) ? '全問正解！' : 'もう一度試してみましょう',
               style: theme.textTheme.titleSmall?.copyWith(
                 color: _allCorrect(placed)
-                    ? Colors.green
+                    ? theme.semantic.success
                     : theme.colorScheme.error,
               ),
             ),
@@ -798,7 +800,7 @@ class FillInTheBlankQuiz extends StatelessWidget {
         final Color border;
         if (submitted && optionIndex != null) {
           border = _isBlankCorrect(blankIndex, optionIndex)
-              ? Colors.green
+              ? theme.semantic.success
               : theme.colorScheme.error;
         } else if (hovering) {
           border = theme.colorScheme.primary;
