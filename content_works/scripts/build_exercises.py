@@ -1,3 +1,9 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#   "pyyaml>=6.0",
+# ]
+# ///
 """問題集データ（YAML）をアプリ側アセット（JSON）へ変換するスクリプト。
 
 入力:
@@ -16,7 +22,7 @@
   - options[].content の空配列（選択肢が設問画像内にある問題）はそのまま空配列で出力。
 
 実行:
-  cd content_works/scripts && mise exec -- python build_exercises.py
+  cd content_works/scripts && mise exec -- uv run build_exercises.py
 """
 
 from __future__ import annotations

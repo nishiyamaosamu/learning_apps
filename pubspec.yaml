@@ -7,3 +7,4 @@ environment:
 workspace:
   - engine
   - apps/ipa_ip
+  - apps/ipa_sg

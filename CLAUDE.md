@@ -23,7 +23,32 @@ leaning_apps/
     └── LESSON.md      # レッスンコンテンツ（JSON）の構造仕様
 ```
 
-コンテンツ制作補助スクリプトはPythonで管理（miseでインストール）。`content_works/scripts/tts.py` はGoogle Cloud Text-to-Speechでレッスン音声を生成する。サービスアカウントJSONは `secrets/`（.gitignore対象）に配置する。
+コンテンツ制作補助スクリプトはPythonで管理。依存は各スクリプト先頭のインラインメタデータ（PEP 723）に宣言し、`mise exec -- uv run <script>.py` で実行する（uv・Pythonはmiseでインストール、環境はuvが自動管理）。サービスアカウントJSONは `secrets/`（.gitignore対象）に配置する。
+
+## 音声生成（content_works/scripts/tts.py）
+Google Cloud TTS（Gemini TTS、デフォルト: voice `Zephyr` / model `gemini-3.1-flash-tts-preview` / ja-JP / MP3）でナレーション音声を生成するCLI。
+
+```bash
+cd content_works/scripts
+
+# 単発（動作確認など）
+mise exec -- uv run tts.py --text "読み上げテキスト" --out /path/to/file.mp3
+
+# 一括（レッスン音声の生成）
+mise exec -- uv run tts.py --jobs jobs.json --out-dir ../../apps/<app>/contents/lessons/audios
+```
+
+ジョブJSONは出力ファイル名→テキストのフラットな辞書:
+
+```json
+{
+  "1-1.mp3": "企業は、製品やサービスを社会に提供し…",
+  "1-2.mp3": "次に、経営資源について…"
+}
+```
+
+- 音声はアプリの `contents/lessons/audios/{lessonId}-{pageIndex}.mp3` に置き、レッスンJSONから `audioUrl: lessons/audios/{lessonId}-{pageIndex}.mp3` で参照する
+- 読み上げテキストはMarkdown記号を除いた「耳で聞いて自然な」文にする（レッスンJSONの本文とは別物）
 
 # engineパッケージ仕様
 
