@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>デザイン見本 — 集中ブルー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+/* ================================================================
+   集中ブルー デザイン見本
+   トークンの原本は Flutter の AppColors。本ページの CSS 変数は
+   AppColors のフィールド名と 1:1 対応させている。
+   ================================================================ */
+:root {
+  /* Primary (Blue) */
+  --primary50:  #EFF6FF;
+  --primary100: #DBEAFE;
+  --primary300: #93C5FD;
+  --primary500: #3B82F6;
+  --primary600: #2563EB;
+  --primary800: #1E40AF;
+  /* Semantic（全アプリ共通・固定） */
+  --correct:            #0D9488;
+  --correctSurface:     #F0FDFA;
+  --correctText:        #115E59;
+  --incorrect:          #D66A6A;
+  --incorrectSurface:   #FDF2F2;
+  --incorrectText:      #9B3A3A;
+  --review:             #F59E0B;
+  --reviewText:         #B45309;
+  /* Neutral (Light) */
+  --bg:            #F7F9FC;
+  --surface:       #FFFFFF;
+  --border:        #E2E8F0;
+  --textMuted:     #94A3B8;
+  --textSecondary: #64748B;
+  --textPrimary:   #1E293B;
+  /* Dark */
+  --bgDark:              #0F172A;
+  --surfaceDark:         #1E293B;
+  --borderDark:          #334155;
+  --primaryDark:         #60A5FA;
+  --correctDark:         #2DD4BF;
+  --correctSurfaceDark:  #0E2A28;
+  --correctTextDark:     #5EEAD4;
+  --incorrectDark:       #E08787;
+  --incorrectSurfaceDark:#2E1A1A;
+  --incorrectTextDark:   #F0A8A8;
+  --textPrimaryDark:     #F1F5F9;
+  --textSecondaryDark:   #94A3B8;
+
+  /* アクセントピンク（AppColorsトークン外。ページ装飾・動画グラフィック専用） */
+  --accentPink:     #F98BA4;
+  --accentPinkSoft: #FBD0DB;
+
+  --font: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Material Symbols（Rounded・FILL 1）。Flutter標準のMaterialアイコンと同系 */
+.ms {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal; font-style: normal; line-height: 1;
+  letter-spacing: normal; text-transform: none; white-space: nowrap;
+  display: inline-block; direction: ltr; user-select: none;
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--textPrimary);
+  line-height: 1.7;
+  font-size: 15px;
+}
+/* ビューポートを囲む青フレーム（スライド様式） */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 1000;
+  border: 6px solid var(--primary600); pointer-events: none;
+}
+::selection { background: var(--accentPinkSoft); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px 96px; }
+
+/* ---- ページ見出しまわり ---- */
+.hero { padding: 48px 0 8px; }
+.hero .eyebrow {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .12em;
+  color: var(--primary600); font-weight: 600;
+}
+.hero h1 { font-size: 34px; font-weight: 800; letter-spacing: .01em; margin: 6px 0 10px; }
+.hero p.lead { color: var(--textSecondary); max-width: 620px; }
+
+/* 幾何学バナー：円と斜めバンドのフラットな重なり + ピンクの帯 */
+.hero-banner {
+  position: relative; border-radius: 20px; overflow: hidden;
+  background: linear-gradient(120deg, #FFFFFF 0%, #EFF3FA 100%);
+  border: 1px solid var(--border);
+  padding: 44px 48px 56px;
+}
+.hero-banner .hb-text { position: relative; z-index: 2; max-width: 58%; }
+.hero-banner .g { position: absolute; }
+.g-navy { width: 560px; height: 560px; border-radius: 50%; background: var(--primary800); right: -120px; top: -280px; }
+.g-band { width: 980px; height: 150px; background: var(--primary600); transform: rotate(-35deg); right: -300px; top: 40px; }
+.g-sky  { width: 430px; height: 430px; border-radius: 50%; background: var(--primary100); right: 40px; bottom: -300px; }
+.g-pink { width: 470px; height: 90px; background: var(--accentPink); transform: rotate(-35deg); left: -180px; bottom: -36px; }
+
+/* パレット帯：白文字はprimary600/800セグメントのみ（＝運用ルール1をこの帯自体が実演） */
+.band {
+  display: flex; height: 64px; border-radius: 14px; overflow: hidden;
+  margin: 28px 0 8px; border: 1px solid var(--border);
+}
+.band span {
+  display: flex; align-items: flex-end; padding: 6px 8px;
+  font-family: var(--mono); font-size: 10px; white-space: nowrap; overflow: hidden;
+  color: var(--textPrimary);
+}
+.band .w-light { color: #fff; }
+.band .s600 { flex: 3.2; background: var(--primary600); }
+.band .s800 { flex: 1.6; background: var(--primary800); }
+.band .s500 { flex: 1.4; background: var(--primary500); }
+.band .s300 { flex: 1.1; background: var(--primary300); color: var(--primary800); }
+.band .s100 { flex: 1.0; background: var(--primary100); color: var(--primary800); }
+.band .s50  { flex: 1.0; background: var(--primary50);  color: var(--primary800); }
+.band .sCorrect   { flex: 1.2; background: var(--correct); color: #fff; }
+.band .sReview    { flex: 1.0; background: var(--review); color: #fff; }
+.band .sIncorrect { flex: 1.2; background: var(--incorrect); color: #fff; }
+.band-note { font-size: 12px; color: var(--textMuted); }
+
+/* ---- 目次 ---- */
+.toc {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0;
+}
+.toc a {
+  text-decoration: none; font-size: 13px; font-weight: 600;
+  color: var(--primary800); background: var(--primary50);
+  border: 1px solid var(--primary100); border-radius: 999px; padding: 5px 14px;
+}
+.toc a:hover { background: var(--primary100); }
+.toc a:focus-visible, a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--primary500); outline-offset: 2px;
+}
+
+/* ---- セクション ---- */
+section { margin-top: 72px; }
+h2.sec {
+  font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 12px;
+  margin-bottom: 6px; scroll-margin-top: 24px;
+}
+h2.sec::before {
+  content: ""; width: 6px; height: 24px; border-radius: 3px;
+  background: linear-gradient(165deg, var(--primary600) 72%, var(--accentPink) 72%); flex: none;
+}
+.sec-lead { color: var(--textSecondary); font-size: 14px; margin-bottom: 24px; max-width: 720px; }
+
+/* ---- トークンチップ（注記用） ---- */
+.tok {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  color: var(--primary800); background: var(--primary50);
+  border: 1px solid var(--primary100); border-radius: 6px;
+  padding: 1px 6px; white-space: nowrap;
+}
+.tok.g { color: var(--correctText); background: var(--correctSurface); border-color: #CCFBF1; }
+.tok.r { color: var(--incorrectText); background: var(--incorrectSurface); border-color: #FADADA; }
+.tok.a { color: var(--reviewText); background: #FFFBEB; border-color: #FDE68A; }
+
+/* ---- スウォッチ ---- */
+.sw-group { margin-bottom: 28px; }
+.sw-group h3 { font-size: 14px; font-weight: 700; color: var(--textSecondary); margin-bottom: 12px; }
+.swatches {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;
+}
+.sw {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.sw .c { height: 52px; }
+.sw .m { padding: 8px 12px 10px; }
+.sw .m b { font-family: var(--mono); font-size: 12px; font-weight: 600; display: block; }
+.sw .m .hex { font-family: var(--mono); font-size: 11px; color: var(--textMuted); }
+.sw .m .use { font-size: 11px; color: var(--textSecondary); display: block; margin-top: 2px; line-height: 1.5; }
+.sw-dark-panel {
+  background: var(--bgDark); border-radius: 16px; padding: 16px;
+}
+.sw-dark-panel .sw { background: var(--surfaceDark); border-color: var(--borderDark); }
+.sw-dark-panel .sw .m b { color: var(--textPrimaryDark); }
+.sw-dark-panel .sw .m .use { color: var(--textSecondaryDark); }
+.sw-dark-panel .sw .m .hex { color: #64748B; }
+
+/* ---- 運用ルール ---- */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.rule {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 18px 20px;
+}
+.rule .no {
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  color: var(--primary600); display: block; margin-bottom: 6px;
+}
+.rule b.t { display: block; font-size: 15px; margin-bottom: 6px; }
+.rule p { font-size: 13px; color: var(--textSecondary); }
+
+/* ---- コンポーネント ---- */
+.comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 16px; }
+@media (max-width: 480px) { .comp-grid { grid-template-columns: 1fr; } }
+.comp {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 18px 20px;
+}
+.comp h3 { font-size: 13px; font-weight: 700; color: var(--textSecondary); margin-bottom: 14px; }
+.comp .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px; }
+.comp .note { font-size: 12px; color: var(--textMuted); margin-top: 8px; }
+
+.btn {
+  font-family: var(--font); font-size: 14px; font-weight: 700; border-radius: 12px;
+  padding: 10px 20px; border: 1px solid transparent; cursor: pointer;
+}
+.btn-primary { background: var(--primary600); color: #fff; }
+.btn-secondary { background: var(--surface); color: var(--primary600); border-color: var(--primary300); }
+/* AI機能専用サブアクション：面は surface、枠と文字だけグラデーション */
+.btn-ai {
+  background: linear-gradient(var(--surface), var(--surface)) padding-box,
+              linear-gradient(100deg, var(--primary600), #7C3AED) border-box;
+  border: 1.5px solid transparent;
+}
+.btn-ai .gt {
+  background: linear-gradient(100deg, var(--primary600), #7C3AED);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.btn-disabled { background: var(--border); color: var(--textMuted); cursor: not-allowed; }
+.link { color: var(--primary500); font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+.badge {
+  font-size: 11px; font-weight: 700; color: var(--primary800);
+  background: var(--primary100); border-radius: 999px; padding: 2px 10px;
+}
+.chip-review {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 700; color: var(--reviewText);
+  background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 999px; padding: 3px 12px;
+}
+.chip-review svg { color: var(--review); }
+.prem {
+  width: 26px; height: 26px; border-radius: 999px; flex: none;
+  background: #FFFBEB; border: 1px solid #FDE68A;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.prem .ms { font-size: 15px; color: var(--review); }
+.ph.dark .prem { background: rgba(245, 158, 11, .12); border-color: rgba(245, 158, 11, .35); }
+
+.pbar { height: 8px; border-radius: 4px; background: var(--primary100); overflow: hidden; width: 100%; }
+.pbar > i { display: block; height: 100%; border-radius: 4px; background: var(--primary600); }
+.pbar-onblue { background: var(--primary800); }
+.pbar-onblue > i { background: #fff; }
+.pdemo { background: var(--primary600); border-radius: 10px; padding: 14px 16px; }
+
+/* 選択肢（コア部品） */
+.choice {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 10px 12px; font-size: 13px; font-weight: 600; color: var(--textPrimary);
+}
+.choice .kl {
+  flex: none; width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  background: var(--bg); color: var(--textSecondary); border: 1px solid var(--border);
+}
+.choice .mark { margin-left: auto; flex: none; display: flex; }
+.choice.is-selected { background: var(--primary50); border-color: var(--primary500); }
+.choice.is-selected .kl { background: var(--primary600); color: #fff; border-color: var(--primary600); }
+.choice.is-correct { background: var(--correctSurface); border-color: var(--correct); color: var(--correctText); }
+.choice.is-correct .kl { background: var(--correct); color: #fff; border-color: var(--correct); }
+.choice.is-correct .mark { color: var(--correct); }
+.choice.is-incorrect { background: var(--incorrectSurface); border-color: var(--incorrect); color: var(--incorrectText); }
+.choice.is-incorrect .kl { background: var(--incorrect); color: #fff; border-color: var(--incorrect); }
+.choice.is-incorrect .mark { color: var(--incorrect); }
+.choice.is-dim { opacity: .55; }
+
+.icon-row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 4px; }
+.icon-demo {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 9.5px; font-weight: 600; color: var(--textSecondary);
+}
+.icon-demo .ms { font-size: 22px; color: var(--textSecondary); }
+
+.state-list { display: flex; flex-direction: column; gap: 10px; }
+.state-list .srow { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+.state-list .srow .tok { justify-self: end; }
+
+/* ---- スマホモック ---- */
+.mockrow { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+.mock { width: 272px; }
+.ph {
+  width: 272px; height: 580px; border-radius: 34px; overflow: hidden;
+  background: var(--bg); border: 1px solid var(--border);
+  box-shadow: 0 12px 32px rgba(30, 41, 59, .10);
+  display: flex; flex-direction: column;
+}
+.cap { margin-top: 14px; }
+.cap b { font-size: 14px; display: block; margin-bottom: 4px; }
+.cap .toks { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.cap p { font-size: 12px; color: var(--textSecondary); }
+
+.sb {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 20px 4px; font-size: 11px; font-weight: 700; flex: none;
+}
+.sb .icons { display: flex; gap: 4px; align-items: center; }
+.sb .icons i { display: block; background: currentColor; border-radius: 1px; }
+
+.appbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px 10px; flex: none;
+}
+.appbar b { font-size: 17px; font-weight: 800; }
+.screen-body { flex: 1; overflow: hidden; padding: 0 14px; display: flex; flex-direction: column; gap: 12px; }
+
+.tabbar {
+  flex: none; display: flex; border-top: 1px solid var(--border);
+  background: var(--surface); padding: 8px 6px 18px;
+}
+.tabbar .tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 9px; font-weight: 600; color: var(--textMuted);
+}
+.tabbar .tab.on { color: var(--primary600); }
+.tabbar .tab .ms { font-size: 20px; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 12px;
+}
+.hero-card {
+  background: var(--primary600); border-radius: 16px; padding: 14px; color: #fff;
+  position: relative; overflow: hidden;
+}
+/* ブランドの幾何学（円）を薄く敷く */
+.hero-card::before {
+  content: ""; position: absolute; right: -34px; top: -48px;
+  width: 118px; height: 118px; border-radius: 50%;
+  background: var(--primary500); opacity: .55;
+}
+.hero-card::after {
+  content: ""; position: absolute; right: 26px; bottom: -30px;
+  width: 58px; height: 58px; border-radius: 50%;
+  border: 2.5px solid #fff; opacity: .22;
+}
+.hero-card > * { position: relative; z-index: 1; }
+.hero-card .lbl { font-size: 10px; font-weight: 700; opacity: .85; letter-spacing: .06em; }
+.hero-card .ttl { font-size: 14px; font-weight: 800; margin: 3px 0 10px; }
+.hero-card .meta { display: flex; justify-content: space-between; font-size: 10px; margin-top: 6px; opacity: .9; }
+.hero-card .cta {
+  margin-top: 10px; background: #fff; color: var(--primary600);
+  border-radius: 10px; font-size: 12px; font-weight: 800; padding: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.hero-card .cta .ms { font-size: 15px; }
+.stats { display: flex; gap: 8px; }
+.stat { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 8px 4px; text-align: center; }
+.stat .v { font-size: 16px; font-weight: 800; }
+.stat .v.amber { color: var(--reviewText); }
+.stat .k { font-size: 9px; color: var(--textSecondary); }
+.h-sec { font-size: 12px; font-weight: 800; color: var(--textPrimary); display: flex; justify-content: space-between; align-items: center; }
+.h-sec .all { font-size: 10px; color: var(--primary500); font-weight: 700; }
+.h-sec .cnt { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--textSecondary); }
+.ph.dark .h-sec .cnt { color: var(--textSecondaryDark); }
+/* アプリ内小見出しのツートンティック（h2.sec と同じ青+ピンク先端のワンポイント） */
+.h-sec > span:first-child,
+.grp-h > span:first-child { display: flex; align-items: center; gap: 6px; }
+.h-sec > span:first-child::before,
+.grp-h > span:first-child::before {
+  content: ""; width: 4px; height: 12px; border-radius: 2px; flex: none;
+  background: linear-gradient(165deg, var(--primary600) 70%, var(--accentPink) 70%);
+}
+.ph.dark .h-sec > span:first-child::before {
+  background: linear-gradient(165deg, var(--primaryDark) 70%, var(--accentPink) 70%);
+}
+.ch-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+.ch-row + .ch-row { border-top: 1px solid var(--border); }
+.ch-row .ic {
+  flex: none; width: 30px; height: 30px; border-radius: 9px;
+  background: var(--primary50); color: var(--primary600);
+  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
+}
+.ch-row .g { flex: 1; min-width: 0; }
+.ch-row .g b { font-size: 11px; display: block; }
+.ch-row .g .pbar { height: 5px; margin-top: 5px; }
+.ch-row .n { font-size: 9px; color: var(--textMuted); flex: none; }
+
+/* 講座一覧 */
+.grp-h { font-size: 11px; font-weight: 800; color: var(--textSecondary); display: flex; justify-content: space-between; padding: 2px 2px 0; }
+.lesson-list { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.ls { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 11.5px; font-weight: 600; }
+.ls + .ls { border-top: 1px solid var(--border); }
+.ls .st { flex: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.ls .st.done { background: var(--primary500); color: #fff; }
+.ls .st.todo { border: 1.5px solid var(--border); }
+.ls.now { background: var(--primary50); }
+.ls .badge { margin-left: auto; flex: none; }
+.ls .dot-review { width: 7px; height: 7px; border-radius: 50%; background: var(--review); margin-left: auto; flex: none; }
+.ls .min { margin-left: auto; font-size: 9px; color: var(--textMuted); font-weight: 500; flex: none; }
+
+/* 動画講座タブ・動画視聴ページ */
+.vthumb {
+  width: 36px; height: 21px; border-radius: 5px; background: var(--primary50);
+  display: flex; align-items: center; justify-content: center; flex: none;
+}
+.vthumb .ms { font-size: 12px; color: var(--primary600); }
+.ph.dark .vthumb { background: rgba(96, 165, 250, .14); }
+.ph.dark .vthumb .ms { color: var(--primaryDark); }
+.player {
+  position: relative; aspect-ratio: 16 / 9; background: var(--bgDark);
+  display: flex; align-items: center; justify-content: center; flex: none;
+}
+.player .pc { font-size: 42px; color: #fff; opacity: .95; }
+.player .time { position: absolute; right: 30px; bottom: 9px; font-family: var(--mono); font-size: 8px; color: #CBD5E1; }
+.player .speed {
+  position: absolute; left: 10px; bottom: 7px;
+  font-family: var(--mono); font-size: 8.5px; font-weight: 700; color: #fff;
+  background: rgba(255, 255, 255, .16); border-radius: 999px; padding: 1px 8px;
+}
+.player .fs { position: absolute; right: 9px; bottom: 7px; font-size: 14px; color: #fff; }
+.player .scrub { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--primary800); }
+.player .scrub i { display: block; height: 100%; width: 36%; background: var(--primary500); }
+.w-title { font-size: 13px; font-weight: 800; line-height: 1.5; }
+.w-meta { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--textSecondary); font-weight: 600; }
+.w-meta .ms { font-size: 13px; }
+.ph.dark .grp-h { color: var(--textSecondaryDark); }
+.ph.dark .lesson-list { background: var(--surfaceDark); border-color: var(--borderDark); }
+.ph.dark .ls + .ls { border-color: var(--borderDark); }
+.ph.dark .ls .min { color: var(--textSecondaryDark); }
+.ph.dark .ls.now { background: rgba(96, 165, 250, .10); }
+
+/* 問題集タブ */
+.pg-row { display: flex; align-items: center; gap: 8px; }
+.pg-row + .pg-row { margin-top: 10px; }
+.pg-row .k { width: 36px; flex: none; font-size: 10px; font-weight: 700; color: var(--textSecondary); }
+.pg-row .v { width: 34px; flex: none; text-align: right; font-family: var(--mono); font-size: 10px; font-weight: 700; }
+.bar-vs { flex: 1; height: 8px; border-radius: 4px; overflow: hidden; display: flex; }
+.bar-vs .ok { background: var(--correct); }
+.bar-vs .ng { background: var(--incorrect); }
+.pg-legend { display: flex; gap: 12px; margin-top: 7px; padding-left: 44px; font-size: 9px; font-weight: 800; }
+.pg-legend .ok { color: var(--correctText); }
+.pg-legend .ng { color: var(--incorrectText); }
+.qico {
+  width: 26px; height: 26px; border-radius: 8px; flex: none;
+  background: var(--primary50); color: var(--primary600);
+  display: flex; align-items: center; justify-content: center;
+}
+.qico .ms { font-size: 14px; }
+.ls .chev { margin-left: auto; flex: none; color: var(--textMuted); font-size: 14px; }
+
+/* 暗記カードタブ */
+.bubble {
+  position: relative; flex: none;
+  background: #FDECF2; border: 1px solid var(--accentPinkSoft); color: #C2406A;
+  border-radius: 999px; padding: 3px 11px;
+  font-size: 10px; font-weight: 800; white-space: nowrap;
+}
+.bubble::before, .bubble::after {
+  content: ""; position: absolute; top: 50%; transform: translateY(-50%);
+  border: 5px solid transparent; border-left-width: 4px;
+}
+.bubble::before { left: -9px; border-right-color: var(--accentPinkSoft); }
+.bubble::after { left: -7.5px; border-right-color: #FDECF2; }
+
+/* クイズ */
+.quiz-top { display: flex; align-items: center; gap: 10px; padding: 6px 14px 0; flex: none; }
+.quiz-top .x { color: var(--textSecondary); font-size: 14px; line-height: 1; }
+.quiz-top .pbar { flex: 1; height: 6px; }
+.quiz-top .cnt { font-family: var(--mono); font-size: 10px; color: var(--textSecondary); }
+.q-text { font-size: 13px; font-weight: 700; line-height: 1.65; }
+.q-choices { display: flex; flex-direction: column; gap: 8px; }
+.q-choices .choice { font-size: 11.5px; padding: 9px 10px; }
+.q-cta { margin-top: auto; }
+.q-cta .btn { width: 100%; font-size: 13px; padding: 12px; border-radius: 12px; }
+.result-banner {
+  display: flex; align-items: center; gap: 8px; border-radius: 12px; padding: 9px 12px;
+  font-size: 13px; font-weight: 800;
+}
+.result-banner.ok { background: var(--correctSurface); color: var(--correctText); }
+.result-banner.ok svg { color: var(--correct); }
+.result-banner.ng { background: var(--incorrectSurface); color: var(--incorrectText); }
+.result-banner.ng svg { color: var(--incorrect); }
+.expl { font-size: 11px; color: var(--textSecondary); line-height: 1.7; }
+.expl b.h { display: inline-block; font-size: 10px; color: var(--primary800); background: var(--primary100); border-radius: 999px; padding: 1px 8px; margin-bottom: 4px; }
+
+/* ---- ダークモック ---- */
+.ph.dark { background: var(--bgDark); border-color: var(--borderDark); color: var(--textPrimaryDark); }
+.ph.dark .appbar b { color: var(--textPrimaryDark); }
+.ph.dark .card, .ph.dark .stat { background: var(--surfaceDark); border-color: var(--borderDark); }
+.ph.dark .stat .k { color: var(--textSecondaryDark); }
+.ph.dark .h-sec { color: var(--textPrimaryDark); }
+.ph.dark .h-sec .all { color: var(--primaryDark); }
+.ph.dark .ch-row + .ch-row { border-color: var(--borderDark); }
+.ph.dark .ch-row .ic { background: rgba(96,165,250,.14); color: var(--primaryDark); }
+.ph.dark .ch-row .n { color: var(--textSecondaryDark); }
+.ph.dark .pbar { background: var(--borderDark); }
+.ph.dark .pbar > i { background: var(--primaryDark); }
+.ph.dark .hero-card .pbar { background: var(--primary800); }
+.ph.dark .hero-card .pbar > i { background: #fff; }
+.ph.dark .tabbar { background: var(--surfaceDark); border-color: var(--borderDark); }
+.ph.dark .tabbar .tab { color: #64748B; }
+.ph.dark .tabbar .tab.on { color: var(--primaryDark); }
+.ph.dark .quiz-top .x, .ph.dark .quiz-top .cnt { color: var(--textSecondaryDark); }
+.ph.dark .q-text { color: var(--textPrimaryDark); }
+.ph.dark .choice { background: var(--surfaceDark); border-color: var(--borderDark); color: var(--textPrimaryDark); }
+.ph.dark .choice .kl { background: var(--bgDark); color: var(--textSecondaryDark); border-color: var(--borderDark); }
+.ph.dark .choice.is-correct { background: var(--correctSurfaceDark); border-color: var(--correctDark); color: var(--correctTextDark); }
+.ph.dark .choice.is-correct .kl { background: var(--correctDark); color: var(--bgDark); border-color: var(--correctDark); }
+.ph.dark .choice.is-correct .mark { color: var(--correctDark); }
+.ph.dark .choice.is-incorrect { background: var(--incorrectSurfaceDark); border-color: var(--incorrectDark); color: var(--incorrectTextDark); }
+.ph.dark .choice.is-incorrect .kl { background: var(--incorrectDark); color: var(--bgDark); border-color: var(--incorrectDark); }
+.ph.dark .choice.is-incorrect .mark { color: var(--incorrectDark); }
+.ph.dark .result-banner.ng { background: var(--incorrectSurfaceDark); color: var(--incorrectTextDark); }
+.ph.dark .result-banner.ng svg { color: var(--incorrectDark); }
+.ph.dark .expl { color: var(--textSecondaryDark); }
+.ph.dark .expl b.h { color: var(--primaryDark); background: rgba(96,165,250,.14); }
+.ph.dark .q-cta .btn-primary { background: var(--primaryDark); color: var(--bgDark); }
+
+/* ---- 動画ビジュアル ---- */
+.vrow { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
+.vmock { width: 480px; max-width: 100%; }
+.frame {
+  width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--border); position: relative;
+  box-shadow: 0 10px 28px rgba(30, 41, 59, .10);
+}
+/* タイトルカード */
+.v-title { background: var(--bgDark); color: #fff; padding: 7% 8%; display: flex; flex-direction: column; }
+.v-title .deco1 {
+  position: absolute; right: -8%; top: -22%; width: 46%; aspect-ratio: 1;
+  border-radius: 50%; background: var(--primary600); opacity: .35;
+}
+.v-title .deco2 {
+  position: absolute; right: 14%; bottom: -30%; width: 30%; aspect-ratio: 1;
+  border-radius: 50%; border: 3px solid var(--primary500); opacity: .5;
+}
+.v-title .deco3 {
+  position: absolute; right: -9%; bottom: -4%; width: 34%; height: 13%;
+  background: var(--accentPink); transform: rotate(-35deg);
+}
+.v-title .series {
+  position: relative; font-size: 13px; font-weight: 700;
+  color: var(--primary300); letter-spacing: .14em;
+}
+.v-title h3 {
+  position: relative; font-size: 26px; font-weight: 800;
+  line-height: 1.45; margin-top: auto; margin-bottom: auto; max-width: 86%;
+}
+.v-title .kws { position: relative; display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.v-title .kw {
+  font-size: 9.5px; font-weight: 700; color: var(--primary300);
+  background: rgba(59, 130, 246, .14); border: 1px solid rgba(147, 197, 253, .28);
+  border-radius: 999px; padding: 2px 10px; opacity: .9;
+}
+.v-title .foot-line { position: relative; display: block; width: 26px; height: 4px; border-radius: 2px; background: var(--primary500); }
+/* 本編スライド：下部にテロップ帯常設。残りは本文に最大限使う */
+.v-slide { background: var(--bg); padding: 4.5% 6% 4%; display: flex; flex-direction: column; }
+.v-slide .head { display: flex; align-items: center; gap: 9px; }
+.v-slide .head i { display: block; width: 6px; height: 1.4em; border-radius: 3px; background: var(--primary600); flex: none; }
+.v-slide .head .ms { font-size: 20px; color: var(--primary600); flex: none; }
+.v-slide .head b { font-size: 19px; font-weight: 800; }
+.v-slide .cols { display: flex; gap: 4%; flex: 1; margin-top: 2%; min-height: 0; align-items: center; }
+.v-slide ul { list-style: none; flex: 1.35; display: flex; flex-direction: column; justify-content: center; gap: 7%; }
+.v-slide li { display: flex; gap: 10px; align-items: baseline; font-size: 14.5px; font-weight: 700; }
+.v-slide li::before { content: ""; width: 9px; height: 9px; border-radius: 3px; background: var(--primary500); flex: none; transform: translateY(-1px); }
+.v-slide li small { display: block; font-size: 11px; font-weight: 500; color: var(--textSecondary); }
+.marker { background: linear-gradient(transparent 62%, var(--primary100) 62%); }
+.marker-pink { background: linear-gradient(transparent 62%, var(--accentPinkSoft) 62%); }
+.v-slide img.illust {
+  flex: 1; min-width: 0; align-self: stretch; object-fit: contain;
+  mix-blend-mode: multiply; /* 素材の白地を bg に溶かす */
+}
+.v-telop {
+  flex: none; margin-top: 2%; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 5px 16px;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  font-size: 12.5px; font-weight: 700; color: var(--textPrimary);
+  box-shadow: 0 3px 10px rgba(30, 41, 59, .08);
+}
+
+/* --- スライドパターン: 対比（VS） --- */
+.vs-wrap { position: relative; display: flex; gap: 10px; flex: 1; margin-top: 2%; min-height: 0; }
+.vs-col {
+  flex: 1; background: var(--surface); border: 1.5px solid var(--primary300);
+  border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
+}
+.vs-col h4 {
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  background: var(--primary50); color: var(--primary800); padding: 4px;
+}
+.vs-col h4 .ms { font-size: 14px; }
+.vs-col .rows { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 6px 14px; }
+.vs-row { font-size: 11.5px; font-weight: 700; line-height: 1.5; }
+.vs-row .k { display: block; font-size: 9px; font-weight: 600; color: var(--textMuted); }
+.vs-badge {
+  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+  width: 30px; height: 30px; border-radius: 50%; z-index: 2;
+  background: var(--primary600); color: #fff; font-weight: 800; font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  border: 3px solid var(--bg);
+}
+
+/* --- スライドパターン: ステップフロー --- */
+.flow { flex: 1; display: flex; align-items: center; gap: 4px; margin-top: 2%; min-height: 0; }
+.fstep {
+  flex: 1; background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 12px; text-align: center; padding: 12px 2px;
+}
+.fstep .abc { display: block; font-family: var(--mono); font-size: 19px; font-weight: 800; color: var(--primary600); }
+.fstep .nm { font-size: 12px; font-weight: 800; display: block; }
+.fstep .sub { font-size: 9px; color: var(--textSecondary); display: block; }
+.fstep.on { background: var(--primary50); border-color: var(--primary500); }
+.farr { flex: none; color: var(--primary300); display: flex; }
+
+/* --- スライドパターン: 2×2マトリクス --- */
+.mx-wrap {
+  flex: 1; display: grid; gap: 4px; margin-top: 1.5%; min-height: 0;
+  grid-template-columns: 14px 1fr 1fr; grid-template-rows: 13px 1fr 1fr;
+}
+.mx-ax { font-size: 9px; font-weight: 700; color: var(--textMuted); display: flex; align-items: center; justify-content: center; }
+.mx-ax.v { writing-mode: vertical-rl; }
+.mx-cell { border-radius: 10px; padding: 4px 12px; display: flex; flex-direction: column; justify-content: center; min-height: 0; background: var(--surface); border: 1px solid var(--border); }
+.mx-cell.hi { background: var(--primary100); border-color: var(--primary100); }
+.mx-cell.lo { background: var(--primary50); border-color: var(--primary50); }
+.mx-cell b { font-size: 11.5px; display: flex; align-items: center; }
+.mx-cell b i { font-family: var(--mono); font-style: normal; color: var(--primary800); margin-right: 5px; }
+.mx-cell b .ms { margin-left: auto; font-size: 14px; color: var(--textSecondary); }
+.mx-cell span { font-size: 9px; color: var(--textSecondary); line-height: 1.4; }
+
+/* --- スライドパターン: 階層図 --- */
+.layers { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 3px; margin-top: 1%; min-height: 0; width: 82%; align-self: center; }
+.layer {
+  display: flex; align-items: center; gap: 8px; min-height: 0;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+  padding: 2px 11px; font-size: 10.5px; font-weight: 700;
+}
+.layer .no { font-family: var(--mono); font-size: 9px; color: var(--textMuted); width: 10px; flex: none; }
+.layer small { margin-left: auto; font-size: 9px; color: var(--textMuted); font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.layer small .ms { font-size: 11px; }
+.layer.on { background: var(--primary50); border-color: var(--primary500); }
+.layer.on small { color: var(--primary800); font-weight: 700; }
+
+/* --- スライドパターン: 計算・グラフ --- */
+.graph-wrap { flex: 1; display: flex; gap: 5%; margin-top: 1.5%; min-height: 0; align-items: center; }
+.graph-wrap svg { flex: 1.15; height: 96%; min-width: 0; }
+.gside { flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center; min-width: 0; }
+.formula {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 8px 10px; font-size: 10.5px; font-weight: 800; text-align: center; line-height: 1.6;
+}
+.gnote { font-size: 9.5px; color: var(--textSecondary); line-height: 1.6; }
+
+/* --- スライドパターン: 用語ドン --- */
+.term-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; text-align: center; min-height: 0; }
+.term-chip { font-size: 10px; font-weight: 800; color: var(--primary800); background: var(--primary100); border-radius: 999px; padding: 2px 14px; }
+.term-ic {
+  width: 46px; height: 46px; border-radius: 14px;
+  background: var(--primary50); color: var(--primary600);
+  display: flex; align-items: center; justify-content: center; font-size: 27px;
+}
+.term-big { font-size: 42px; font-weight: 800; letter-spacing: .05em; line-height: 1.1; }
+.term-sub { font-size: 12px; font-weight: 700; color: var(--textSecondary); }
+/* --- スライドパターン: 基数変換 --- */
+.bin-wrap { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; margin-top: 1%; min-height: 0; }
+.bin-row { display: flex; justify-content: center; gap: 14px; }
+.bin-col { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 54px; }
+.bin-col .w { font-family: var(--mono); font-size: 9.5px; font-weight: 700; color: var(--textSecondary); }
+.bin-col .d {
+  width: 44px; height: 44px; border-radius: 11px;
+  background: var(--surface); border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 23px; font-weight: 800;
+}
+.bin-col .p { font-family: var(--mono); font-size: 13px; font-weight: 800; color: var(--primary800); }
+.bin-col.on .d { background: var(--primary50); border-color: var(--primary500); color: var(--primary800); }
+.bin-col.off .d, .bin-col.off .p { color: var(--textMuted); }
+.bin-eq {
+  display: flex; align-items: baseline; justify-content: center; gap: 9px;
+  font-family: var(--mono); font-size: 15px; font-weight: 800;
+}
+.bin-eq .z { color: var(--textMuted); }
+.bin-eq .ans { font-size: 23px; }
+/* 動画クイズ */
+.v-quiz { background: var(--primary50); padding: 4.5% 6%; display: flex; flex-direction: column; gap: 3.5%; }
+.v-quiz .qhead { display: flex; align-items: center; gap: 10px; }
+.v-quiz .qhead .qmark {
+  width: 34px; height: 34px; border-radius: 10px; flex: none;
+  background: var(--primary600); color: #fff; font-weight: 800; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+.v-quiz .qhead b { font-size: 17px; font-weight: 800; line-height: 1.5; }
+.v-quiz .vchoices { display: flex; flex-direction: column; gap: 10px; flex: 1; justify-content: center; }
+.v-quiz .vc {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface); border: 2px solid var(--border); border-radius: 12px;
+  padding: 8px 14px; font-size: 14.5px; font-weight: 700;
+}
+.v-quiz .vc .kl {
+  flex: none; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--bg); border: 1px solid var(--border); color: var(--textSecondary);
+  display: flex; align-items: center; justify-content: center; font-size: 12px;
+}
+.v-quiz .vc.on { background: var(--correctSurface); border-color: var(--correct); color: var(--correctText); }
+.v-quiz .vc.on .kl { background: var(--correct); border-color: var(--correct); color: #fff; }
+.v-quiz .vc.on .mark { margin-left: auto; color: var(--correct); display: flex; }
+.v-quiz .foot { font-size: 11px; font-weight: 700; color: var(--textSecondary); }
+
+/* ---- フッター ---- */
+footer { margin-top: 88px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--textMuted); }
+
+@media (max-width: 640px) {
+  .hero h1 { font-size: 26px; }
+  .hero-banner { padding: 28px 24px 40px; }
+  .hero-banner .hb-text { max-width: 100%; }
+  .g-band { display: none; }
+  .g-navy { right: -320px; }
+  .g-sky { right: -220px; }
+  .band span { font-size: 8px; padding: 4px 4px; }
+  .vmock { width: 100%; }
+  .v-title h3 { font-size: 20px; }
+  .v-slide .head b { font-size: 15px; }
+  .v-slide li { font-size: 12px; }
+  .v-quiz .qhead b { font-size: 14px; }
+  .v-quiz .vc { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ ヘッダー ============ -->
+  <header class="hero">
+    <div class="hero-banner">
+      <div class="g g-navy" aria-hidden="true"></div>
+      <div class="g g-band" aria-hidden="true"></div>
+      <div class="g g-sky" aria-hidden="true"></div>
+      <div class="g g-pink" aria-hidden="true"></div>
+      <div class="hb-text">
+        <span class="eyebrow">LEARNING APPS — DESIGN SPECIMEN</span>
+        <h1>集中ブルー デザイン見本</h1>
+        <p class="lead">engine共通UIと学習動画のビジュアル見本。カラートークンの原本はFlutterの<b>AppColors</b>で、本ページの表記はフィールド名と1:1で対応する。実装時は各モック下のトークン名をそのまま引くこと。</p>
+      </div>
+    </div>
+
+    <div class="band" role="img" aria-label="集中ブルーのパレット構成">
+      <span class="s600 w-light">primary600</span>
+      <span class="s800 w-light">primary800</span>
+      <span class="s500">500</span>
+      <span class="s300">300</span>
+      <span class="s100">100</span>
+      <span class="s50">50</span>
+      <span class="sCorrect">correct</span>
+      <span class="sReview">review</span>
+      <span class="sIncorrect">incorrect</span>
+    </div>
+    <p class="band-note">※ この帯で白文字が載っているのは primary600 / 800 とsemantic系のみ——運用ルール1をこの帯自体が実演している。primary500への白文字は不可（黒文字で表記）。</p>
+
+    <nav class="toc">
+      <a href="#rules">運用ルール</a>
+      <a href="#tokens">カラートークン</a>
+      <a href="#components">コンポーネント</a>
+      <a href="#app">アプリUI</a>
+      <a href="#video">動画ビジュアル</a>
+    </nav>
+  </header>
+
+  <!-- ============ 運用ルール ============ -->
+  <section id="rules">
+    <h2 class="sec">運用ルール</h2>
+    <p class="sec-lead">AppColorsのコメントに定めた3原則。デザイン判断はすべてこれを優先する。</p>
+    <div class="rules">
+      <div class="rule">
+        <span class="no">RULE 1</span>
+        <b class="t">白文字は primary600 以上のみ</b>
+        <p>primary50〜500 の上に白文字を置かない。CTAやバッジで白文字が要る場面は primary600 / primary800 を使う。</p>
+      </div>
+      <div class="rule">
+        <span class="no">RULE 2</span>
+        <b class="t">正誤は 色 + アイコン の二重符号化</b>
+        <p>正解・不正解を色だけで伝えない。必ず ○ / ✕ アイコンを併記する（色覚多様性への対応）。動画も同じ文法。</p>
+      </div>
+      <div class="rule">
+        <span class="no">RULE 3</span>
+        <b class="t">ブランド差し替えは primary 系のみ</b>
+        <p>アプリごとのテーマ変更で触ってよいのは primary 系だけ。semantic（correct / incorrect / review）は全アプリ共通で固定。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ カラートークン ============ -->
+  <section id="tokens">
+    <h2 class="sec">カラートークン</h2>
+    <p class="sec-lead">名称はAppColorsのフィールド名。用途メモはDart側コメントと同期させる。</p>
+
+    <div class="sw-group">
+      <h3>Primary（Blue）— ブランド差し替え対象</h3>
+      <div class="swatches">
+        <div class="sw"><div class="c" style="background:var(--primary50)"></div><div class="m"><b>primary50</b><span class="hex">#EFF6FF</span><span class="use">選択中背景、ヒント枠、タグ背景</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--primary100)"></div><div class="m"><b>primary100</b><span class="hex">#DBEAFE</span><span class="use">バッジ背景、ホバー面</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--primary300)"></div><div class="m"><b>primary300</b><span class="hex">#93C5FD</span><span class="use">ダークのアクセント、装飾</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--primary500)"></div><div class="m"><b>primary500</b><span class="hex">#3B82F6</span><span class="use">リンク、アクティブ状態</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--primary600)"></div><div class="m"><b>primary600</b><span class="hex">#2563EB</span><span class="use">ボタン・CTA標準（白文字OK）</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--primary800)"></div><div class="m"><b>primary800</b><span class="hex">#1E40AF</span><span class="use">プログレストラック、バッジ文字</span></div></div>
+      </div>
+    </div>
+
+    <div class="sw-group">
+      <h3>Semantic — 全アプリ共通・固定</h3>
+      <div class="swatches">
+        <div class="sw"><div class="c" style="background:var(--correct)"></div><div class="m"><b>correct</b><span class="hex">#0D9488</span><span class="use">正解ボーダー・アイコン</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--correctSurface); border-bottom:1px solid var(--border)"></div><div class="m"><b>correctSurface</b><span class="hex">#F0FDFA</span><span class="use">正解選択肢の背景</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--correctText)"></div><div class="m"><b>correctText</b><span class="hex">#115E59</span><span class="use">正解面の上の文字</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--incorrect)"></div><div class="m"><b>incorrect</b><span class="hex">#D66A6A</span><span class="use">不正解ボーダー・アイコン（低彩度）</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--incorrectSurface); border-bottom:1px solid var(--border)"></div><div class="m"><b>incorrectSurface</b><span class="hex">#FDF2F2</span><span class="use">不正解選択肢の背景</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--incorrectText)"></div><div class="m"><b>incorrectText</b><span class="hex">#9B3A3A</span><span class="use">不正解面の上の文字</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--review)"></div><div class="m"><b>review</b><span class="hex">#F59E0B</span><span class="use">要復習マーク、ストリーク</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--reviewText)"></div><div class="m"><b>reviewText</b><span class="hex">#B45309</span><span class="use">要復習の数値・文字</span></div></div>
+      </div>
+    </div>
+
+    <div class="sw-group">
+      <h3>Neutral（Light）</h3>
+      <div class="swatches">
+        <div class="sw"><div class="c" style="background:var(--bg); border-bottom:1px solid var(--border)"></div><div class="m"><b>bg</b><span class="hex">#F7F9FC</span><span class="use">画面背景</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--surface); border-bottom:1px solid var(--border)"></div><div class="m"><b>surface</b><span class="hex">#FFFFFF</span><span class="use">カード背景</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--border)"></div><div class="m"><b>border</b><span class="hex">#E2E8F0</span><span class="use">ボーダー、区切り線</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--textMuted)"></div><div class="m"><b>textMuted</b><span class="hex">#94A3B8</span><span class="use">プレースホルダ、補助情報</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--textSecondary)"></div><div class="m"><b>textSecondary</b><span class="hex">#64748B</span><span class="use">サブテキスト、ラベル</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--textPrimary)"></div><div class="m"><b>textPrimary</b><span class="hex">#1E293B</span><span class="use">本文、見出し</span></div></div>
+      </div>
+    </div>
+
+    <div class="sw-group">
+      <h3>Dark mode</h3>
+      <div class="sw-dark-panel">
+        <div class="swatches">
+          <div class="sw"><div class="c" style="background:var(--bgDark); border-bottom:1px solid var(--borderDark)"></div><div class="m"><b>bgDark</b><span class="hex">#0F172A</span><span class="use">画面背景（ネイビー系）</span></div></div>
+          <div class="sw"><div class="c" style="background:var(--surfaceDark); border-bottom:1px solid var(--borderDark)"></div><div class="m"><b>surfaceDark</b><span class="hex">#1E293B</span><span class="use">カード背景</span></div></div>
+          <div class="sw"><div class="c" style="background:var(--borderDark)"></div><div class="m"><b>borderDark</b><span class="hex">#334155</span><span class="use">ボーダー</span></div></div>
+          <div class="sw"><div class="c" style="background:var(--primaryDark)"></div><div class="m"><b>primaryDark</b><span class="hex">#60A5FA</span><span class="use">プログレス、アクセント</span></div></div>
+          <div class="sw"><div class="c" style="background:var(--correctDark)"></div><div class="m"><b>correctDark</b><span class="hex">#2DD4BF</span><span class="use">正解（ダーク）</span></div></div>
+          <div class="sw"><div class="c" style="background:var(--incorrectDark)"></div><div class="m"><b>incorrectDark</b><span class="hex">#E08787</span><span class="use">不正解（ダーク）</span></div></div>
+          <div class="sw"><div class="c" style="background:var(--textPrimaryDark)"></div><div class="m"><b>textPrimaryDark</b><span class="hex">#F1F5F9</span><span class="use">本文（ダーク）</span></div></div>
+          <div class="sw"><div class="c" style="background:var(--textSecondaryDark)"></div><div class="m"><b>textSecondaryDark</b><span class="hex">#94A3B8</span><span class="use">サブテキスト（ダーク）</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-group">
+      <h3>アクセントピンク — トークン外（グラフィック専用の提案）</h3>
+      <div class="swatches">
+        <div class="sw"><div class="c" style="background:var(--accentPink)"></div><div class="m"><b>accentPink</b><span class="hex">#F98BA4</span><span class="use">動画タイトル・サムネ・ページ装飾の差し色</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--accentPinkSoft)"></div><div class="m"><b>accentPinkSoft</b><span class="hex">#FBD0DB</span><span class="use">同・淡色面（テキスト選択、面の重なり）</span></div></div>
+      </div>
+      <p class="band-note" style="margin-top:8px">※ AppColorsのsemanticには入れない（状態表示・正誤に使うと不正解の低彩度レッドと混同するため）。用途は、動画・グラフィックの装飾と、見出しティックの先端などごく小さなワンポイントのみ。</p>
+    </div>
+  </section>
+
+  <!-- ============ コンポーネント ============ -->
+  <section id="components">
+    <h2 class="sec">コンポーネント</h2>
+    <p class="sec-lead">主要部品の状態一覧。選択肢は本システムのコア部品——4状態すべてで面・枠・文字・記号の組み合わせが決まっている。</p>
+
+    <div class="comp-grid">
+      <div class="comp">
+        <h3>ボタン / リンク</h3>
+        <div class="row">
+          <button class="btn btn-primary" type="button">回答する</button>
+          <button class="btn btn-secondary" type="button">あとで復習</button>
+          <button class="btn btn-disabled" type="button" disabled>回答する</button>
+        </div>
+        <div class="row">
+          <a class="link" href="#components">すべての講座を見る</a>
+        </div>
+        <p class="note">CTA = <span class="tok">primary600</span> + 白文字。セカンダリ = <span class="tok">surface</span> 面 + <span class="tok">primary300</span> 枠 + <span class="tok">primary600</span> 文字。リンクは <span class="tok">primary500</span>。</p>
+      </div>
+
+      <div class="comp">
+        <h3>バッジ / チップ</h3>
+        <div class="row">
+          <span class="badge">ストラテジ系</span>
+          <span class="badge">学習中</span>
+          <span class="chip-review">
+            <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8s4.2 3.7 4.2 7.4a4.2 4.2 0 0 1-8.4 0c0-1.5.7-2.9 1.6-4 .3 1 .9 1.9 1.6 2.4-.9-2.3 0-4.4 1-5.8z"/></svg>
+            要復習 6問
+          </span>
+        </div>
+        <p class="note">バッジ = <span class="tok">primary100</span> 背景 + <span class="tok">primary800</span> 文字。要復習チップ = <span class="tok a">review</span> アイコン + <span class="tok a">reviewText</span> 文字。</p>
+      </div>
+
+      <div class="comp">
+        <h3>プログレスバー（2文脈）</h3>
+        <div class="row"><div class="pbar" aria-hidden="true"><i style="width:64%"></i></div></div>
+        <p class="note">通常面の上: <span class="tok">primary100</span> トラック + <span class="tok">primary600</span> フィル</p>
+        <div class="pdemo" style="margin-top:12px"><div class="pbar pbar-onblue" aria-hidden="true"><i style="width:40%"></i></div></div>
+        <p class="note">primary600 面の上: <span class="tok">primary800</span> トラック + 白フィル</p>
+      </div>
+
+      <div class="comp">
+        <h3>選択肢の4状態（コア部品）</h3>
+        <div class="state-list">
+          <div class="srow">
+            <div class="choice"><span class="kl">ア</span>通常</div>
+            <span class="tok">surface / border</span>
+          </div>
+          <div class="srow">
+            <div class="choice is-selected"><span class="kl">イ</span>選択中</div>
+            <span class="tok">primary50 / primary500</span>
+          </div>
+          <div class="srow">
+            <div class="choice is-correct"><span class="kl">ウ</span>正解
+              <span class="mark"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" aria-label="正解"><circle cx="10" cy="10" r="6.5"/></svg></span>
+            </div>
+            <span class="tok g">correct 系 + ○</span>
+          </div>
+          <div class="srow">
+            <div class="choice is-incorrect"><span class="kl">エ</span>不正解
+              <span class="mark"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-label="不正解"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg></span>
+            </div>
+            <span class="tok r">incorrect 系 + ✕</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp">
+        <h3>アイコン（Material Symbols Rounded）</h3>
+        <div class="icon-row">
+          <span class="icon-demo"><span class="ms" aria-hidden="true">school</span>講座</span>
+          <span class="icon-demo"><span class="ms" aria-hidden="true">quiz</span>問題</span>
+          <span class="icon-demo"><span class="ms" aria-hidden="true">key</span>鍵</span>
+          <span class="icon-demo"><span class="ms" aria-hidden="true">trending_up</span>機会</span>
+          <span class="icon-demo"><span class="ms" aria-hidden="true">warning</span>脅威</span>
+          <span class="icon-demo"><span class="ms" aria-hidden="true">dns</span>用語</span>
+        </div>
+        <p class="note">FILL 1 の角丸スタイルで統一（手描きイラストと調和）。色は <span class="tok">textSecondary</span> / <span class="tok">primary600</span> の2色のみで、correct・incorrect は正誤マーク専用。意味の補助にだけ使い、1画面2〜3個まで。Flutter側は同名の Material アイコンを使う。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ アプリUI ============ -->
+  <section id="app">
+    <h2 class="sec">アプリUI</h2>
+    <p class="sec-lead">ipa_ip（ITパスポート）を例にした画面見本。タブ構成は「動画講座・問題集・暗記カード・設定」で、先頭の動画講座タブが実質のホーム（テキスト講座タブは持たない）。動画視聴やクイズなどの詳細ページはタブバーなしの全画面pushで開く。</p>
+
+    <div class="mockrow">
+
+      <!-- ホーム -->
+      <div class="mock">
+        <div class="ph">
+          <div class="sb"><span>9:41</span><span class="icons" aria-hidden="true"><i style="width:14px;height:8px;border-radius:2px"></i><i style="width:20px;height:9px;border-radius:2.5px;opacity:.9"></i></span></div>
+          <div class="appbar">
+            <b>ITパスポート</b>
+            <span style="display:flex;align-items:center;gap:7px">
+              <span class="chip-review" style="font-size:10px;padding:2px 10px">
+                <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8s4.2 3.7 4.2 7.4a4.2 4.2 0 0 1-8.4 0c0-1.5.7-2.9 1.6-4 .3 1 .9 1.9 1.6 2.4-.9-2.3 0-4.4 1-5.8z"/></svg>
+                12日連続
+              </span>
+              <span class="prem" aria-label="プレミアム"><span class="ms" aria-hidden="true">workspace_premium</span></span>
+            </span>
+          </div>
+          <div class="screen-body">
+            <div class="hero-card">
+              <span class="lbl">つづきから</span>
+              <div class="ttl">1-3 経営戦略のきほん</div>
+              <div class="cta"><span class="ms" aria-hidden="true">play_arrow</span>つづける</div>
+            </div>
+            <div class="h-sec"><span>第1章 企業と法務</span><span class="cnt">2 / 5</span></div>
+            <div class="lesson-list">
+              <div class="ls">
+                <span class="vthumb"><span class="ms" aria-hidden="true">check</span></span>
+                1-1 企業活動とは
+                <span class="min">5:12</span>
+              </div>
+              <div class="ls">
+                <span class="vthumb"><span class="ms" aria-hidden="true">check</span></span>
+                1-2 株式会社のしくみ
+                <span class="min">6:40</span>
+              </div>
+              <div class="ls now">
+                <span class="vthumb"><span class="ms" aria-hidden="true">equalizer</span></span>
+                <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">1-3 経営戦略のきほん</span>
+                <span class="badge" style="font-size:10px;padding:2px 8px">再生中</span>
+              </div>
+              <div class="ls">
+                <span class="vthumb"><span class="ms" aria-hidden="true">play_arrow</span></span>
+                1-4 マーケティング入門
+                <span class="min">8:03</span>
+              </div>
+            </div>
+            <div class="h-sec"><span>第2章 経営戦略</span><span class="cnt">0 / 4</span></div>
+            <div class="lesson-list">
+              <div class="ls">
+                <span class="vthumb"><span class="ms" aria-hidden="true">play_arrow</span></span>
+                2-1 SWOT分析
+                <span class="min">5:30</span>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab on"><span class="ms" aria-hidden="true">smart_display</span>動画講座</div>
+            <div class="tab"><span class="ms" aria-hidden="true">quiz</span>問題集</div>
+            <div class="tab"><span class="ms" aria-hidden="true">style</span>暗記カード</div>
+            <div class="tab"><span class="ms" aria-hidden="true">settings</span>設定</div>
+          </div>
+        </div>
+        <div class="cap">
+          <b>動画講座（メインタブ＝ホーム）</b>
+          <p>タイトルはアプリ名。右上はストリーク＋プレミアム導線（ゴールドの王冠アイコン、chip-review と同系のソフトゴールド面）。「つづきから」は1タップ再開だけに絞り（プログレスバーなし）、地にブランドの幾何学（円）を薄く敷く。視聴状態はサムネ内アイコンで表す（✓済み・▶未視聴・再生中）。小見出しのティックは青+ピンク先端。</p>
+          <div class="toks"><span class="tok">primary600 ヒーローカード</span><span class="tok">primary500 円装飾</span><span class="tok a">review ストリーク</span><span class="tok">primary50/600 サムネ</span><span class="tok" style="color:#9B3A5A;background:#FDF0F4;border-color:var(--accentPinkSoft)">accentPink ティック先端</span></div>
+        </div>
+      </div>
+
+      <!-- 動画視聴 -->
+      <div class="mock">
+        <div class="ph">
+          <div class="sb"><span>9:41</span><span class="icons" aria-hidden="true"><i style="width:14px;height:8px;border-radius:2px"></i><i style="width:20px;height:9px;border-radius:2.5px;opacity:.9"></i></span></div>
+          <div class="appbar" style="justify-content:flex-start;gap:10px;padding:6px 14px 8px">
+            <span class="ms" style="font-size:19px" aria-hidden="true">arrow_back</span>
+          </div>
+          <div class="player">
+            <span class="ms pc" aria-hidden="true">play_circle</span>
+            <span class="speed">1.0×</span>
+            <span class="time">3:42 / 10:24</span>
+            <span class="ms fs" aria-label="全画面">fullscreen</span>
+            <div class="scrub" aria-hidden="true"><i></i></div>
+          </div>
+          <div class="screen-body" style="padding-top:12px">
+            <p class="w-title">1-3 経営戦略のきほん</p>
+            <div class="w-meta"><span class="ms" aria-hidden="true">smart_display</span>動画講座 ・ 第1章 企業と法務</div>
+            <button class="btn btn-primary" type="button" style="width:100%;font-size:12px;padding:10px;border-radius:12px">確認クイズに進む</button>
+            <button class="btn btn-ai" type="button" style="width:100%;font-size:12px;padding:9px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px"><span class="ms gt" style="font-size:15px" aria-hidden="true">auto_awesome</span><span class="gt">AIに質問</span></button>
+            <div class="h-sec"><span>次の動画</span></div>
+            <div class="lesson-list">
+              <div class="ls">
+                <span class="vthumb"><span class="ms" aria-hidden="true">play_arrow</span></span>
+                1-4 マーケティング入門
+                <span class="min">8:03</span>
+              </div>
+              <div class="ls">
+                <span class="vthumb"><span class="ms" aria-hidden="true">play_arrow</span></span>
+                1-5 財務諸表を読む
+                <span class="min">7:44</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <b>動画視聴</b>
+          <p>タブシェルから全画面pushされる詳細ページ（タブバーなし）。戻るボタンはプレーヤーに重ねず、上部の専用ヘッダーに置く。プレーヤーは bgDark 面で、倍速チップ（左下）と全画面ボタン（右下）を常設。シークバーは primary800 トラック + primary500 フィル。ページ側のメイン導線は「確認クイズに進む」。「AIに質問」はサブアクションとして面を surface に抑え、枠・文字・キラキラだけにAIグラデーションを通す。</p>
+          <div class="toks"><span class="tok">bgDark プレーヤー</span><span class="tok">primary500 シーク</span><span class="tok">primary600 CTA</span><span class="tok">primary600→#7C3AED AI枠・文字</span></div>
+        </div>
+      </div>
+
+      <!-- 問題集 -->
+      <div class="mock">
+        <div class="ph">
+          <div class="sb"><span>9:41</span><span class="icons" aria-hidden="true"><i style="width:14px;height:8px;border-radius:2px"></i><i style="width:20px;height:9px;border-radius:2.5px;opacity:.9"></i></span></div>
+          <div class="appbar"><b>問題集</b></div>
+          <div class="screen-body">
+            <div class="card" style="padding:14px 12px">
+              <div class="pg-row">
+                <span class="k">進捗</span>
+                <div class="pbar"><i style="width:45%"></i></div>
+                <span class="v">45%</span>
+              </div>
+              <div class="pg-row">
+                <span class="k">正誤率</span>
+                <div class="bar-vs" aria-hidden="true"><span class="ok" style="width:78%"></span><span class="ng" style="width:22%"></span></div>
+                <span class="v">78%</span>
+              </div>
+              <div class="pg-legend"><span class="ok">○ 正解 176</span><span class="ng">✕ 不正解 49</span></div>
+            </div>
+            <button class="btn btn-primary" type="button" style="width:100%;font-size:12px;padding:10px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px"><span class="ms" style="font-size:15px" aria-hidden="true">shuffle</span>要復習をランダムに5問</button>
+            <div class="h-sec"><span>年度別</span></div>
+            <div class="lesson-list">
+              <div class="ls">
+                <span class="qico"><span class="ms" aria-hidden="true">quiz</span></span>
+                令和8年度 問題集
+                <span class="ms chev" aria-hidden="true">chevron_right</span>
+              </div>
+              <div class="ls">
+                <span class="qico"><span class="ms" aria-hidden="true">quiz</span></span>
+                令和7年度 問題集
+                <span class="ms chev" aria-hidden="true">chevron_right</span>
+              </div>
+              <div class="ls">
+                <span class="qico"><span class="ms" aria-hidden="true">quiz</span></span>
+                令和6年度 問題集
+                <span class="ms chev" aria-hidden="true">chevron_right</span>
+              </div>
+              <div class="ls">
+                <span class="qico"><span class="ms" aria-hidden="true">quiz</span></span>
+                令和5年度 問題集
+                <span class="ms chev" aria-hidden="true">chevron_right</span>
+              </div>
+              <div class="ls">
+                <span class="qico"><span class="ms" aria-hidden="true">quiz</span></span>
+                令和4年度 問題集
+                <span class="ms chev" aria-hidden="true">chevron_right</span>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab"><span class="ms" aria-hidden="true">smart_display</span>動画講座</div>
+            <div class="tab on"><span class="ms" aria-hidden="true">quiz</span>問題集</div>
+            <div class="tab"><span class="ms" aria-hidden="true">style</span>暗記カード</div>
+            <div class="tab"><span class="ms" aria-hidden="true">settings</span>設定</div>
+          </div>
+        </div>
+        <div class="cap">
+          <b>問題集タブ</b>
+          <p>先頭に全体サマリー：進捗率（primary）と正誤率（correct と incorrect の積み上げバー）。正誤は色だけに頼らず ○✕ 付き凡例で二重符号化（ルール2）。続けて主導線の「要復習をランダムに5問」（primary600）、その下に年度別の問題集ボタンを並べる。</p>
+          <div class="toks"><span class="tok">primary100/600 進捗</span><span class="tok g">correct 正解分</span><span class="tok r">incorrect 不正解分</span><span class="tok">primary600 要復習ボタン</span><span class="tok">primary50/600 年度アイコン</span></div>
+        </div>
+      </div>
+
+      <!-- 暗記カード -->
+      <div class="mock">
+        <div class="ph">
+          <div class="sb"><span>9:41</span><span class="icons" aria-hidden="true"><i style="width:14px;height:8px;border-radius:2px"></i><i style="width:20px;height:9px;border-radius:2.5px;opacity:.9"></i></span></div>
+          <div class="appbar" style="justify-content:flex-start;gap:12px">
+            <b>暗記カード</b>
+            <span class="bubble">よく出る単語だけ!</span>
+          </div>
+          <div class="screen-body">
+            <div class="card" style="padding:14px 12px">
+              <div class="pg-row">
+                <span class="k">覚えた</span>
+                <div class="pbar"><i style="width:32%"></i></div>
+                <span class="v">32%</span>
+              </div>
+            </div>
+            <button class="btn btn-primary" type="button" style="width:100%;font-size:12px;padding:10px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px"><span class="ms" style="font-size:15px" aria-hidden="true">shuffle</span>覚えていないカードから10問</button>
+            <button class="btn btn-secondary" type="button" style="width:100%;font-size:12px;padding:9px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px"><span class="ms" style="font-size:15px" aria-hidden="true">shuffle</span>全カードから10問</button>
+            <div class="h-sec"><span>第1章 企業と法務</span><span class="cnt">32 / 58</span></div>
+            <div class="lesson-list">
+              <div class="ls">
+                <span class="qico"><span class="ms" aria-hidden="true">style</span></span>
+                企業活動・経営のことば
+                <span class="min">18語</span>
+              </div>
+              <div class="ls">
+                <span class="qico"><span class="ms" aria-hidden="true">style</span></span>
+                法務・知的財産のことば
+                <span class="min">22語</span>
+              </div>
+            </div>
+            <div class="h-sec"><span>第2章 経営戦略</span><span class="cnt">0 / 41</span></div>
+            <div class="lesson-list">
+              <div class="ls">
+                <span class="qico"><span class="ms" aria-hidden="true">style</span></span>
+                経営戦略・マーケのことば
+                <span class="min">21語</span>
+              </div>
+              <div class="ls">
+                <span class="qico"><span class="ms" aria-hidden="true">style</span></span>
+                システム戦略のことば
+                <span class="min">20語</span>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab"><span class="ms" aria-hidden="true">smart_display</span>動画講座</div>
+            <div class="tab"><span class="ms" aria-hidden="true">quiz</span>問題集</div>
+            <div class="tab on"><span class="ms" aria-hidden="true">style</span>暗記カード</div>
+            <div class="tab"><span class="ms" aria-hidden="true">settings</span>設定</div>
+          </div>
+        </div>
+        <div class="cap">
+          <b>暗記カードタブ</b>
+          <p>タイトル横に「よく出る単語だけ!」の吹き出し（ピンク＝装飾・強調の合図。正誤色とは混ざらない）。本文先頭は「覚えた」率のプログレスバーと、ランダム10問の導線を2つ：覚えていないカードからが主導線（primary600）、全カードからは secondary。以下は動画講座タブと同じ「章ヘッダー＋リスト」構成で、ヘッダー右は覚えた語数、各デッキ右端は収録語数。</p>
+          <div class="toks"><span class="tok" style="color:#9B3A5A;background:#FDF0F4;border-color:var(--accentPinkSoft)">accentPinkSoft ワンポイント</span><span class="tok">primary100/600 覚えたバー</span><span class="tok">primary600 主ボタン</span><span class="tok">primary300枠 副ボタン</span><span class="tok">primary50/600 デッキアイコン</span></div>
+        </div>
+      </div>
+
+      <!-- クイズ 出題中 -->
+      <div class="mock">
+        <div class="ph">
+          <div class="sb"><span>9:41</span><span class="icons" aria-hidden="true"><i style="width:14px;height:8px;border-radius:2px"></i><i style="width:20px;height:9px;border-radius:2.5px;opacity:.9"></i></span></div>
+          <div class="quiz-top">
+            <span class="x" aria-label="閉じる">✕</span>
+            <div class="pbar"><i style="width:30%"></i></div>
+            <span class="cnt">3/10</span>
+          </div>
+          <div class="screen-body" style="padding-top:14px">
+            <p class="q-text">業務を継続的に改善する手法であるPDCAサイクルの「C」に該当するものはどれか。</p>
+            <div class="q-choices">
+              <div class="choice"><span class="kl">ア</span>改善策を実施する</div>
+              <div class="choice"><span class="kl">イ</span>業務計画を立案する</div>
+              <div class="choice is-selected"><span class="kl">ウ</span>実績を評価・分析する</div>
+              <div class="choice"><span class="kl">エ</span>計画に沿って実行する</div>
+            </div>
+            <div class="q-cta"><button class="btn btn-primary" type="button">回答する</button></div>
+            <div style="height:14px"></div>
+          </div>
+        </div>
+        <div class="cap">
+          <b>クイズ — 出題中</b>
+          <p>選択中は primary50 面 + primary500 枠。選択されるまでCTAは disabled にする。</p>
+          <div class="toks"><span class="tok">primary50 / primary500 選択中</span><span class="tok">primary600 CTA</span></div>
+        </div>
+      </div>
+
+      <!-- クイズ 正解 -->
+      <div class="mock">
+        <div class="ph">
+          <div class="sb"><span>9:41</span><span class="icons" aria-hidden="true"><i style="width:14px;height:8px;border-radius:2px"></i><i style="width:20px;height:9px;border-radius:2.5px;opacity:.9"></i></span></div>
+          <div class="quiz-top">
+            <span class="x" aria-label="閉じる">✕</span>
+            <div class="pbar"><i style="width:30%"></i></div>
+            <span class="cnt">3/10</span>
+          </div>
+          <div class="screen-body" style="padding-top:14px">
+            <div class="result-banner ok">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg>
+              正解！
+            </div>
+            <p class="q-text" style="font-size:12px">PDCAサイクルの「C」に該当するものはどれか。</p>
+            <div class="q-choices">
+              <div class="choice is-dim"><span class="kl">ア</span>改善策を実施する</div>
+              <div class="choice is-dim"><span class="kl">イ</span>業務計画を立案する</div>
+              <div class="choice is-correct"><span class="kl">ウ</span>実績を評価・分析する
+                <span class="mark"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" aria-label="正解"><circle cx="10" cy="10" r="6.5"/></svg></span>
+              </div>
+              <div class="choice is-dim"><span class="kl">エ</span>計画に沿って実行する</div>
+            </div>
+            <div class="card expl">
+              <b class="h">解説</b><br>
+              CはCheck（評価）。Plan→Do→Check→Actの順で、実行結果を計画と比べて評価する段階です。
+            </div>
+            <div class="q-cta"><button class="btn btn-primary" type="button">次の問題へ</button></div>
+            <div style="height:14px"></div>
+          </div>
+        </div>
+        <div class="cap">
+          <b>クイズ — 正解</b>
+          <p>正解は correct 系 + ○ の二重符号化（ルール2）。他の選択肢は減光して結果を際立たせる。</p>
+          <div class="toks"><span class="tok g">correct + ○</span><span class="tok g">correctSurface</span><span class="tok g">correctText</span></div>
+        </div>
+      </div>
+
+      <!-- クイズ 不正解 -->
+      <div class="mock">
+        <div class="ph">
+          <div class="sb"><span>9:41</span><span class="icons" aria-hidden="true"><i style="width:14px;height:8px;border-radius:2px"></i><i style="width:20px;height:9px;border-radius:2.5px;opacity:.9"></i></span></div>
+          <div class="quiz-top">
+            <span class="x" aria-label="閉じる">✕</span>
+            <div class="pbar"><i style="width:40%"></i></div>
+            <span class="cnt">4/10</span>
+          </div>
+          <div class="screen-body" style="padding-top:14px">
+            <div class="result-banner ng">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg>
+              不正解
+            </div>
+            <p class="q-text" style="font-size:12px">SWOT分析で「機会」に分類されるものはどれか。</p>
+            <div class="q-choices">
+              <div class="choice is-incorrect"><span class="kl">ア</span>自社の技術力の高さ
+                <span class="mark"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-label="不正解"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg></span>
+              </div>
+              <div class="choice is-correct"><span class="kl">イ</span>市場の拡大傾向
+                <span class="mark"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" aria-label="正解"><circle cx="10" cy="10" r="6.5"/></svg></span>
+              </div>
+              <div class="choice is-dim"><span class="kl">ウ</span>人材の不足</div>
+              <div class="choice is-dim"><span class="kl">エ</span>競合の新規参入</div>
+            </div>
+            <div class="card expl">
+              <b class="h">解説</b>　<span class="chip-review" style="font-size:10px;padding:2px 9px"><svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8s4.2 3.7 4.2 7.4a4.2 4.2 0 0 1-8.4 0c0-1.5.7-2.9 1.6-4 .3 1 .9 1.9 1.6 2.4-.9-2.3 0-4.4 1-5.8z"/></svg>要復習に追加</span><br>
+              機会（Opportunity）は外部環境のプラス要因。技術力の高さは内部の「強み」に分類されます。
+            </div>
+            <div class="q-cta"><button class="btn btn-primary" type="button">次の問題へ</button></div>
+            <div style="height:14px"></div>
+          </div>
+        </div>
+        <div class="cap">
+          <b>クイズ — 不正解</b>
+          <p>誤答（✕）と正答（○）を同時提示。不正解は低彩度レッドで責めない印象に。誤答は自動で要復習へ。</p>
+          <div class="toks"><span class="tok r">incorrect + ✕</span><span class="tok g">correct + ○</span><span class="tok a">review 追加チップ</span></div>
+        </div>
+      </div>
+
+      <!-- ダーク ホーム -->
+      <div class="mock">
+        <div class="ph dark">
+          <div class="sb"><span>9:41</span><span class="icons" aria-hidden="true"><i style="width:14px;height:8px;border-radius:2px"></i><i style="width:20px;height:9px;border-radius:2.5px;opacity:.9"></i></span></div>
+          <div class="appbar">
+            <b>ITパスポート</b>
+            <span style="display:flex;align-items:center;gap:7px">
+              <span class="chip-review" style="font-size:10px;padding:2px 10px;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);color:var(--review)">
+                <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.8s4.2 3.7 4.2 7.4a4.2 4.2 0 0 1-8.4 0c0-1.5.7-2.9 1.6-4 .3 1 .9 1.9 1.6 2.4-.9-2.3 0-4.4 1-5.8z"/></svg>
+                12日連続
+              </span>
+              <span class="prem" aria-label="プレミアム"><span class="ms" aria-hidden="true">workspace_premium</span></span>
+            </span>
+          </div>
+          <div class="screen-body">
+            <div class="hero-card">
+              <span class="lbl">つづきから</span>
+              <div class="ttl">1-3 経営戦略のきほん</div>
+              <div class="cta"><span class="ms" aria-hidden="true">play_arrow</span>つづける</div>
+            </div>
+            <div class="h-sec"><span>第1章 企業と法務</span><span class="cnt">2 / 5</span></div>
+            <div class="lesson-list">
+              <div class="ls">
+                <span class="vthumb"><span class="ms" aria-hidden="true">check</span></span>
+                1-1 企業活動とは
+                <span class="min">5:12</span>
+              </div>
+              <div class="ls">
+                <span class="vthumb"><span class="ms" aria-hidden="true">check</span></span>
+                1-2 株式会社のしくみ
+                <span class="min">6:40</span>
+              </div>
+              <div class="ls now">
+                <span class="vthumb"><span class="ms" aria-hidden="true">equalizer</span></span>
+                <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">1-3 経営戦略のきほん</span>
+                <span class="badge" style="font-size:10px;padding:2px 8px">再生中</span>
+              </div>
+              <div class="ls">
+                <span class="vthumb"><span class="ms" aria-hidden="true">play_arrow</span></span>
+                1-4 マーケティング入門
+                <span class="min">8:03</span>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab on"><span class="ms" aria-hidden="true">smart_display</span>動画講座</div>
+            <div class="tab"><span class="ms" aria-hidden="true">quiz</span>問題集</div>
+            <div class="tab"><span class="ms" aria-hidden="true">style</span>暗記カード</div>
+            <div class="tab"><span class="ms" aria-hidden="true">settings</span>設定</div>
+          </div>
+        </div>
+        <div class="cap">
+          <b>動画講座ホーム（ダーク）</b>
+          <p>ヒーローカードは primary600 のままブランドを保つ。タブのアクティブと小見出しティックは primaryDark に切替。</p>
+          <div class="toks"><span class="tok">bgDark / surfaceDark</span><span class="tok">primaryDark アクティブ</span></div>
+        </div>
+      </div>
+
+      <!-- ダーク クイズ結果 -->
+      <div class="mock">
+        <div class="ph dark">
+          <div class="sb"><span>9:41</span><span class="icons" aria-hidden="true"><i style="width:14px;height:8px;border-radius:2px"></i><i style="width:20px;height:9px;border-radius:2.5px;opacity:.9"></i></span></div>
+          <div class="quiz-top">
+            <span class="x" aria-label="閉じる">✕</span>
+            <div class="pbar"><i style="width:40%"></i></div>
+            <span class="cnt">4/10</span>
+          </div>
+          <div class="screen-body" style="padding-top:14px">
+            <div class="result-banner ng">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg>
+              不正解
+            </div>
+            <p class="q-text" style="font-size:12px">SWOT分析で「機会」に分類されるものはどれか。</p>
+            <div class="q-choices">
+              <div class="choice is-incorrect"><span class="kl">ア</span>自社の技術力の高さ
+                <span class="mark"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-label="不正解"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg></span>
+              </div>
+              <div class="choice is-correct"><span class="kl">イ</span>市場の拡大傾向
+                <span class="mark"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" aria-label="正解"><circle cx="10" cy="10" r="6.5"/></svg></span>
+              </div>
+              <div class="choice is-dim"><span class="kl">ウ</span>人材の不足</div>
+              <div class="choice is-dim"><span class="kl">エ</span>競合の新規参入</div>
+            </div>
+            <div class="card expl">
+              <b class="h">解説</b><br>
+              機会（Opportunity）は外部環境のプラス要因。技術力の高さは内部の「強み」です。
+            </div>
+            <div class="q-cta"><button class="btn btn-primary" type="button">次の問題へ</button></div>
+            <div style="height:14px"></div>
+          </div>
+        </div>
+        <div class="cap">
+          <b>クイズ結果（ダーク）</b>
+          <p>semanticはDark専用トークンに切替。CTAは primaryDark 面 + 濃紺文字（明るい青に白文字は載せない——ルール1）。</p>
+          <div class="toks"><span class="tok g">correctDark 系</span><span class="tok r">incorrectDark 系</span><span class="tok">primaryDark CTA</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 動画ビジュアル ============ -->
+  <section id="video">
+    <h2 class="sec">動画ビジュアル</h2>
+    <p class="sec-lead">学習動画（16:9）のレイアウト見本。アプリと同じトークンで組むが、動画は視聴距離が遠いため文字は大きく・要素は少なく。本編スライドは全パターン共通で下部にテロップ帯を常設し、残りの領域は本文に最大限使う。見出し先頭のアクセントは「ブルータブ」か「アイコン（primary600）」のどちらか一方（③④がタブ型、それ以外がアイコン型の見本）。パターンはITパスポートシラバス（Ver.6.5）の内容構造から抽出した。</p>
+
+    <div class="vrow">
+
+      <!-- タイトルカード -->
+      <div class="vmock">
+        <div class="frame v-title">
+          <div class="deco1" aria-hidden="true"></div>
+          <div class="deco2" aria-hidden="true"></div>
+          <div class="deco3" aria-hidden="true"></div>
+          <span class="series">情報セキュリティ講座</span>
+          <h3>パスワードの使い回しが<br>危ないほんとうの理由</h3>
+          <div class="kws">
+            <span class="kw">リスト型攻撃</span>
+            <span class="kw">総当たり攻撃</span>
+            <span class="kw">二要素認証</span>
+          </div>
+          <span class="foot-line" aria-hidden="true"></span>
+        </div>
+        <div class="cap">
+          <b>タイトルカード</b>
+          <p>bgDark のネイビー地に primary の円と、アクセントピンクの斜め帯をひとつだけ。シリーズ名は primary300 で品よく。下部には本編で扱うキーワードを半透明のゴーストチップで小さく並べる（目立たせない・3個まで）。</p>
+          <div class="toks"><span class="tok">bgDark 地</span><span class="tok">primary300 シリーズ名</span><span class="tok">primary500/600 装飾</span><span class="tok" style="color:#9B3A5A;background:#FDF0F4;border-color:var(--accentPinkSoft)">accentPink（トークン外）</span></div>
+        </div>
+      </div>
+
+      <!-- 本編スライド -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="head"><span class="ms" aria-hidden="true">gpp_maybe</span><b>パスワード攻撃の主な手口</b></div>
+          <div class="cols">
+            <ul>
+              <li><span><span class="marker">リスト型攻撃</span><small>流出したID・パスワードを流用</small></span></li>
+              <li><span><span class="marker">総当たり攻撃</span><small>あらゆる組み合わせを機械的に試行</small></span></li>
+              <li><span>推測による攻撃<small>誕生日・名前などから推測</small></span></li>
+            </ul>
+            <img class="illust" src="../content_works/ipa_sg/video/assets_common/images/attack-password.png" alt="たくさんの鍵で鍵穴を試す手描きイラスト">
+          </div>
+          <div class="v-telop">使い回したパスワードは、1か所の流出が全部に広がります</div>
+        </div>
+        <div class="cap">
+          <b>本編スライド① 箇条書き + イラスト（基本形）</b>
+          <p>下部はナレーションのテロップ帯が常に入るため、本文とイラストはその上の領域に収める。イラストは assets_common/images の手描き素材（白地は multiply で背景に溶かす）。文中の強調マーカーは primary100（.marker）が標準で、特に押したい文には accentPinkSoft（.marker-pink、スライド⑥参照）。</p>
+          <div class="toks"><span class="tok">primary600 見出しアイコン</span><span class="tok">primary100 マーカー</span><span class="tok" style="color:#9B3A5A;background:#FDF0F4;border-color:var(--accentPinkSoft)">accentPinkSoft 強マーカー</span><span class="tok">surface テロップ帯</span></div>
+        </div>
+      </div>
+
+      <!-- パターン② 対比（VS） -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="head"><span class="ms" aria-hidden="true">encrypted</span><b>共通鍵暗号と公開鍵暗号</b></div>
+          <div class="vs-wrap">
+            <div class="vs-col">
+              <h4><span class="ms" aria-hidden="true">key</span>共通鍵暗号方式</h4>
+              <div class="rows">
+                <div class="vs-row"><span class="k">使う鍵</span>同じ鍵を2人で共有</div>
+                <div class="vs-row"><span class="k">処理速度</span>速い</div>
+                <div class="vs-row"><span class="k">弱点</span>鍵の受け渡しが難しい</div>
+              </div>
+            </div>
+            <span class="vs-badge" aria-hidden="true">VS</span>
+            <div class="vs-col">
+              <h4><span class="ms" aria-hidden="true">public</span>公開鍵暗号方式</h4>
+              <div class="rows">
+                <div class="vs-row"><span class="k">使う鍵</span>公開鍵 + 秘密鍵のペア</div>
+                <div class="vs-row"><span class="k">処理速度</span>遅い</div>
+                <div class="vs-row"><span class="k">強み</span>鍵を安全に配れる</div>
+              </div>
+            </div>
+          </div>
+          <div class="v-telop">いちばんの違いは「鍵の扱い方」です</div>
+        </div>
+        <div class="cap">
+          <b>本編スライド② 対比（VS）</b>
+          <p>2つの概念を同じ観点で並べる。適用例: 共通鍵/公開鍵、集中処理/分散処理、変動費/固定費、プロダクト/プロセスイノベーション。</p>
+          <div class="toks"><span class="tok">primary300 枠 + primary50 ヘッダー</span><span class="tok">primary600 VSバッジ</span></div>
+        </div>
+      </div>
+
+      <!-- パターン③ ステップフロー -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="head"><i aria-hidden="true"></i><b>PDCAサイクル</b></div>
+          <div class="flow">
+            <div class="fstep"><span class="abc">P</span><span class="nm">計画</span><span class="sub">Plan</span></div>
+            <span class="farr" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l6 5.5-6 5.5"/></svg></span>
+            <div class="fstep"><span class="abc">D</span><span class="nm">実行</span><span class="sub">Do</span></div>
+            <span class="farr" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l6 5.5-6 5.5"/></svg></span>
+            <div class="fstep on"><span class="abc">C</span><span class="nm">評価</span><span class="sub">Check</span></div>
+            <span class="farr" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5l6 5.5-6 5.5"/></svg></span>
+            <div class="fstep"><span class="abc">A</span><span class="nm">改善</span><span class="sub">Act</span></div>
+          </div>
+          <div class="v-telop">いま話している段階を、色で強調します</div>
+        </div>
+        <div class="cap">
+          <b>本編スライド③ ステップフロー</b>
+          <p>順序のある手順・サイクル。話が進むにつれ強調（primary50 + primary500 枠）を移動させる。適用例: PDCA/OODA、開発プロセス、システム化計画の流れ、監査の手順。</p>
+          <div class="toks"><span class="tok">primary600 ステップ記号</span><span class="tok">primary50/500 現在ステップ</span><span class="tok">primary300 矢印</span></div>
+        </div>
+      </div>
+
+      <!-- パターン④ 2×2マトリクス -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="head"><i aria-hidden="true"></i><b>SWOT分析の4象限</b></div>
+          <div class="mx-wrap">
+            <span aria-hidden="true"></span>
+            <span class="mx-ax">プラス要因</span>
+            <span class="mx-ax">マイナス要因</span>
+            <span class="mx-ax v">内部</span>
+            <div class="mx-cell hi"><b><i>S</i>強み<span class="ms" aria-hidden="true">thumb_up</span></b><span>技術力・ブランド</span></div>
+            <div class="mx-cell"><b><i>W</i>弱み<span class="ms" aria-hidden="true">thumb_down</span></b><span>人材不足・コスト</span></div>
+            <span class="mx-ax v">外部</span>
+            <div class="mx-cell lo"><b><i>O</i>機会<span class="ms" aria-hidden="true">trending_up</span></b><span>市場の拡大・規制緩和</span></div>
+            <div class="mx-cell"><b><i>T</i>脅威<span class="ms" aria-hidden="true">warning</span></b><span>競合参入・景気後退</span></div>
+          </div>
+          <div class="v-telop">内部か外部か、プラスかマイナスかで整理します</div>
+        </div>
+        <div class="cap">
+          <b>本編スライド④ 2×2マトリクス</b>
+          <p>2軸で分類する枠組み。強調したい象限だけ primary100/50 で塗り、残りは白面。適用例: SWOT、PPM（花形・金のなる木…）、リスク対応（回避・軽減・転嫁・受容）。</p>
+          <div class="toks"><span class="tok">primary100/50 強調象限</span><span class="tok">textMuted 軸ラベル</span></div>
+        </div>
+      </div>
+
+      <!-- パターン⑤ 階層図 -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="head"><span class="ms" aria-hidden="true">stacks</span><b>OSI基本参照モデル（7階層）</b></div>
+          <div class="layers">
+            <div class="layer"><span class="no">7</span>アプリケーション層<small><span class="ms" aria-hidden="true">language</span>HTTP・SMTP</small></div>
+            <div class="layer"><span class="no">6</span>プレゼンテーション層</div>
+            <div class="layer"><span class="no">5</span>セッション層</div>
+            <div class="layer"><span class="no">4</span>トランスポート層<small>TCP</small></div>
+            <div class="layer on"><span class="no">3</span>ネットワーク層<small><span class="ms" aria-hidden="true">router</span>IPはここ</small></div>
+            <div class="layer"><span class="no">2</span>データリンク層</div>
+            <div class="layer"><span class="no">1</span>物理層<small><span class="ms" aria-hidden="true">cable</span>ケーブル・電波</small></div>
+          </div>
+          <div class="v-telop">下の層ほど、物理的な世界に近づきます</div>
+        </div>
+        <div class="cap">
+          <b>本編スライド⑤ 階層図</b>
+          <p>積み上げ構造。いま説明している層だけ primary50 + primary500 枠で点灯させる。適用例: OSI 7階層、組織形態（階層型・事業部制）、木構造、DXの段階。</p>
+          <div class="toks"><span class="tok">surface 層</span><span class="tok">primary50/500 注目層</span></div>
+        </div>
+      </div>
+
+      <!-- パターン⑥ 計算・グラフ -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="head"><span class="ms" aria-hidden="true">calculate</span><b>損益分岐点の考え方</b></div>
+          <div class="graph-wrap">
+            <svg viewBox="0 0 220 150" aria-label="損益分岐点のグラフ">
+              <path d="M18 8v130h196" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+              <path d="M18 96h190" fill="none" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4 3"/>
+              <path d="M18 96L205 56" fill="none" stroke="#64748B" stroke-width="2"/>
+              <path d="M18 138L205 18" fill="none" stroke="#2563EB" stroke-width="2.5"/>
+              <path d="M112 78v60" fill="none" stroke="#F98BA4" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <circle cx="112" cy="78" r="5" fill="#F98BA4"/>
+              <text x="170" y="14" font-size="9.5" font-weight="700" fill="#2563EB">売上高</text>
+              <text x="172" y="50" font-size="9.5" font-weight="700" fill="#64748B">総費用</text>
+              <text x="24" y="90" font-size="9" fill="#94A3B8">固定費</text>
+              <text x="86" y="66" font-size="9.5" font-weight="800" fill="#D6537A">損益分岐点</text>
+            </svg>
+            <div class="gside">
+              <div class="formula">損益分岐点売上高<br>＝ 固定費 ÷（1 − 変動費率）</div>
+              <p class="gnote"><span class="marker-pink">交点より右が黒字、左が赤字</span>。図と式を必ずセットで見せる。</p>
+            </div>
+          </div>
+          <div class="v-telop">売上と費用が釣り合う点が、損益分岐点です</div>
+        </div>
+        <div class="cap">
+          <b>本編スライド⑥ 計算・グラフ</b>
+          <p>左に図、右に式のペア構成。グラフの注目点は accentPink 系（トークン外・グラフィック専用）。結論の一文は accentPinkSoft のマーカー（.marker-pink）で強調。適用例: 損益分岐点、稼働率（MTBF/MTTR）、2進数の変換、待ち行列。</p>
+          <div class="toks"><span class="tok">primary600 主series</span><span class="tok">textSecondary 副series</span><span class="tok" style="color:#9B3A5A;background:#FDF0F4;border-color:var(--accentPinkSoft)">accentPink 注目点・ラベル</span></div>
+        </div>
+      </div>
+
+      <!-- パターン⑦ 用語ドン -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="term-wrap">
+            <span class="term-chip">今日のキーワード</span>
+            <span class="ms term-ic" aria-hidden="true">dns</span>
+            <span class="term-big">DNS</span>
+            <span class="term-sub">Domain Name System — ドメイン名とIPアドレスを対応づけるしくみ</span>
+          </div>
+          <div class="v-telop">電話帳のように、名前から住所を引けるしくみです</div>
+        </div>
+        <div class="cap">
+          <b>本編スライド⑦ 用語ドン</b>
+          <p>新しい用語を最初に1つだけ大きく見せる導入用。見出しタブは置かず中央寄せ。シラバスの膨大な「用語例」をレッスンに刻むときの起点になる。</p>
+          <div class="toks"><span class="tok">primary100 キーワードチップ</span><span class="tok">textPrimary 大見出し</span></div>
+        </div>
+      </div>
+
+      <!-- パターン⑧ 基数変換 -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="head"><span class="ms" aria-hidden="true">calculate</span><b>2進数「1101」を10進数に</b></div>
+          <div class="bin-wrap">
+            <div class="bin-row">
+              <div class="bin-col on"><span class="w">2<sup>3</sup>＝8</span><span class="d">1</span><span class="p">8</span></div>
+              <div class="bin-col on"><span class="w">2<sup>2</sup>＝4</span><span class="d">1</span><span class="p">4</span></div>
+              <div class="bin-col off"><span class="w">2<sup>1</sup>＝2</span><span class="d">0</span><span class="p">0</span></div>
+              <div class="bin-col on"><span class="w">2<sup>0</sup>＝1</span><span class="d">1</span><span class="p">1</span></div>
+            </div>
+            <div class="bin-eq">8 ＋ 4 ＋ <span class="z">0</span> ＋ 1 ＝ <span class="ans marker-pink">13</span></div>
+          </div>
+          <div class="v-telop">「1」が立つ桁の重みだけを、足し合わせます</div>
+        </div>
+        <div class="cap">
+          <b>本編スライド⑧ 基数変換（計算ステップ）</b>
+          <p>各桁の上に「桁の重み」を対応づけ、1が立つ桁だけ primary50 + primary500 枠で点灯、0の桁は減光して「数えない」を色で示す。カード下に桁ごとの値を出し、最後に足し算1行で着地。答えは accentPinkSoft のマーカー（.marker-pink）で強調。適用例: 2進数⇔10進数、16進数、ビット演算・補数の導入。</p>
+          <div class="toks"><span class="tok">primary50/500 点灯桁</span><span class="tok">textMuted 0の桁</span><span class="tok" style="color:#9B3A5A;background:#FDF0F4;border-color:var(--accentPinkSoft)">accentPinkSoft 答え</span></div>
+        </div>
+      </div>
+
+      <!-- 動画内クイズ -->
+      <div class="vmock">
+        <div class="frame v-quiz">
+          <div class="qhead">
+            <span class="qmark">Q</span>
+            <b>より安全なのはどっち？</b>
+          </div>
+          <div class="vchoices">
+            <div class="vc on"><span class="kl">A</span>サービスごとに別のパスワード
+              <span class="mark"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" aria-label="正解"><circle cx="10" cy="10" r="6.5"/></svg></span>
+            </div>
+            <div class="vc"><span class="kl">B</span>複雑な1つを全部で使い回す</div>
+          </div>
+          <div class="foot">答えは ○ で表示 — 色 + 記号の二重符号化はアプリと共通ルール（ルール2）</div>
+        </div>
+        <div class="cap">
+          <b>動画内クイズ（正解リビール）</b>
+          <p>地を primary50 にして本編と場面転換。正誤の見せ方はアプリの選択肢と完全に同じ文法。</p>
+          <div class="toks"><span class="tok">primary50 地</span><span class="tok g">correct + ○ リビール</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    トークンの原本: AppColors（Flutter）／ mialab Design System と同期 ・ 集中ブルー v1 — 2026-07
+  </footer>
+
+</div>
+</body>
+</html>
