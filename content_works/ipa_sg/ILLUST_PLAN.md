@@ -3,7 +3,7 @@
 [LESSON_PLAN.md](LESSON_PLAN.md) の全84レッスンを動画化するにあたり、**先に作り置きして使い回すアイコン・イラスト部品**の計画。
 レッスンごとの一点物イラストを減らして制作を軽くするのが目的。
 
-生成手順・スタイル規定・配置と命名の規則は `create-video-illust` スキル（[.claude/skills/create-video-illust/SKILL.md](../../.claude/skills/create-video-illust/SKILL.md)）に従う。部品は `video/assets_common/{icon,person,scene}/` に、レッスン固有の一点物は `video/assets_l{n}/` に置く。
+生成手順・スタイル規定・配置と命名の規則は `create-video-illust` スキル（[.claude/skills/create-video-illust/SKILL.md](../../.claude/skills/create-video-illust/SKILL.md)）に従う。部品は `video/assets_common/` に置く（`icon/` は `icon-` 接頭辞の単体アイコンのみ、それ以外の部品・人物・シーンはすべて `images/` に集約）。レッスン固有の一点物は `video/assets_l{n}/` に置く。
 
 ## 色の意味対応（SGコンテンツ固有）
 
@@ -64,7 +64,7 @@
 
 シリーズ通しての「登場人物」。表情・ポーズ違いを最初に揃えると科目B（第8章）が特に楽になる。
 
-全8キャラ・25ポーズを `video/assets_common/person/` に配置済み。ポーズの実名は下表のバリエーション列（`person-{キャラ}-{ポーズ}.png`、基本ポーズは接尾辞なし）。
+全8キャラ・25ポーズを `video/assets_common/images/`（旧 `person/`）に配置済み。ポーズの実名は下表のバリエーション列（`person-{キャラ}-{ポーズ}.png`、基本ポーズは接尾辞なし）。
 
 | 部品 | 内容 | ポーズ（ファイル接尾辞） |
 |---|---|---|
