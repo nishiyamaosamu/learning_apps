@@ -18,7 +18,17 @@ dependencies:
   freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
   audioplayers: ^6.1.0
+  video_player: ^2.9.0
   shared_preferences: ^2.3.2
+  # 9系に固定（10系にしない）。理由: 10系は win32 6.x（Dart 3.10+ の dot-shorthand 等の
+  # 新構文を含む）を依存グラフへ引き込み、build_runner が使う analyzer 7.6.0
+  # （source_gen 2.x / riverpod_generator 2.x / freezed 2.x が上限とする版）のサマリ生成が
+  # win32 6.x で BundleWriter クラッシュする（flutter analyze/test/build は SDK 内蔵の
+  # 新しい analyzer なので無影響）。9系は win32 5.x（SDK ^3.8 まで・新構文なし）を引くため回避できる。
+  # 使う API（PackageInfo.fromPlatform / setMockInitialValues / version / buildNumber）は 9↔10 で同一。
+  # 解除条件: codegen 一式（source_gen / riverpod_generator / freezed）を analyzer 9+ 対応版
+  # （実質 riverpod 3 系 / freezed 3 系）へ上げ、build_runner が win32 6.x を解析できるようになったら 10系へ戻す。
+  package_info_plus: ^9.0.1
 
 dev_dependencies:
   flutter_test:

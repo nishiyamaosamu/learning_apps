@@ -22,7 +22,10 @@ ContentSummary _$ContentSummaryFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ContentSummary {
   String get id => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
+  String get title =>
+      throw _privateConstructorUsedError; // 収録カード数（暗記カードのデッキで使う）。任意フィールドのため、値を持たない
+  // 既存の一覧（問題集など）は null のままで非破壊にパースできる。
+  int? get cardCount => throw _privateConstructorUsedError;
 
   /// Serializes this ContentSummary to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -41,7 +44,7 @@ abstract class $ContentSummaryCopyWith<$Res> {
     $Res Function(ContentSummary) then,
   ) = _$ContentSummaryCopyWithImpl<$Res, ContentSummary>;
   @useResult
-  $Res call({String id, String title});
+  $Res call({String id, String title, int? cardCount});
 }
 
 /// @nodoc
@@ -58,7 +61,11 @@ class _$ContentSummaryCopyWithImpl<$Res, $Val extends ContentSummary>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? id = null, Object? title = null}) {
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? cardCount = freezed,
+  }) {
     return _then(
       _value.copyWith(
             id: null == id
@@ -69,6 +76,10 @@ class _$ContentSummaryCopyWithImpl<$Res, $Val extends ContentSummary>
                 ? _value.title
                 : title // ignore: cast_nullable_to_non_nullable
                       as String,
+            cardCount: freezed == cardCount
+                ? _value.cardCount
+                : cardCount // ignore: cast_nullable_to_non_nullable
+                      as int?,
           )
           as $Val,
     );
@@ -84,7 +95,7 @@ abstract class _$$ContentSummaryImplCopyWith<$Res>
   ) = __$$ContentSummaryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String title});
+  $Res call({String id, String title, int? cardCount});
 }
 
 /// @nodoc
@@ -100,7 +111,11 @@ class __$$ContentSummaryImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? id = null, Object? title = null}) {
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? cardCount = freezed,
+  }) {
     return _then(
       _$ContentSummaryImpl(
         id: null == id
@@ -111,6 +126,10 @@ class __$$ContentSummaryImplCopyWithImpl<$Res>
             ? _value.title
             : title // ignore: cast_nullable_to_non_nullable
                   as String,
+        cardCount: freezed == cardCount
+            ? _value.cardCount
+            : cardCount // ignore: cast_nullable_to_non_nullable
+                  as int?,
       ),
     );
   }
@@ -119,7 +138,11 @@ class __$$ContentSummaryImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ContentSummaryImpl implements _ContentSummary {
-  const _$ContentSummaryImpl({required this.id, required this.title});
+  const _$ContentSummaryImpl({
+    required this.id,
+    required this.title,
+    this.cardCount,
+  });
 
   factory _$ContentSummaryImpl.fromJson(Map<String, dynamic> json) =>
       _$$ContentSummaryImplFromJson(json);
@@ -128,10 +151,14 @@ class _$ContentSummaryImpl implements _ContentSummary {
   final String id;
   @override
   final String title;
+  // 収録カード数（暗記カードのデッキで使う）。任意フィールドのため、値を持たない
+  // 既存の一覧（問題集など）は null のままで非破壊にパースできる。
+  @override
+  final int? cardCount;
 
   @override
   String toString() {
-    return 'ContentSummary(id: $id, title: $title)';
+    return 'ContentSummary(id: $id, title: $title, cardCount: $cardCount)';
   }
 
   @override
@@ -140,12 +167,14 @@ class _$ContentSummaryImpl implements _ContentSummary {
         (other.runtimeType == runtimeType &&
             other is _$ContentSummaryImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.title, title) || other.title == title));
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.cardCount, cardCount) ||
+                other.cardCount == cardCount));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title);
+  int get hashCode => Object.hash(runtimeType, id, title, cardCount);
 
   /// Create a copy of ContentSummary
   /// with the given fields replaced by the non-null parameter values.
@@ -168,6 +197,7 @@ abstract class _ContentSummary implements ContentSummary {
   const factory _ContentSummary({
     required final String id,
     required final String title,
+    final int? cardCount,
   }) = _$ContentSummaryImpl;
 
   factory _ContentSummary.fromJson(Map<String, dynamic> json) =
@@ -176,7 +206,10 @@ abstract class _ContentSummary implements ContentSummary {
   @override
   String get id;
   @override
-  String get title;
+  String get title; // 収録カード数（暗記カードのデッキで使う）。任意フィールドのため、値を持たない
+  // 既存の一覧（問題集など）は null のままで非破壊にパースできる。
+  @override
+  int? get cardCount;
 
   /// Create a copy of ContentSummary
   /// with the given fields replaced by the non-null parameter values.
@@ -836,7 +869,10 @@ ContentIndex _$ContentIndexFromJson(Map<String, dynamic> json) {
 mixin _$ContentIndex {
   List<LessonDomain> get lessons => throw _privateConstructorUsedError;
   List<ContentSummary> get exercises => throw _privateConstructorUsedError;
-  List<ContentSummary> get anki => throw _privateConstructorUsedError;
+  List<ContentSummary> get anki =>
+      throw _privateConstructorUsedError; // 動画講座（ホームタブ）の章一覧。base.json に `videos` キーが無くても
+  // 空リストとしてパースが通る（@Default）。
+  List<VideoChapter> get videos => throw _privateConstructorUsedError;
 
   /// Serializes this ContentIndex to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -859,6 +895,7 @@ abstract class $ContentIndexCopyWith<$Res> {
     List<LessonDomain> lessons,
     List<ContentSummary> exercises,
     List<ContentSummary> anki,
+    List<VideoChapter> videos,
   });
 }
 
@@ -880,6 +917,7 @@ class _$ContentIndexCopyWithImpl<$Res, $Val extends ContentIndex>
     Object? lessons = null,
     Object? exercises = null,
     Object? anki = null,
+    Object? videos = null,
   }) {
     return _then(
       _value.copyWith(
@@ -895,6 +933,10 @@ class _$ContentIndexCopyWithImpl<$Res, $Val extends ContentIndex>
                 ? _value.anki
                 : anki // ignore: cast_nullable_to_non_nullable
                       as List<ContentSummary>,
+            videos: null == videos
+                ? _value.videos
+                : videos // ignore: cast_nullable_to_non_nullable
+                      as List<VideoChapter>,
           )
           as $Val,
     );
@@ -914,6 +956,7 @@ abstract class _$$ContentIndexImplCopyWith<$Res>
     List<LessonDomain> lessons,
     List<ContentSummary> exercises,
     List<ContentSummary> anki,
+    List<VideoChapter> videos,
   });
 }
 
@@ -934,6 +977,7 @@ class __$$ContentIndexImplCopyWithImpl<$Res>
     Object? lessons = null,
     Object? exercises = null,
     Object? anki = null,
+    Object? videos = null,
   }) {
     return _then(
       _$ContentIndexImpl(
@@ -949,6 +993,10 @@ class __$$ContentIndexImplCopyWithImpl<$Res>
             ? _value._anki
             : anki // ignore: cast_nullable_to_non_nullable
                   as List<ContentSummary>,
+        videos: null == videos
+            ? _value._videos
+            : videos // ignore: cast_nullable_to_non_nullable
+                  as List<VideoChapter>,
       ),
     );
   }
@@ -961,9 +1009,11 @@ class _$ContentIndexImpl implements _ContentIndex {
     final List<LessonDomain> lessons = const <LessonDomain>[],
     final List<ContentSummary> exercises = const <ContentSummary>[],
     final List<ContentSummary> anki = const <ContentSummary>[],
+    final List<VideoChapter> videos = const <VideoChapter>[],
   }) : _lessons = lessons,
        _exercises = exercises,
-       _anki = anki;
+       _anki = anki,
+       _videos = videos;
 
   factory _$ContentIndexImpl.fromJson(Map<String, dynamic> json) =>
       _$$ContentIndexImplFromJson(json);
@@ -995,9 +1045,22 @@ class _$ContentIndexImpl implements _ContentIndex {
     return EqualUnmodifiableListView(_anki);
   }
 
+  // 動画講座（ホームタブ）の章一覧。base.json に `videos` キーが無くても
+  // 空リストとしてパースが通る（@Default）。
+  final List<VideoChapter> _videos;
+  // 動画講座（ホームタブ）の章一覧。base.json に `videos` キーが無くても
+  // 空リストとしてパースが通る（@Default）。
+  @override
+  @JsonKey()
+  List<VideoChapter> get videos {
+    if (_videos is EqualUnmodifiableListView) return _videos;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_videos);
+  }
+
   @override
   String toString() {
-    return 'ContentIndex(lessons: $lessons, exercises: $exercises, anki: $anki)';
+    return 'ContentIndex(lessons: $lessons, exercises: $exercises, anki: $anki, videos: $videos)';
   }
 
   @override
@@ -1010,7 +1073,8 @@ class _$ContentIndexImpl implements _ContentIndex {
               other._exercises,
               _exercises,
             ) &&
-            const DeepCollectionEquality().equals(other._anki, _anki));
+            const DeepCollectionEquality().equals(other._anki, _anki) &&
+            const DeepCollectionEquality().equals(other._videos, _videos));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1020,6 +1084,7 @@ class _$ContentIndexImpl implements _ContentIndex {
     const DeepCollectionEquality().hash(_lessons),
     const DeepCollectionEquality().hash(_exercises),
     const DeepCollectionEquality().hash(_anki),
+    const DeepCollectionEquality().hash(_videos),
   );
 
   /// Create a copy of ContentIndex
@@ -1041,6 +1106,7 @@ abstract class _ContentIndex implements ContentIndex {
     final List<LessonDomain> lessons,
     final List<ContentSummary> exercises,
     final List<ContentSummary> anki,
+    final List<VideoChapter> videos,
   }) = _$ContentIndexImpl;
 
   factory _ContentIndex.fromJson(Map<String, dynamic> json) =
@@ -1051,13 +1117,478 @@ abstract class _ContentIndex implements ContentIndex {
   @override
   List<ContentSummary> get exercises;
   @override
-  List<ContentSummary> get anki;
+  List<ContentSummary> get anki; // 動画講座（ホームタブ）の章一覧。base.json に `videos` キーが無くても
+  // 空リストとしてパースが通る（@Default）。
+  @override
+  List<VideoChapter> get videos;
 
   /// Create a copy of ContentIndex
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ContentIndexImplCopyWith<_$ContentIndexImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+VideoChapter _$VideoChapterFromJson(Map<String, dynamic> json) {
+  return _VideoChapter.fromJson(json);
+}
+
+/// @nodoc
+mixin _$VideoChapter {
+  String get id => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError; // 章に属する動画（配列順）。
+  List<VideoItem> get videos => throw _privateConstructorUsedError;
+
+  /// Serializes this VideoChapter to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of VideoChapter
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $VideoChapterCopyWith<VideoChapter> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $VideoChapterCopyWith<$Res> {
+  factory $VideoChapterCopyWith(
+    VideoChapter value,
+    $Res Function(VideoChapter) then,
+  ) = _$VideoChapterCopyWithImpl<$Res, VideoChapter>;
+  @useResult
+  $Res call({String id, String title, List<VideoItem> videos});
+}
+
+/// @nodoc
+class _$VideoChapterCopyWithImpl<$Res, $Val extends VideoChapter>
+    implements $VideoChapterCopyWith<$Res> {
+  _$VideoChapterCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of VideoChapter
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? title = null, Object? videos = null}) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            videos: null == videos
+                ? _value.videos
+                : videos // ignore: cast_nullable_to_non_nullable
+                      as List<VideoItem>,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$VideoChapterImplCopyWith<$Res>
+    implements $VideoChapterCopyWith<$Res> {
+  factory _$$VideoChapterImplCopyWith(
+    _$VideoChapterImpl value,
+    $Res Function(_$VideoChapterImpl) then,
+  ) = __$$VideoChapterImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String id, String title, List<VideoItem> videos});
+}
+
+/// @nodoc
+class __$$VideoChapterImplCopyWithImpl<$Res>
+    extends _$VideoChapterCopyWithImpl<$Res, _$VideoChapterImpl>
+    implements _$$VideoChapterImplCopyWith<$Res> {
+  __$$VideoChapterImplCopyWithImpl(
+    _$VideoChapterImpl _value,
+    $Res Function(_$VideoChapterImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of VideoChapter
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? title = null, Object? videos = null}) {
+    return _then(
+      _$VideoChapterImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        videos: null == videos
+            ? _value._videos
+            : videos // ignore: cast_nullable_to_non_nullable
+                  as List<VideoItem>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$VideoChapterImpl implements _VideoChapter {
+  const _$VideoChapterImpl({
+    required this.id,
+    required this.title,
+    final List<VideoItem> videos = const <VideoItem>[],
+  }) : _videos = videos;
+
+  factory _$VideoChapterImpl.fromJson(Map<String, dynamic> json) =>
+      _$$VideoChapterImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String title;
+  // 章に属する動画（配列順）。
+  final List<VideoItem> _videos;
+  // 章に属する動画（配列順）。
+  @override
+  @JsonKey()
+  List<VideoItem> get videos {
+    if (_videos is EqualUnmodifiableListView) return _videos;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_videos);
+  }
+
+  @override
+  String toString() {
+    return 'VideoChapter(id: $id, title: $title, videos: $videos)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$VideoChapterImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(other._videos, _videos));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    title,
+    const DeepCollectionEquality().hash(_videos),
+  );
+
+  /// Create a copy of VideoChapter
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$VideoChapterImplCopyWith<_$VideoChapterImpl> get copyWith =>
+      __$$VideoChapterImplCopyWithImpl<_$VideoChapterImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$VideoChapterImplToJson(this);
+  }
+}
+
+abstract class _VideoChapter implements VideoChapter {
+  const factory _VideoChapter({
+    required final String id,
+    required final String title,
+    final List<VideoItem> videos,
+  }) = _$VideoChapterImpl;
+
+  factory _VideoChapter.fromJson(Map<String, dynamic> json) =
+      _$VideoChapterImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get title; // 章に属する動画（配列順）。
+  @override
+  List<VideoItem> get videos;
+
+  /// Create a copy of VideoChapter
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$VideoChapterImplCopyWith<_$VideoChapterImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+VideoItem _$VideoItemFromJson(Map<String, dynamic> json) {
+  return _VideoItem.fromJson(json);
+}
+
+/// @nodoc
+mixin _$VideoItem {
+  String get id => throw _privateConstructorUsedError;
+  String get title =>
+      throw _privateConstructorUsedError; // 尺（秒）。行末の mm:ss 表示に使う。
+  int get durationSec =>
+      throw _privateConstructorUsedError; // 動画アセットの相対パス（contentBasePath 起点。例 'videos/1-1.mp4'）。
+  String get asset =>
+      throw _privateConstructorUsedError; // 視聴後の確認クイズ（空なら確認クイズ導線を出さない）。
+  List<LessonQuiz> get quizzes => throw _privateConstructorUsedError;
+
+  /// Serializes this VideoItem to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of VideoItem
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $VideoItemCopyWith<VideoItem> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $VideoItemCopyWith<$Res> {
+  factory $VideoItemCopyWith(VideoItem value, $Res Function(VideoItem) then) =
+      _$VideoItemCopyWithImpl<$Res, VideoItem>;
+  @useResult
+  $Res call({
+    String id,
+    String title,
+    int durationSec,
+    String asset,
+    List<LessonQuiz> quizzes,
+  });
+}
+
+/// @nodoc
+class _$VideoItemCopyWithImpl<$Res, $Val extends VideoItem>
+    implements $VideoItemCopyWith<$Res> {
+  _$VideoItemCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of VideoItem
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? durationSec = null,
+    Object? asset = null,
+    Object? quizzes = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            durationSec: null == durationSec
+                ? _value.durationSec
+                : durationSec // ignore: cast_nullable_to_non_nullable
+                      as int,
+            asset: null == asset
+                ? _value.asset
+                : asset // ignore: cast_nullable_to_non_nullable
+                      as String,
+            quizzes: null == quizzes
+                ? _value.quizzes
+                : quizzes // ignore: cast_nullable_to_non_nullable
+                      as List<LessonQuiz>,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$VideoItemImplCopyWith<$Res>
+    implements $VideoItemCopyWith<$Res> {
+  factory _$$VideoItemImplCopyWith(
+    _$VideoItemImpl value,
+    $Res Function(_$VideoItemImpl) then,
+  ) = __$$VideoItemImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String id,
+    String title,
+    int durationSec,
+    String asset,
+    List<LessonQuiz> quizzes,
+  });
+}
+
+/// @nodoc
+class __$$VideoItemImplCopyWithImpl<$Res>
+    extends _$VideoItemCopyWithImpl<$Res, _$VideoItemImpl>
+    implements _$$VideoItemImplCopyWith<$Res> {
+  __$$VideoItemImplCopyWithImpl(
+    _$VideoItemImpl _value,
+    $Res Function(_$VideoItemImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of VideoItem
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? durationSec = null,
+    Object? asset = null,
+    Object? quizzes = null,
+  }) {
+    return _then(
+      _$VideoItemImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        durationSec: null == durationSec
+            ? _value.durationSec
+            : durationSec // ignore: cast_nullable_to_non_nullable
+                  as int,
+        asset: null == asset
+            ? _value.asset
+            : asset // ignore: cast_nullable_to_non_nullable
+                  as String,
+        quizzes: null == quizzes
+            ? _value._quizzes
+            : quizzes // ignore: cast_nullable_to_non_nullable
+                  as List<LessonQuiz>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$VideoItemImpl implements _VideoItem {
+  const _$VideoItemImpl({
+    required this.id,
+    required this.title,
+    required this.durationSec,
+    required this.asset,
+    final List<LessonQuiz> quizzes = const <LessonQuiz>[],
+  }) : _quizzes = quizzes;
+
+  factory _$VideoItemImpl.fromJson(Map<String, dynamic> json) =>
+      _$$VideoItemImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String title;
+  // 尺（秒）。行末の mm:ss 表示に使う。
+  @override
+  final int durationSec;
+  // 動画アセットの相対パス（contentBasePath 起点。例 'videos/1-1.mp4'）。
+  @override
+  final String asset;
+  // 視聴後の確認クイズ（空なら確認クイズ導線を出さない）。
+  final List<LessonQuiz> _quizzes;
+  // 視聴後の確認クイズ（空なら確認クイズ導線を出さない）。
+  @override
+  @JsonKey()
+  List<LessonQuiz> get quizzes {
+    if (_quizzes is EqualUnmodifiableListView) return _quizzes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_quizzes);
+  }
+
+  @override
+  String toString() {
+    return 'VideoItem(id: $id, title: $title, durationSec: $durationSec, asset: $asset, quizzes: $quizzes)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$VideoItemImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.durationSec, durationSec) ||
+                other.durationSec == durationSec) &&
+            (identical(other.asset, asset) || other.asset == asset) &&
+            const DeepCollectionEquality().equals(other._quizzes, _quizzes));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    title,
+    durationSec,
+    asset,
+    const DeepCollectionEquality().hash(_quizzes),
+  );
+
+  /// Create a copy of VideoItem
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$VideoItemImplCopyWith<_$VideoItemImpl> get copyWith =>
+      __$$VideoItemImplCopyWithImpl<_$VideoItemImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$VideoItemImplToJson(this);
+  }
+}
+
+abstract class _VideoItem implements VideoItem {
+  const factory _VideoItem({
+    required final String id,
+    required final String title,
+    required final int durationSec,
+    required final String asset,
+    final List<LessonQuiz> quizzes,
+  }) = _$VideoItemImpl;
+
+  factory _VideoItem.fromJson(Map<String, dynamic> json) =
+      _$VideoItemImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get title; // 尺（秒）。行末の mm:ss 表示に使う。
+  @override
+  int get durationSec; // 動画アセットの相対パス（contentBasePath 起点。例 'videos/1-1.mp4'）。
+  @override
+  String get asset; // 視聴後の確認クイズ（空なら確認クイズ導線を出さない）。
+  @override
+  List<LessonQuiz> get quizzes;
+
+  /// Create a copy of VideoItem
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$VideoItemImplCopyWith<_$VideoItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

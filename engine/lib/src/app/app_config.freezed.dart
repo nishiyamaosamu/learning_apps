@@ -17,9 +17,10 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$AppConfig {
-  String get title => throw _privateConstructorUsedError;
-  Color get primaryColor => throw _privateConstructorUsedError;
-  AppDesignScheme? get designScheme =>
+  String get title =>
+      throw _privateConstructorUsedError; // ブランドの主色ランプ。null なら既定の集中ブルー（[AppPrimarySwatch.focusBlue]）。
+  // DESIGN.html RULE 3 に従い、アプリが差し替えられるのは主色スワッチだけ。
+  AppPrimarySwatch? get brandPrimary =>
       throw _privateConstructorUsedError; // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   List<EngineTab> get tabs =>
       throw _privateConstructorUsedError; // コンテンツ（JSON）を格納したアプリ側アセットのベースパス。
@@ -40,8 +41,7 @@ abstract class $AppConfigCopyWith<$Res> {
   @useResult
   $Res call({
     String title,
-    Color primaryColor,
-    AppDesignScheme? designScheme,
+    AppPrimarySwatch? brandPrimary,
     List<EngineTab> tabs,
     String contentBasePath,
   });
@@ -63,8 +63,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
   @override
   $Res call({
     Object? title = null,
-    Object? primaryColor = null,
-    Object? designScheme = freezed,
+    Object? brandPrimary = freezed,
     Object? tabs = null,
     Object? contentBasePath = null,
   }) {
@@ -74,14 +73,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.title
                 : title // ignore: cast_nullable_to_non_nullable
                       as String,
-            primaryColor: null == primaryColor
-                ? _value.primaryColor
-                : primaryColor // ignore: cast_nullable_to_non_nullable
-                      as Color,
-            designScheme: freezed == designScheme
-                ? _value.designScheme
-                : designScheme // ignore: cast_nullable_to_non_nullable
-                      as AppDesignScheme?,
+            brandPrimary: freezed == brandPrimary
+                ? _value.brandPrimary
+                : brandPrimary // ignore: cast_nullable_to_non_nullable
+                      as AppPrimarySwatch?,
             tabs: null == tabs
                 ? _value.tabs
                 : tabs // ignore: cast_nullable_to_non_nullable
@@ -107,8 +102,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
   @useResult
   $Res call({
     String title,
-    Color primaryColor,
-    AppDesignScheme? designScheme,
+    AppPrimarySwatch? brandPrimary,
     List<EngineTab> tabs,
     String contentBasePath,
   });
@@ -129,8 +123,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? title = null,
-    Object? primaryColor = null,
-    Object? designScheme = freezed,
+    Object? brandPrimary = freezed,
     Object? tabs = null,
     Object? contentBasePath = null,
   }) {
@@ -140,14 +133,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.title
             : title // ignore: cast_nullable_to_non_nullable
                   as String,
-        primaryColor: null == primaryColor
-            ? _value.primaryColor
-            : primaryColor // ignore: cast_nullable_to_non_nullable
-                  as Color,
-        designScheme: freezed == designScheme
-            ? _value.designScheme
-            : designScheme // ignore: cast_nullable_to_non_nullable
-                  as AppDesignScheme?,
+        brandPrimary: freezed == brandPrimary
+            ? _value.brandPrimary
+            : brandPrimary // ignore: cast_nullable_to_non_nullable
+                  as AppPrimarySwatch?,
         tabs: null == tabs
             ? _value._tabs
             : tabs // ignore: cast_nullable_to_non_nullable
@@ -166,10 +155,9 @@ class __$$AppConfigImplCopyWithImpl<$Res>
 class _$AppConfigImpl implements _AppConfig {
   const _$AppConfigImpl({
     required this.title,
-    this.primaryColor = Colors.indigo,
-    this.designScheme,
+    this.brandPrimary,
     final List<EngineTab> tabs = const [
-      EngineTab.lesson,
+      EngineTab.video,
       EngineTab.exercise,
       EngineTab.anki,
       EngineTab.settings,
@@ -179,11 +167,10 @@ class _$AppConfigImpl implements _AppConfig {
 
   @override
   final String title;
+  // ブランドの主色ランプ。null なら既定の集中ブルー（[AppPrimarySwatch.focusBlue]）。
+  // DESIGN.html RULE 3 に従い、アプリが差し替えられるのは主色スワッチだけ。
   @override
-  @JsonKey()
-  final Color primaryColor;
-  @override
-  final AppDesignScheme? designScheme;
+  final AppPrimarySwatch? brandPrimary;
   // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   final List<EngineTab> _tabs;
   // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
@@ -203,7 +190,7 @@ class _$AppConfigImpl implements _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(title: $title, primaryColor: $primaryColor, designScheme: $designScheme, tabs: $tabs, contentBasePath: $contentBasePath)';
+    return 'AppConfig(title: $title, brandPrimary: $brandPrimary, tabs: $tabs, contentBasePath: $contentBasePath)';
   }
 
   @override
@@ -212,10 +199,8 @@ class _$AppConfigImpl implements _AppConfig {
         (other.runtimeType == runtimeType &&
             other is _$AppConfigImpl &&
             (identical(other.title, title) || other.title == title) &&
-            (identical(other.primaryColor, primaryColor) ||
-                other.primaryColor == primaryColor) &&
-            (identical(other.designScheme, designScheme) ||
-                other.designScheme == designScheme) &&
+            (identical(other.brandPrimary, brandPrimary) ||
+                other.brandPrimary == brandPrimary) &&
             const DeepCollectionEquality().equals(other._tabs, _tabs) &&
             (identical(other.contentBasePath, contentBasePath) ||
                 other.contentBasePath == contentBasePath));
@@ -225,8 +210,7 @@ class _$AppConfigImpl implements _AppConfig {
   int get hashCode => Object.hash(
     runtimeType,
     title,
-    primaryColor,
-    designScheme,
+    brandPrimary,
     const DeepCollectionEquality().hash(_tabs),
     contentBasePath,
   );
@@ -243,18 +227,16 @@ class _$AppConfigImpl implements _AppConfig {
 abstract class _AppConfig implements AppConfig {
   const factory _AppConfig({
     required final String title,
-    final Color primaryColor,
-    final AppDesignScheme? designScheme,
+    final AppPrimarySwatch? brandPrimary,
     final List<EngineTab> tabs,
     final String contentBasePath,
   }) = _$AppConfigImpl;
 
   @override
-  String get title;
+  String get title; // ブランドの主色ランプ。null なら既定の集中ブルー（[AppPrimarySwatch.focusBlue]）。
+  // DESIGN.html RULE 3 に従い、アプリが差し替えられるのは主色スワッチだけ。
   @override
-  Color get primaryColor;
-  @override
-  AppDesignScheme? get designScheme; // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
+  AppPrimarySwatch? get brandPrimary; // 下部に表示するタブと並び順。app 側で採用するタブを選ぶ。
   @override
   List<EngineTab> get tabs; // コンテンツ（JSON）を格納したアプリ側アセットのベースパス。
   // 例: 'contents' → contents/base.json, contents/lessons/1.json

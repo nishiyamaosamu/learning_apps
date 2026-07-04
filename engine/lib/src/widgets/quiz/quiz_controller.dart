@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../content/content_models.dart';
+import '../../content/content_models.dart';
 
 /// 1問のクイズの回答状態を集約するコントローラ。
 ///
@@ -30,6 +30,14 @@ class QuizController extends ChangeNotifier {
 
   /// 「回答する」が押され、正誤を表示中か。
   bool get submitted => _submitted;
+
+  /// まだ何も配置されていない先頭の空欄 index。すべて埋まっていれば null。
+  ///
+  /// 穴埋めでチップをタップしたとき、次にどの空欄へ入れるかを決めるのに使う。
+  int? get firstEmptyBlank {
+    final i = _blanks.indexOf(null);
+    return i == -1 ? null : i;
+  }
 
   void selectChoice(int optionIndex) {
     if (_submitted) return;

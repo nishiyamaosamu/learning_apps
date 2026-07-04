@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../app/app_config.dart';
-import '../../content/content_models.dart';
 import '../../content/content_providers.dart';
+import '../../design/app_colors.dart';
+import '../../design/app_dimens.dart';
+import '../../design/app_typography.dart';
 import '../../settings/exercise_results.dart';
+import '../widgets/entity_list.dart';
+import '../widgets/exercise_summary_card.dart';
+import '../widgets/video_list.dart' show VideoSectionHeader;
 import 'exercise_quiz.dart';
 import 'widgets/exercise_chunks.dart';
+import 'widgets/exercise_summary.dart';
 
-/// 問題集（1年度）。contents/exercises/{id}.json を都度ロードし、上部に学習進捗バー、
+/// 問題集（1年度）。contents/exercises/{id}.json を都度ロードし、上部に学習サマリー、
 /// その下に分野別の「5問チャンク」一覧を表示する。タップで演習プレイヤーを開く。
 class Exercise extends ConsumerWidget {
   const Exercise({super.key, required this.id, required this.title});
@@ -26,55 +31,61 @@ class Exercise extends ConsumerWidget {
       appBar: AppBar(title: Text(title)),
       body: exercise.when(
         data: (e) {
+          final summary = computeExerciseSummary(
+            exercises: [e],
+            results: results,
+          );
           final chunks = buildExerciseChunks(e);
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _ProgressPanel(questions: e.questions, results: results),
-              const Divider(height: 1),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  itemCount: chunks.length,
-                  itemBuilder: (context, i) {
-                    final chunk = chunks[i];
-                    // チャンクの全qidが記録済みなら完了とみなす。
-                    final done = chunk.questions.every(
-                      (q) => results.containsKey(q.qid),
-                    );
-                    final showHeader =
-                        i == 0 || chunks[i - 1].categoryId != chunk.categoryId;
+          // 分野ごとにチャンクをまとめて「セクションヘッダー＋リストカード」にする。
+          final sections = <_ChunkSection>[];
+          for (final chunk in chunks) {
+            if (sections.isEmpty ||
+                sections.last.categoryId != chunk.categoryId) {
+              sections.add(
+                _ChunkSection(
+                  categoryId: chunk.categoryId,
+                  categoryLabel: chunk.categoryLabel,
+                ),
+              );
+            }
+            sections.last.chunks.add(chunk);
+          }
 
-                    final tile = ListTile(
-                      title: Text(chunk.rangeLabel),
-                      trailing: done
-                          ? Icon(
-                              Icons.check_circle,
-                              color: Theme.of(context).semantic.success,
-                            )
-                          : const Icon(Icons.chevron_right),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => ExerciseQuizScreen(
-                            questions: chunk.questions,
-                            assetBasePath: basePath,
-                            title: chunk.label,
+          return ListView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppLayout.screenMargin,
+              vertical: 12,
+            ),
+            children: [
+              ExerciseSummaryCard(summary: summary),
+              for (final section in sections) ...[
+                const SizedBox(height: 12),
+                VideoSectionHeader(title: section.categoryLabel),
+                const SizedBox(height: 12),
+                EntityListCard(
+                  children: [
+                    for (final chunk in section.chunks)
+                      QicoRow(
+                        icon: Icons.quiz_rounded,
+                        title: chunk.rangeLabel,
+                        maxLines: 1,
+                        trailing: _ChunkStatus(
+                          chunk: chunk,
+                          results: results,
+                        ),
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => ExerciseQuizScreen(
+                              questions: chunk.questions,
+                              assetBasePath: basePath,
+                              title: chunk.label,
+                            ),
                           ),
                         ),
                       ),
-                    );
-
-                    if (!showHeader) return tile;
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _CategoryHeader(label: chunk.categoryLabel),
-                        tile,
-                      ],
-                    );
-                  },
+                  ],
                 ),
-              ),
+              ],
             ],
           );
         },
@@ -85,157 +96,50 @@ class Exercise extends ConsumerWidget {
   }
 }
 
-/// 学習進捗パネル。進捗率（=(正解+誤答)/全問）と、正解／誤答／未学習の
-/// 積み上げバー＋件数の凡例を表示する。
-class _ProgressPanel extends StatelessWidget {
-  const _ProgressPanel({required this.questions, required this.results});
+/// 同一分野のチャンクをまとめる中間表現。
+class _ChunkSection {
+  _ChunkSection({required this.categoryId, required this.categoryLabel});
 
-  final List<ExerciseQuestion> questions;
+  final String categoryId;
+  final String categoryLabel;
+  final List<ExerciseChunk> chunks = [];
+}
+
+/// チャンク行の右端の取り組み状態。
+///
+/// - 全問正解: check_circle（correct 色）
+/// - 着手済み（一部回答/一部正解）: 正答数 n/総数 を等幅で
+/// - 未着手: chevron
+class _ChunkStatus extends StatelessWidget {
+  const _ChunkStatus({required this.chunk, required this.results});
+
+  final ExerciseChunk chunk;
   final Map<String, bool> results;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final total = questions.length;
+    final c = context.colors;
+    final total = chunk.questions.length;
+    var answered = 0;
     var correct = 0;
-    var wrong = 0;
-    for (final q in questions) {
+    for (final q in chunk.questions) {
       final r = results[q.qid];
-      if (r == true) {
-        correct++;
-      } else if (r == false) {
-        wrong++;
-      }
+      if (r == null) continue;
+      answered++;
+      if (r) correct++;
     }
-    final unlearned = total - correct - wrong;
-    final rate = total == 0 ? 0 : ((correct + wrong) / total * 100).round();
 
-    final unlearnedColor = theme.colorScheme.surfaceContainerHighest;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text('進捗', style: theme.textTheme.titleSmall),
-              const Spacer(),
-              Text(
-                '$rate%',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          // 積み上げバー（正解=緑 / 誤答=赤 / 未学習=グレー）。
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: SizedBox(
-              height: 12,
-              child: Row(
-                children: [
-                  if (correct > 0)
-                    Expanded(
-                      flex: correct,
-                      child: ColoredBox(color: theme.semantic.success),
-                    ),
-                  if (wrong > 0)
-                    Expanded(
-                      flex: wrong,
-                      child: ColoredBox(color: theme.colorScheme.error),
-                    ),
-                  if (unlearned > 0)
-                    Expanded(
-                      flex: unlearned,
-                      child: ColoredBox(color: unlearnedColor),
-                    ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          // 件数の凡例。
-          Row(
-            children: [
-              _LegendItem(
-                color: theme.semantic.success,
-                label: '正解',
-                count: correct,
-              ),
-              const SizedBox(width: 16),
-              _LegendItem(
-                color: theme.colorScheme.error,
-                label: '誤答',
-                count: wrong,
-              ),
-              const SizedBox(width: 16),
-              _LegendItem(
-                color: unlearnedColor,
-                label: '未学習',
-                count: unlearned,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// 進捗凡例の1項目（色ドット＋ラベル＋件数）。
-class _LegendItem extends StatelessWidget {
-  const _LegendItem({
-    required this.color,
-    required this.label,
-    required this.count,
-  });
-
-  final Color color;
-  final String label;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 6),
-        Text('$label $count', style: theme.textTheme.bodyMedium),
-      ],
-    );
-  }
-}
-
-/// 分野ごとのセクション見出し。
-class _CategoryHeader extends StatelessWidget {
-  const _CategoryHeader({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 6),
-      child: Text(
-        label,
-        style: theme.textTheme.titleSmall?.copyWith(
-          color: theme.colorScheme.primary,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
+    if (correct == total) {
+      return Icon(Icons.check_circle, size: 18, color: c.correct);
+    }
+    if (answered > 0) {
+      return Text(
+        '$correct/$total',
+        style: AppTypography.mono(
+          AppTypography.caption,
+        ).copyWith(color: c.textSecondary),
+      );
+    }
+    return Icon(Icons.chevron_right, size: 18, color: c.textMuted);
   }
 }

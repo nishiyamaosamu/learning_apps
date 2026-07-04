@@ -10,11 +10,16 @@ _$ContentSummaryImpl _$$ContentSummaryImplFromJson(Map<String, dynamic> json) =>
     _$ContentSummaryImpl(
       id: json['id'] as String,
       title: json['title'] as String,
+      cardCount: (json['cardCount'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$ContentSummaryImplToJson(
   _$ContentSummaryImpl instance,
-) => <String, dynamic>{'id': instance.id, 'title': instance.title};
+) => <String, dynamic>{
+  'id': instance.id,
+  'title': instance.title,
+  'cardCount': instance.cardCount,
+};
 
 _$LessonDomainImpl _$$LessonDomainImplFromJson(Map<String, dynamic> json) =>
     _$LessonDomainImpl(
@@ -85,6 +90,11 @@ _$ContentIndexImpl _$$ContentIndexImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => ContentSummary.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <ContentSummary>[],
+      videos:
+          (json['videos'] as List<dynamic>?)
+              ?.map((e) => VideoChapter.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <VideoChapter>[],
     );
 
 Map<String, dynamic> _$$ContentIndexImplToJson(_$ContentIndexImpl instance) =>
@@ -92,6 +102,47 @@ Map<String, dynamic> _$$ContentIndexImplToJson(_$ContentIndexImpl instance) =>
       'lessons': instance.lessons,
       'exercises': instance.exercises,
       'anki': instance.anki,
+      'videos': instance.videos,
+    };
+
+_$VideoChapterImpl _$$VideoChapterImplFromJson(Map<String, dynamic> json) =>
+    _$VideoChapterImpl(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      videos:
+          (json['videos'] as List<dynamic>?)
+              ?.map((e) => VideoItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <VideoItem>[],
+    );
+
+Map<String, dynamic> _$$VideoChapterImplToJson(_$VideoChapterImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'videos': instance.videos,
+    };
+
+_$VideoItemImpl _$$VideoItemImplFromJson(Map<String, dynamic> json) =>
+    _$VideoItemImpl(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      durationSec: (json['durationSec'] as num).toInt(),
+      asset: json['asset'] as String,
+      quizzes:
+          (json['quizzes'] as List<dynamic>?)
+              ?.map((e) => LessonQuiz.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <LessonQuiz>[],
+    );
+
+Map<String, dynamic> _$$VideoItemImplToJson(_$VideoItemImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'durationSec': instance.durationSec,
+      'asset': instance.asset,
+      'quizzes': instance.quizzes,
     };
 
 _$LessonImpl _$$LessonImplFromJson(Map<String, dynamic> json) => _$LessonImpl(

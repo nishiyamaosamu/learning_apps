@@ -24,9 +24,7 @@ flutter:
   uses-material-design: true
   assets:
     - contents/base.json
-    - contents/lessons/
-    - contents/lessons/audios/
-    - contents/lessons/images/
+    - contents/videos/
     - contents/exercises/
     - contents/exercises/images/
     - contents/anki/

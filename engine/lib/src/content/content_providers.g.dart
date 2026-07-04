@@ -211,6 +211,161 @@ class _LessonProviderElement extends AutoDisposeFutureProviderElement<Lesson>
   String get id => (origin as LessonProvider).id;
 }
 
+String _$videoLookupHash() => r'c871e61248eeecffb0322fbf4dfa5d2b0d7e18ac';
+
+/// 動画1本を id 指定で全章から探し、章・本体・「次の動画」をまとめて返す。
+///
+/// [ContentIndex.videos] の全章を走査し、id が一致する [VideoItem] を引く。
+/// 見つからない場合は [StateError] を投げる（lessonProvider 同様、詳細画面側の
+/// `AsyncValue.error` で扱う）。
+///
+/// Copied from [videoLookup].
+@ProviderFor(videoLookup)
+const videoLookupProvider = VideoLookupFamily();
+
+/// 動画1本を id 指定で全章から探し、章・本体・「次の動画」をまとめて返す。
+///
+/// [ContentIndex.videos] の全章を走査し、id が一致する [VideoItem] を引く。
+/// 見つからない場合は [StateError] を投げる（lessonProvider 同様、詳細画面側の
+/// `AsyncValue.error` で扱う）。
+///
+/// Copied from [videoLookup].
+class VideoLookupFamily extends Family<AsyncValue<VideoLookupResult>> {
+  /// 動画1本を id 指定で全章から探し、章・本体・「次の動画」をまとめて返す。
+  ///
+  /// [ContentIndex.videos] の全章を走査し、id が一致する [VideoItem] を引く。
+  /// 見つからない場合は [StateError] を投げる（lessonProvider 同様、詳細画面側の
+  /// `AsyncValue.error` で扱う）。
+  ///
+  /// Copied from [videoLookup].
+  const VideoLookupFamily();
+
+  /// 動画1本を id 指定で全章から探し、章・本体・「次の動画」をまとめて返す。
+  ///
+  /// [ContentIndex.videos] の全章を走査し、id が一致する [VideoItem] を引く。
+  /// 見つからない場合は [StateError] を投げる（lessonProvider 同様、詳細画面側の
+  /// `AsyncValue.error` で扱う）。
+  ///
+  /// Copied from [videoLookup].
+  VideoLookupProvider call(String id) {
+    return VideoLookupProvider(id);
+  }
+
+  @override
+  VideoLookupProvider getProviderOverride(
+    covariant VideoLookupProvider provider,
+  ) {
+    return call(provider.id);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'videoLookupProvider';
+}
+
+/// 動画1本を id 指定で全章から探し、章・本体・「次の動画」をまとめて返す。
+///
+/// [ContentIndex.videos] の全章を走査し、id が一致する [VideoItem] を引く。
+/// 見つからない場合は [StateError] を投げる（lessonProvider 同様、詳細画面側の
+/// `AsyncValue.error` で扱う）。
+///
+/// Copied from [videoLookup].
+class VideoLookupProvider extends AutoDisposeFutureProvider<VideoLookupResult> {
+  /// 動画1本を id 指定で全章から探し、章・本体・「次の動画」をまとめて返す。
+  ///
+  /// [ContentIndex.videos] の全章を走査し、id が一致する [VideoItem] を引く。
+  /// 見つからない場合は [StateError] を投げる（lessonProvider 同様、詳細画面側の
+  /// `AsyncValue.error` で扱う）。
+  ///
+  /// Copied from [videoLookup].
+  VideoLookupProvider(String id)
+    : this._internal(
+        (ref) => videoLookup(ref as VideoLookupRef, id),
+        from: videoLookupProvider,
+        name: r'videoLookupProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$videoLookupHash,
+        dependencies: VideoLookupFamily._dependencies,
+        allTransitiveDependencies: VideoLookupFamily._allTransitiveDependencies,
+        id: id,
+      );
+
+  VideoLookupProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final String id;
+
+  @override
+  Override overrideWith(
+    FutureOr<VideoLookupResult> Function(VideoLookupRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: VideoLookupProvider._internal(
+        (ref) => create(ref as VideoLookupRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<VideoLookupResult> createElement() {
+    return _VideoLookupProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is VideoLookupProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin VideoLookupRef on AutoDisposeFutureProviderRef<VideoLookupResult> {
+  /// The parameter `id` of this provider.
+  String get id;
+}
+
+class _VideoLookupProviderElement
+    extends AutoDisposeFutureProviderElement<VideoLookupResult>
+    with VideoLookupRef {
+  _VideoLookupProviderElement(super.provider);
+
+  @override
+  String get id => (origin as VideoLookupProvider).id;
+}
+
 String _$exerciseHash() => r'66c924a59442f5b47361a378b749cf1c5e9d2449';
 
 /// 問題内容を id 指定で都度ロード。
@@ -340,6 +495,28 @@ class _ExerciseProviderElement
   String get id => (origin as ExerciseProvider).id;
 }
 
+String _$allExercisesHash() => r'fb0c7e23f1665236225a1cd3959081ceb6041f9c';
+
+/// base.json の全問題集を読み込んで結合する（問題集タブの全体サマリー集計用）。
+///
+/// 進捗率の分母（全設問数）を出すために各年度の JSON をまとめてロードする。
+/// 個々のロードは [exerciseProvider] を再利用する（キャッシュを共有する）。
+///
+/// Copied from [allExercises].
+@ProviderFor(allExercises)
+final allExercisesProvider = AutoDisposeFutureProvider<List<Exercise>>.internal(
+  allExercises,
+  name: r'allExercisesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$allExercisesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AllExercisesRef = AutoDisposeFutureProviderRef<List<Exercise>>;
 String _$ankiHash() => r'a60dcd7aa0449b3e5376ad0d3d555b1e28df2802';
 
 /// 暗記カード内容を id 指定で都度ロード。
@@ -466,5 +643,27 @@ class _AnkiProviderElement extends AutoDisposeFutureProviderElement<AnkiDeck>
   String get id => (origin as AnkiProvider).id;
 }
 
+String _$allAnkiDecksHash() => r'2ab0f0c01e4afaaf40702177611caeabbe0a4ca8';
+
+/// base.json の全暗記デッキを読み込んで結合する（「全カードから10問」用）。
+///
+/// 全デッキのカードを混ぜてシャッフル出題するために各デッキの JSON をまとめて
+/// ロードする。個々のロードは [ankiProvider] を再利用する（キャッシュを共有する）。
+///
+/// Copied from [allAnkiDecks].
+@ProviderFor(allAnkiDecks)
+final allAnkiDecksProvider = AutoDisposeFutureProvider<List<AnkiDeck>>.internal(
+  allAnkiDecks,
+  name: r'allAnkiDecksProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$allAnkiDecksHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AllAnkiDecksRef = AutoDisposeFutureProviderRef<List<AnkiDeck>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

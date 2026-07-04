@@ -1,4 +1,110 @@
 {
+  "videos": [
+    {
+      "id": "1",
+      "title": "第1章 企業と法務",
+      "videos": [
+        {
+          "id": "1-1",
+          "title": "1-1 企業活動と経営資源",
+          "durationSec": 12,
+          "asset": "videos/1-1.mp4",
+          "quizzes": [
+            {
+              "type": "quizFillInTheBlank",
+              "question": "経営資源は ヒト・[__]・カネ・[__] の4つに整理される。",
+              "options": ["モノ", "情報", "土地"],
+              "correctOptionIndices": [0, 1]
+            },
+            {
+              "type": "quizMultipleChoice",
+              "question": "CSR（企業の社会的責任）の説明として、最も適切なものはどれですか？",
+              "options": [
+                "企業が利益だけでなく、社会や環境への影響にも責任を持つこと",
+                "企業が株主に対してのみ責任を果たすこと",
+                "企業が法律で定められた最低限の義務を果たすこと",
+                "企業が競合他社よりも高い利益を上げること"
+              ],
+              "correctOptionIndex": 0
+            },
+            {
+              "type": "quizMultipleChoice",
+              "question": "ディスクロージャーの説明として、最も適切なものはどれですか？",
+              "options": [
+                "企業が経営情報を外部に公開し、透明性を確保すること",
+                "企業が新製品の情報を競合他社に開示すること",
+                "企業が従業員の個人情報を公開すること",
+                "企業が社内の問題を外部に報告する内部告発のこと"
+              ],
+              "correctOptionIndex": 0
+            }
+          ]
+        },
+        {
+          "id": "1-2",
+          "title": "1-2 2進数と10進数",
+          "durationSec": 14,
+          "asset": "videos/1-2.mp4",
+          "quizzes": [
+            {
+              "type": "quizMultipleChoice",
+              "question": "2進数 `1001₂` を10進数に直すと、いくつですか？",
+              "options": ["8", "9", "10", "11"],
+              "correctOptionIndex": 1
+            },
+            {
+              "type": "quizMultipleChoice",
+              "question": "10進数 `12₁₀` を2進数に直したものはどれですか？",
+              "options": ["1010₂", "1100₂", "1110₂", "1001₂"],
+              "correctOptionIndex": 1
+            },
+            {
+              "type": "quizMultipleChoice",
+              "question": "10進数を2で繰り返し割って2進数に直すとき、余りはどの順番で読みますか？",
+              "options": [
+                "上から下へ読む",
+                "大きい余りから読む",
+                "下から上へ読む",
+                "0だけを先に読む"
+              ],
+              "correctOptionIndex": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "第2章 経営戦略",
+      "videos": [
+        {
+          "id": "2-1",
+          "title": "2-1 暗号技術の基本",
+          "durationSec": 10,
+          "asset": "videos/2-1.mp4",
+          "quizzes": [
+            {
+              "type": "quizFillInTheBlank",
+              "question": "平文を読み取れない形に変える処理を[__]、暗号文を元の平文へ戻す処理を[__]という。",
+              "options": ["復号", "暗号化", "圧縮"],
+              "correctOptionIndices": [1, 0]
+            },
+            {
+              "type": "quizMultipleChoice",
+              "question": "共通鍵暗号方式の特徴として、最も適切なものはどれですか？",
+              "options": [
+                "暗号化と復号に同じ鍵を使い、処理が速い",
+                "暗号化に秘密鍵、復号に公開鍵を使う",
+                "鍵を使わずにデータを暗号化する",
+                "ハッシュ値から元データを復元する"
+              ],
+              "correctOptionIndex": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "lessons": [
     {
       "id": "strategy",
@@ -60,5 +166,6 @@
     { "id": "R4", "title": "令和4年度 問題集" }
   ],
   "anki": [
+    { "id": "1", "title": "基本母音カード", "cardCount": 3 }
   ]
 }

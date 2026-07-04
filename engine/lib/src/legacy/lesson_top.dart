@@ -1,9 +1,13 @@
+// 旧テキストレッスン一覧UI（講座タブのトップ）。ルート未接続・到達不可。
+// 動画講座（VideoTop）に置き換え済み。`context.push('/lessons/:id')` は現在の
+// router に存在しないルートを指す（復活時に router へ再接続する前提の温存コード）。
+// 詳細は engine/lib/src/legacy/README.md を参照。
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../content/content_models.dart';
-import '../../content/content_providers.dart';
+import '../content/content_models.dart';
+import '../content/content_providers.dart';
 
 /// 講座タブのトップ。base.json の講座一覧を表示し、選択で講座内容へ遷移する。
 class LessonTop extends ConsumerWidget {

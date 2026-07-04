@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../app/app_config.dart';
 import '../../content/content_models.dart';
+import '../../design/app_colors.dart';
+import '../../design/app_dimens.dart';
+import '../../design/app_haptics.dart';
 import '../../settings/exercise_results.dart';
-import 'widgets/lesson_contents.dart';
+import '../../widgets/content/content_image.dart';
+import '../../widgets/content/markdown_text.dart';
+import '../../widgets/layout/content_max_width.dart';
+import '../../widgets/quiz/choice_tile.dart';
+import '../../widgets/quiz/completion_ring.dart';
+import '../../widgets/quiz/explanation_card.dart';
+import '../../widgets/quiz/quiz_top_bar.dart';
+import '../../widgets/quiz/result_banner.dart';
 
 /// 選択肢ID（1始まり）と「アイウエ…」の対応。最大10択（ア〜コ）まで対応する。
 const List<String> _kanaLabels = [
@@ -26,16 +35,21 @@ String _kana(int optionId) => (optionId >= 1 && optionId <= _kanaLabels.length)
 
 /// 演習プレイヤーの回答セッション状態。
 ///
-/// 1問ずつ進めながら、各問の選択（option id）を記録する。選択は即時にロックされ、
-/// 変更できない。完了後は正答率・誤答リストを集計できる。
+/// 各問は「選択（[select]、リビール前は何度でも変更可）→ 確定（[confirm]、リビール
+/// して結果を確定）」の2段階で進める。確定後は選択を変更できない。完了後は正答率・
+/// 誤答リストを集計できる。
 class ExerciseQuizController extends ChangeNotifier {
   ExerciseQuizController(this.questions)
-    : selected = List<int?>.filled(questions.length, null);
+    : selected = List<int?>.filled(questions.length, null),
+      _revealed = List<bool>.filled(questions.length, false);
 
   final List<ExerciseQuestion> questions;
 
-  /// 各問で選んだ選択肢ID（未回答は null）。
+  /// 各問で選んだ選択肢ID（未選択は null）。リビール前は変更可能。
   final List<int?> selected;
+
+  /// 各問がリビール（確定）済みか。
+  final List<bool> _revealed;
 
   /// 現在の設問番号。`questions.length` は完了ページを指す。
   int currentIndex = 0;
@@ -46,21 +60,42 @@ class ExerciseQuizController extends ChangeNotifier {
 
   ExerciseQuestion get current => questions[currentIndex];
 
-  /// 現在の設問が回答済み（ロック済み）か。
-  bool get isCurrentLocked => !onCompletion && selected[currentIndex] != null;
+  /// 現在の設問で選択肢を選んでいるか。
+  bool get isCurrentSelected => !onCompletion && selected[currentIndex] != null;
+
+  /// 現在の設問がリビール（確定）済みか。
+  bool get isCurrentRevealed => !onCompletion && _revealed[currentIndex];
 
   bool get isLastQuestion => currentIndex == total - 1;
 
-  /// 選択肢を回答する。ロック済み・完了後は無視する。
-  void answer(int optionId) {
-    if (onCompletion || selected[currentIndex] != null) return;
+  /// 現在の設問で選んだ選択肢ID（未選択は null）。
+  int? get currentSelectedId => onCompletion ? null : selected[currentIndex];
+
+  /// 現在の選択が正解か（リビール後に意味を持つ）。
+  bool get isCurrentCorrect =>
+      !onCompletion && selected[currentIndex] == current.answerOptionId;
+
+  /// 選択肢を選ぶ。リビール後・完了後は無視する（何度でも選び直せる）。
+  void select(int optionId) {
+    if (onCompletion || _revealed[currentIndex]) return;
     selected[currentIndex] = optionId;
     notifyListeners();
   }
 
-  /// 次の設問（または完了ページ）へ進む。
+  /// 現在の選択を確定してリビールする。未選択・確定済み・完了後は無視する。
+  void confirm() {
+    if (onCompletion ||
+        _revealed[currentIndex] ||
+        selected[currentIndex] == null) {
+      return;
+    }
+    _revealed[currentIndex] = true;
+    notifyListeners();
+  }
+
+  /// 次の設問（または完了ページ）へ進む。確定前は無視する。
   void next() {
-    if (onCompletion || !isCurrentLocked) return;
+    if (onCompletion || !_revealed[currentIndex]) return;
     currentIndex++;
     notifyListeners();
   }
@@ -82,7 +117,7 @@ class ExerciseQuizController extends ChangeNotifier {
 
 /// 演習プレイヤー（フルスクリーン）。チャンクの問題を1問ずつ出題する。
 ///
-/// 完了到達時に、この run の各問の正誤を [ExerciseResults] へまとめて記録する
+/// 各問の正誤は**確定（confirm）時**に、その qid の結果を [ExerciseResults] へ記録する
 /// （チャンク・復習いずれの run でも記録し、最新の結果で上書きする）。
 class ExerciseQuizScreen extends ConsumerStatefulWidget {
   const ExerciseQuizScreen({
@@ -105,7 +140,6 @@ class _ExerciseQuizScreenState extends ConsumerState<ExerciseQuizScreen> {
     widget.questions,
   )..addListener(_onChanged);
   final ScrollController _scroll = ScrollController();
-  bool _persisted = false;
 
   void _onChanged() => setState(() {});
 
@@ -117,63 +151,68 @@ class _ExerciseQuizScreenState extends ConsumerState<ExerciseQuizScreen> {
     super.dispose();
   }
 
-  /// 回答後、回答エリアが見えるよう末尾へスクロールする。
-  void _onAnswer(int optionId) {
-    _controller.answer(optionId);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_scroll.hasClients) return;
-      _scroll.animateTo(
-        _scroll.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
+  /// 選択を確定してリビールする。確定時にこの問の正誤を記録し、正解ならハプティクス。
+  void _onConfirm() {
+    final question = _controller.current;
+    _controller.confirm();
+    if (!_controller.isCurrentRevealed) return;
+    final correct = _controller.isCurrentCorrect;
+    ref
+        .read(exerciseResultsProvider.notifier)
+        .recordAll({question.qid: correct});
+    if (correct) AppHaptics.correct();
+    _scrollToTop();
   }
 
   /// 次の設問へ進み、スクロールを先頭に戻す。
   void _onNext() {
     _controller.next();
+    _scrollToTop();
+  }
+
+  void _scrollToTop() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scroll.hasClients) _scroll.jumpTo(0);
     });
   }
 
+  void _close() => Navigator.of(context).maybePop();
+
   @override
   Widget build(BuildContext context) {
-    final total = _controller.total;
+    final c = context.colors;
     final onCompletion = _controller.onCompletion;
-    final progress = total == 0 ? 1.0 : _controller.currentIndex / total;
-
-    // 完了到達時に1度だけ、この run の各問の正誤をまとめて記録する。
-    if (onCompletion && !_persisted) {
-      _persisted = true;
-      final results = <String, bool>{
-        for (var i = 0; i < _controller.questions.length; i++)
-          _controller.questions[i].qid:
-              _controller.selected[i] ==
-              _controller.questions[i].answerOptionId,
-      };
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(exerciseResultsProvider.notifier).recordAll(results);
-      });
-    }
 
     return Scaffold(
+      backgroundColor: c.bg,
       body: SafeArea(
         child: Column(
           children: [
-            _Header(
-              title: widget.title,
-              progress: onCompletion ? 1.0 : progress,
-              indexLabel: onCompletion
-                  ? null
-                  : '${_controller.currentIndex + 1} / $total',
-            ),
+            if (onCompletion)
+              // 完了ビューは右端に閉じるボタンのみ。
+              Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: IconButton(
+                    icon: const Icon(Icons.close, size: 20),
+                    color: c.textSecondary,
+                    onPressed: _close,
+                  ),
+                ),
+              )
+            else
+              QuizTopBar(
+                current: _controller.currentIndex + 1,
+                total: _controller.total,
+                onClose: _close,
+              ),
             Expanded(
               child: onCompletion
                   ? _CompletionView(
                       correctCount: _controller.correctCount,
-                      total: total,
+                      total: _controller.total,
                       wrongQuestions: _controller.wrongQuestions,
                       assetBasePath: widget.assetBasePath,
                     )
@@ -181,12 +220,14 @@ class _ExerciseQuizScreenState extends ConsumerState<ExerciseQuizScreen> {
                       key: ValueKey('q-${_controller.currentIndex}'),
                       scroll: _scroll,
                       question: _controller.current,
-                      locked: _controller.isCurrentLocked,
-                      selectedId:
-                          _controller.selected[_controller.currentIndex],
+                      revealed: _controller.isCurrentRevealed,
+                      selected: _controller.isCurrentSelected,
+                      selectedId: _controller.currentSelectedId,
+                      correct: _controller.isCurrentCorrect,
                       assetBasePath: widget.assetBasePath,
                       isLast: _controller.isLastQuestion,
-                      onAnswer: _onAnswer,
+                      onSelect: _controller.select,
+                      onConfirm: _onConfirm,
                       onNext: _onNext,
                     ),
             ),
@@ -197,304 +238,118 @@ class _ExerciseQuizScreenState extends ConsumerState<ExerciseQuizScreen> {
   }
 }
 
-/// 上部ヘッダー（× クローズ＋進捗バー＋問番号）。
-class _Header extends StatelessWidget {
-  const _Header({
-    required this.title,
-    required this.progress,
-    required this.indexLabel,
-  });
-
-  final String title;
-  final double progress;
-  final String? indexLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 4, 16, 8),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.of(context).maybePop(),
-              ),
-              Expanded(
-                child: Text(
-                  title,
-                  style: theme.textTheme.titleMedium,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              if (indexLabel != null)
-                Text(indexLabel!, style: theme.textTheme.labelLarge),
-            ],
-          ),
-          const SizedBox(height: 4),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 6,
-              backgroundColor: theme.colorScheme.surfaceContainerHighest,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// 1問の表示（問題文＋タップ可能な選択肢＋回答エリア＋次へ）。スクロール可能。
-///
-/// フッターは持たず、解答は選択肢ブロックのタップで行う。回答後は末尾に
-/// 回答エリアと「次へ」を表示する。
+/// 1問の表示（問題文＋選択肢＋確定後のバナー・解説＋下部CTA）。
 class _QuestionView extends StatelessWidget {
   const _QuestionView({
     super.key,
     required this.scroll,
     required this.question,
-    required this.locked,
+    required this.revealed,
+    required this.selected,
     required this.selectedId,
+    required this.correct,
     required this.assetBasePath,
     required this.isLast,
-    required this.onAnswer,
+    required this.onSelect,
+    required this.onConfirm,
     required this.onNext,
   });
 
   final ScrollController scroll;
   final ExerciseQuestion question;
-  final bool locked;
+  final bool revealed;
+  final bool selected;
   final int? selectedId;
+  final bool correct;
   final String assetBasePath;
   final bool isLast;
-  final ValueChanged<int> onAnswer;
+  final ValueChanged<int> onSelect;
+  final VoidCallback onConfirm;
   final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SingleChildScrollView(
-      controller: scroll,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // 問題文ブロック。
-          _Blocks(blocks: question.content, assetBasePath: assetBasePath),
-          const SizedBox(height: 20),
-          // 選択肢（タップで即時回答）。
-          for (final opt in question.options)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: _OptionRow(
-                option: opt,
-                state: _optionState(opt.id),
-                assetBasePath: assetBasePath,
-                onTap: locked ? null : () => onAnswer(opt.id),
+    return ContentMaxWidth(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppLayout.screenMargin),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                controller: scroll,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (revealed) ...[
+                      ResultBanner(correct: correct),
+                      const SizedBox(height: 14),
+                    ],
+                    // 問題文ブロック。
+                    _Blocks(
+                      blocks: question.content,
+                      assetBasePath: assetBasePath,
+                    ),
+                    const SizedBox(height: 16),
+                    // 選択肢。
+                    for (final opt in question.options)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: ChoiceTile(
+                          label: _kana(opt.id),
+                          state: _choiceState(opt.id),
+                          onTap: revealed ? null : () => onSelect(opt.id),
+                          child: opt.content.isEmpty
+                              ? const SizedBox.shrink()
+                              : _Blocks(
+                                  blocks: opt.content,
+                                  assetBasePath: assetBasePath,
+                                ),
+                        ),
+                      ),
+                    // 解説（リビール後・解説がある場合）。
+                    if (revealed && question.explanation.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      ExplanationCard(
+                        child: _Blocks(
+                          blocks: question.explanation,
+                          assetBasePath: assetBasePath,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
-          // 回答エリア＋次へ（回答後のみ）。
-          if (locked) ...[
-            const SizedBox(height: 16),
-            _AnswerArea(
-              question: question,
-              correct: selectedId == question.answerOptionId,
-              assetBasePath: assetBasePath,
-              theme: theme,
-            ),
-            const SizedBox(height: 20),
+            // 下部CTA。
             SizedBox(
               width: double.infinity,
-              child: FilledButton(
-                onPressed: onNext,
-                child: Text(isLast ? '結果を見る' : '次へ'),
-              ),
+              child: revealed
+                  ? FilledButton(
+                      onPressed: onNext,
+                      child: Text(isLast ? '結果を見る' : '次の問題へ'),
+                    )
+                  : FilledButton(
+                      onPressed: selected ? onConfirm : null,
+                      child: const Text('回答する'),
+                    ),
             ),
+            const SizedBox(height: 14),
           ],
-        ],
-      ),
-    );
-  }
-
-  _OptionVisualState _optionState(int optionId) {
-    if (!locked) return _OptionVisualState.idle;
-    if (optionId == question.answerOptionId) return _OptionVisualState.correct;
-    if (optionId == selectedId) return _OptionVisualState.wrong;
-    return _OptionVisualState.idle;
-  }
-}
-
-enum _OptionVisualState { idle, correct, wrong }
-
-/// 選択肢1つ（アイウエのラベル＋内容）。タップで回答し、回答後は正誤で色付けする。
-class _OptionRow extends StatelessWidget {
-  const _OptionRow({
-    required this.option,
-    required this.state,
-    required this.assetBasePath,
-    required this.onTap,
-  });
-
-  final ExerciseOption option;
-  final _OptionVisualState state;
-  final String assetBasePath;
-
-  /// タップで回答する。回答済み（ロック）のときは null。
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final success = theme.semantic.success;
-    final (
-      Color border,
-      Color? bg,
-      IconData? icon,
-      Color? iconColor,
-    ) = switch (state) {
-      _OptionVisualState.idle => (theme.dividerColor, null, null, null),
-      _OptionVisualState.correct => (
-        success,
-        success.withValues(alpha: 0.12),
-        Icons.check_circle,
-        success,
-      ),
-      _OptionVisualState.wrong => (
-        theme.colorScheme.error,
-        theme.colorScheme.error.withValues(alpha: 0.1),
-        Icons.cancel,
-        theme.colorScheme.error,
-      ),
-    };
-
-    final hasContent = option.content.isNotEmpty;
-    final labelColor = onTap == null && state == _OptionVisualState.idle
-        ? theme.colorScheme.onSurfaceVariant
-        : theme.colorScheme.primary;
-
-    return Material(
-      color: bg ?? Colors.transparent,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          decoration: BoxDecoration(
-            border: Border.all(color: border),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // アイウエのラベル。
-              Container(
-                width: 28,
-                height: 28,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: labelColor.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Text(
-                  _kana(option.id),
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: labelColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: hasContent
-                    ? _Blocks(
-                        blocks: option.content,
-                        assetBasePath: assetBasePath,
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              if (icon != null) ...[
-                const SizedBox(width: 8),
-                Icon(icon, size: 20, color: iconColor),
-              ],
-            ],
-          ),
         ),
       ),
     );
   }
-}
 
-/// 回答エリア（正解の表示＋解説）。
-class _AnswerArea extends StatelessWidget {
-  const _AnswerArea({
-    required this.question,
-    required this.correct,
-    required this.assetBasePath,
-    required this.theme,
-  });
-
-  final ExerciseQuestion question;
-  final bool correct;
-  final String assetBasePath;
-  final ThemeData theme;
-
-  @override
-  Widget build(BuildContext context) {
-    final accent = correct ? theme.semantic.success : theme.colorScheme.error;
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: accent.withValues(alpha: 0.4)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                correct ? Icons.check_circle : Icons.cancel,
-                color: accent,
-                size: 20,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                correct ? '正解！' : '不正解',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: accent,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '正解：${_kana(question.answerOptionId)}',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          if (question.explanation.isNotEmpty) ...[
-            const Divider(height: 24),
-            Text(
-              '解説',
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 4),
-            _Blocks(blocks: question.explanation, assetBasePath: assetBasePath),
-          ],
-        ],
-      ),
-    );
+  ChoiceTileState _choiceState(int optionId) {
+    if (!revealed) {
+      return optionId == selectedId
+          ? ChoiceTileState.selected
+          : ChoiceTileState.idle;
+    }
+    if (optionId == question.answerOptionId) return ChoiceTileState.correct;
+    if (optionId == selectedId) return ChoiceTileState.incorrect;
+    return ChoiceTileState.dimmed;
   }
 }
 
@@ -530,7 +385,7 @@ class _Blocks extends StatelessWidget {
   }
 }
 
-/// 完了ページ（正答率＋アクション）。
+/// 完了ビュー（スコアリング＋前向きメッセージ＋復習/一覧アクション）。
 class _CompletionView extends StatelessWidget {
   const _CompletionView({
     required this.correctCount,
@@ -546,43 +401,47 @@ class _CompletionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final rate = total == 0 ? 0 : (correctCount / total * 100).round();
+    final c = context.colors;
+    final rate = total == 0 ? 0.0 : correctCount / total;
     final allCorrect = wrongQuestions.isEmpty;
+    final message = rate >= 1.0
+        ? 'パーフェクト！'
+        : rate >= 0.8
+        ? 'いい調子！'
+        : rate >= 0.5
+        ? 'もう少し！'
+        : 'くり返しが力になる';
 
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+    return ContentMaxWidth(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppLayout.screenMargin),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              allCorrect ? Icons.emoji_events : Icons.flag_circle,
-              size: 72,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: 16),
-            Text('お疲れさまでした！', style: theme.textTheme.headlineSmall),
-            const SizedBox(height: 24),
-            Text('正答率', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 4),
-            Text(
-              '$rate%',
-              style: theme.textTheme.displaySmall?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.bold,
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CompletionRing(score: correctCount, total: total),
+                    const SizedBox(height: 16),
+                    Text(
+                      message,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: c.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            Text(
-              '$correctCount / $total 問正解',
-              style: theme.textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 32),
-            if (!allCorrect)
+            if (!allCorrect) ...[
               SizedBox(
                 width: double.infinity,
-                child: FilledButton.icon(
-                  icon: const Icon(Icons.replay),
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.replay, size: 18),
                   label: Text('間違えた問題を復習（${wrongQuestions.length}問）'),
                   onPressed: () => Navigator.of(context).pushReplacement(
                     MaterialPageRoute<void>(
@@ -595,7 +454,8 @@ class _CompletionView extends StatelessWidget {
                   ),
                 ),
               ),
-            const SizedBox(height: 8),
+              const SizedBox(height: 8),
+            ],
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
@@ -603,6 +463,7 @@ class _CompletionView extends StatelessWidget {
                 child: const Text('一覧に戻る'),
               ),
             ),
+            const SizedBox(height: 14),
           ],
         ),
       ),

@@ -8,38 +8,45 @@ void main() {
     const config = AppConfig(title: 'テスト');
     expect(config.contentBasePath, 'contents');
     expect(config.tabs, isNotEmpty);
-    expect(config.primaryColor, isNotNull);
+    expect(config.brandPrimary, isNull);
   });
 
-  test('AppDesignScheme が Material ColorScheme に反映される', () {
-    const design = AppDesignScheme(
-      primary: Color(0xFF1F7ACC),
-      secondary: Color(0xFF0A457B),
-      tertiary: Color(0xFF4B9CFB),
-      accent: Color(0xFFF84F65),
-      success: Color(0xFF16B364),
-      surface: Colors.white,
-      onSurface: Color(0xFF393C41),
-    );
-
-    final scheme = design.toColorScheme();
-    final semanticColors = design.toSemanticColors();
-
-    expect(scheme.primary, const Color(0xFF1F7ACC));
-    expect(scheme.secondary, const Color(0xFF0A457B));
-    expect(scheme.tertiary, const Color(0xFF4B9CFB));
-    expect(scheme.surface, Colors.white);
-    expect(scheme.onSurface, const Color(0xFF393C41));
-    expect(semanticColors.accent, const Color(0xFFF84F65));
-    expect(semanticColors.success, const Color(0xFF16B364));
+  test('buildEngineTheme は集中ブルーの ColorScheme を返す', () {
+    final theme = buildEngineTheme(AppColors.light());
+    expect(theme.colorScheme.brightness, Brightness.light);
+    // primary は主色ランプの p600（#2563EB）に投影される。
+    expect(theme.colorScheme.primary, const Color(0xFF2563EB));
   });
 
-  test('AppDesignScheme は success 未指定でも既定の success を配布する', () {
-    const design = AppDesignScheme(primary: Color(0xFF1F7ACC));
-    expect(
-      design.toSemanticColors().success,
-      AppSemanticColors.fallback.success,
+  test('buildEngineTheme は AppColors 拡張をテーマに登録する', () {
+    final theme = buildEngineTheme(AppColors.light());
+    final colors = theme.extension<AppColors>();
+    expect(colors, isNotNull);
+    expect(colors!.primary600, const Color(0xFF2563EB));
+    expect(colors.correct, const Color(0xFF0D9488));
+  });
+
+  test('theme.semantic.success は correct（#0D9488）を指す（互換シム）', () {
+    final theme = buildEngineTheme(AppColors.light());
+    expect(theme.semantic.success, const Color(0xFF0D9488));
+    expect(theme.semantic.accent, const Color(0xFFF98BA4));
+  });
+
+  test('ブランド主色スワッチで primary ランプだけ差し替えられる', () {
+    const brand = AppPrimarySwatch(
+      p50: Color(0xFFE6F7F4),
+      p100: Color(0xFFC7EFE8),
+      p300: Color(0xFF6FD3C4),
+      p500: Color(0xFF19B49B),
+      p600: Color(0xFF0F9D8A),
+      p800: Color(0xFF0A5F55),
+      primaryDark: Color(0xFF3FC7B4),
+      primarySurfaceDark: Color.fromRGBO(63, 199, 180, 0.14),
     );
+    final theme = buildEngineTheme(AppColors.light(primary: brand));
+    // 主色だけブランド値に、semantic は共通固定のまま。
+    expect(theme.colorScheme.primary, const Color(0xFF0F9D8A));
+    expect(theme.extension<AppColors>()!.correct, const Color(0xFF0D9488));
   });
 
   test('ContentIndex.fromJson が一覧をパースできる', () {

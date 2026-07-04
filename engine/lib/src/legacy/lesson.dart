@@ -1,3 +1,8 @@
+// 旧テキストレッスンUI（カードスワイプ式）。ルート未接続・到達不可。
+// 集中ブルーのデザイン適用で動画講座（VideoTop/VideoWatchScreen）に置き換えたが、
+// レッスン再生ロジックの参考・将来の復活に備えてコードを温存している。
+// 復活させる場合は router に `/lessons/:id`（→ この Lesson ウィジェット）を再接続する。
+// 詳細は engine/lib/src/legacy/README.md を参照。
 import 'dart:async';
 import 'dart:ui' show FontFeature, ImageFilter;
 
@@ -6,11 +11,13 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../content/content_models.dart' as models;
-import '../../content/content_providers.dart';
-import '../../settings/audio_settings.dart';
-import 'widgets/lesson_contents.dart';
-import 'widgets/quiz_controller.dart';
+import '../content/content_models.dart' as models;
+import '../content/content_providers.dart';
+import '../settings/audio_settings.dart';
+import '../widgets/content/content_image.dart';
+import '../widgets/content/markdown_text.dart';
+import '../widgets/quiz/quiz_controller.dart';
+import 'lesson_contents.dart';
 
 /// レッスン内容。contents/lessons/{id}.json を都度ロードして再生する。
 ///

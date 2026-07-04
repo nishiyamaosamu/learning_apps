@@ -1,9 +1,9 @@
 import 'package:go_router/go_router.dart';
 import '../app/app_config.dart';
+import '../screens/anki_study.dart';
 import '../screens/home_screen.dart';
-import '../screens/tabs/anki.dart';
 import '../screens/tabs/exercise.dart';
-import '../screens/tabs/lesson.dart';
+import '../screens/video_watch.dart';
 
 GoRouter buildRouter(AppConfig config) {
   return GoRouter(
@@ -15,12 +15,11 @@ GoRouter buildRouter(AppConfig config) {
         path: '/',
         builder: (context, state) => const HomeScreen(),
         routes: [
+          // 動画視聴。id だけを渡し、章・本体・次の動画は videoLookup で引く。
           GoRoute(
-            path: 'lessons/:id',
-            builder: (context, state) => Lesson(
-              id: state.pathParameters['id']!,
-              title: state.extra as String? ?? '',
-            ),
+            path: 'videos/:id',
+            builder: (context, state) =>
+                VideoWatchScreen(id: state.pathParameters['id']!),
           ),
           GoRoute(
             path: 'exercises/:id',
@@ -29,12 +28,12 @@ GoRouter buildRouter(AppConfig config) {
               title: state.extra as String? ?? '',
             ),
           ),
+          // 暗記カード学習（フリップ）。id でデッキをロードし、全カードを順番どおり
+          // 出題する（AnkiStudyRoute が ankiProvider を引く）。
           GoRoute(
             path: 'anki/:id',
-            builder: (context, state) => Anki(
-              id: state.pathParameters['id']!,
-              title: state.extra as String? ?? '',
-            ),
+            builder: (context, state) =>
+                AnkiStudyRoute(id: state.pathParameters['id']!),
           ),
         ],
       ),

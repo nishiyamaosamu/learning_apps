@@ -6,8 +6,13 @@ part 'content_models.g.dart';
 /// 一覧表示用のサマリ。base.json に含まれる。
 @freezed
 class ContentSummary with _$ContentSummary {
-  const factory ContentSummary({required String id, required String title}) =
-      _ContentSummary;
+  const factory ContentSummary({
+    required String id,
+    required String title,
+    // 収録カード数（暗記カードのデッキで使う）。任意フィールドのため、値を持たない
+    // 既存の一覧（問題集など）は null のままで非破壊にパースできる。
+    int? cardCount,
+  }) = _ContentSummary;
 
   factory ContentSummary.fromJson(Map<String, dynamic> json) =>
       _$ContentSummaryFromJson(json);
@@ -59,10 +64,52 @@ class ContentIndex with _$ContentIndex {
     @Default(<LessonDomain>[]) List<LessonDomain> lessons,
     @Default(<ContentSummary>[]) List<ContentSummary> exercises,
     @Default(<ContentSummary>[]) List<ContentSummary> anki,
+    // 動画講座（ホームタブ）の章一覧。base.json に `videos` キーが無くても
+    // 空リストとしてパースが通る（@Default）。
+    @Default(<VideoChapter>[]) List<VideoChapter> videos,
   }) = _ContentIndex;
 
   factory ContentIndex.fromJson(Map<String, dynamic> json) =>
       _$ContentIndexFromJson(json);
+}
+
+/// 動画講座の「章」。base.json の `videos` 配列に含まれ、配列順で表示する。
+@freezed
+class VideoChapter with _$VideoChapter {
+  const factory VideoChapter({
+    required String id,
+    required String title,
+    // 章に属する動画（配列順）。
+    @Default(<VideoItem>[]) List<VideoItem> videos,
+  }) = _VideoChapter;
+
+  factory VideoChapter.fromJson(Map<String, dynamic> json) =>
+      _$VideoChapterFromJson(json);
+}
+
+/// 動画講座の1本（動画＋視聴後の確認クイズ）。
+///
+/// [id] は**全章を通してグローバルに一意**である前提。ルート `/videos/:id` から
+/// 章をまたいで1本を引く（[videoLookup]）ため、章内ローカルではなく全体で
+/// ユニークな値を割り当てること（例: '1-1', '1-2', '2-1'）。
+///
+/// [asset] は contentBasePath からの相対パス（例 'videos/1-1.mp4'）。
+/// [quizzes] は視聴後の確認クイズで、既存の [LessonQuiz] union をそのまま再利用する。
+@freezed
+class VideoItem with _$VideoItem {
+  const factory VideoItem({
+    required String id,
+    required String title,
+    // 尺（秒）。行末の mm:ss 表示に使う。
+    required int durationSec,
+    // 動画アセットの相対パス（contentBasePath 起点。例 'videos/1-1.mp4'）。
+    required String asset,
+    // 視聴後の確認クイズ（空なら確認クイズ導線を出さない）。
+    @Default(<LessonQuiz>[]) List<LessonQuiz> quizzes,
+  }) = _VideoItem;
+
+  factory VideoItem.fromJson(Map<String, dynamic> json) =>
+      _$VideoItemFromJson(json);
 }
 
 /// レッスン内容。contents/lessons/{id}.json を都度ロード。

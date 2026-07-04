@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_config.dart';
 import '../content/content_providers.dart';
+import '../design/app_colors.dart';
+import '../design/app_primary.dart';
+import '../design/app_theme.dart';
 import '../routing/router.dart';
 
 class EngineApp extends StatefulWidget {
@@ -25,20 +28,15 @@ class _EngineAppState extends State<EngineApp> {
   @override
   Widget build(BuildContext context) {
     final config = widget.config;
-    final colorScheme = config.resolvedColorScheme;
-    final semanticColors =
-        config.designScheme?.toSemanticColors() ?? AppSemanticColors.fallback;
+    final colors = AppColors.light(
+      primary: config.brandPrimary ?? AppPrimarySwatch.focusBlue,
+    );
 
     return ProviderScope(
       overrides: [appConfigProvider.overrideWithValue(config)],
       child: MaterialApp.router(
         title: config.title,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: colorScheme,
-          scaffoldBackgroundColor: colorScheme.surface,
-          extensions: <ThemeExtension<dynamic>>[semanticColors],
-        ),
+        theme: buildEngineTheme(colors),
         routerConfig: _router,
       ),
     );
