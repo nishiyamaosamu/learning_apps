@@ -6,6 +6,7 @@ import '../../design/app_dimens.dart';
 import '../../design/app_typography.dart';
 import '../../settings/app_info.dart';
 import '../../settings/audio_settings.dart';
+import '../../settings/theme_settings.dart';
 import '../../widgets/layout/content_max_width.dart';
 import '../widgets/entity_list.dart';
 import '../widgets/video_list.dart' show VideoSectionHeader;
@@ -28,6 +29,7 @@ class SettingsTop extends ConsumerWidget {
     final c = context.colors;
     final audioEnabled = ref.watch(audioEnabledProvider);
     final speed = ref.watch(audioSpeedProvider);
+    final themeMode = ref.watch(themeModeSettingProvider);
     final info = ref.watch(packageInfoProvider).valueOrNull;
     final version = info?.version ?? '';
     final build = info?.buildNumber ?? '';
@@ -69,6 +71,16 @@ class SettingsTop extends ConsumerWidget {
                   ),
                   onTap: () => ref.read(audioSpeedProvider.notifier).cycle(),
                 ),
+                // ダークモード（値＋シェブロン）。タップで選択シートを開く。
+                QicoRow(
+                  icon: Icons.dark_mode_rounded,
+                  title: 'ダークモード',
+                  trailing: _ValueTrailing(
+                    value: _themeModeLabel(themeMode),
+                    showChevron: true,
+                  ),
+                  onTap: () => _showThemeModeSheet(context, ref, themeMode),
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -98,6 +110,77 @@ class SettingsTop extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// [ThemeMode] の日本語ラベル（設定行の値 / 選択肢に共通で使う）。
+String _themeModeLabel(ThemeMode mode) {
+  switch (mode) {
+    case ThemeMode.system:
+      return 'システム';
+    case ThemeMode.light:
+      return 'ライト';
+    case ThemeMode.dark:
+      return 'ダーク';
+  }
+}
+
+/// ダークモードの選択シート（DESIGN.html の「詳細設定へ遷移」に相当）。
+///
+/// 専用画面を 1 つ増やすほどの情報量ではない（3 択のラジオのみ）ため、go_router の
+/// サブルートを追加せず軽量なボトムシートで代替する。選択即反映＋永続化。
+Future<void> _showThemeModeSheet(
+  BuildContext context,
+  WidgetRef ref,
+  ThemeMode current,
+) {
+  return showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    builder: (sheetContext) {
+      final c = sheetContext.colors;
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppLayout.screenMargin,
+                4,
+                AppLayout.screenMargin,
+                8,
+              ),
+              child: Text(
+                'ダークモード',
+                style: AppTypography.section.copyWith(color: c.textPrimary),
+              ),
+            ),
+            RadioGroup<ThemeMode>(
+              groupValue: current,
+              onChanged: (selected) {
+                if (selected != null) {
+                  ref.read(themeModeSettingProvider.notifier).set(selected);
+                }
+                Navigator.of(sheetContext).pop();
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final mode in ThemeMode.values)
+                    RadioListTile<ThemeMode>(
+                      value: mode,
+                      title: Text(_themeModeLabel(mode)),
+                      activeColor: c.primary600,
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 /// 設定行の右端表示（DESIGN.html `.val`）。

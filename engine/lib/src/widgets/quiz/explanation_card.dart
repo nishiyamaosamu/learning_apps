@@ -9,10 +9,13 @@ import '../../design/app_dimens.dart';
 /// （primary100 面＋primary800 文字、full 角丸、10dp/w700）と本文スロット [child]
 /// を縦に並べる。正誤リビールの最後に、バナー → 選択肢の色替え → 解説の順で見せる。
 class ExplanationCard extends StatelessWidget {
-  const ExplanationCard({super.key, required this.child});
+  const ExplanationCard({super.key, required this.child, this.trailing});
 
   /// 解説本文（MarkdownText などを渡す）。
   final Widget child;
+
+  /// 「解説」ピルと同じ行の右端に置く任意ウィジェット（「要復習に追加」チップ等）。
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -24,21 +27,26 @@ class ExplanationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // 「解説」ピル。
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
-              decoration: BoxDecoration(
-                color: c.primary100,
-                borderRadius: BorderRadius.circular(AppRadius.full),
-              ),
-              child: Text(
-                '解説',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: c.primary800,
+            // 「解説」ピル（＋任意で右端にトレーリング＝「要復習に追加」チップ）。
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: c.primary100,
+                    borderRadius: BorderRadius.circular(AppRadius.full),
+                  ),
+                  child: Text(
+                    '解説',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: c.primary800,
+                    ),
+                  ),
                 ),
-              ),
+                if (trailing != null) ...[const Spacer(), trailing!],
+              ],
             ),
             const SizedBox(height: 6),
             child,

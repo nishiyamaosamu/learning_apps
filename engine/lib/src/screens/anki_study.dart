@@ -11,6 +11,7 @@ import '../design/app_haptics.dart';
 import '../design/app_motion.dart';
 import '../design/app_shadows.dart';
 import '../design/app_typography.dart';
+import '../settings/anki_results.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/layout/content_max_width.dart';
 import '../widgets/quiz/completion_ring.dart';
@@ -31,7 +32,7 @@ class AnkiStudyRoute extends ConsumerWidget {
     final deck = ref.watch(ankiProvider(id));
     return deck.when(
       data: (d) => AnkiStudyScreen(
-        cards: d.cards,
+        cards: [for (final card in d.cards) (deckId: d.id, card: card)],
         title: d.title,
         deckLabel: d.title,
       ),
@@ -55,12 +56,13 @@ class AnkiStudyRoute extends ConsumerWidget {
 /// 1 周したら [CompletionRing] の完了ビューを出す。
 ///
 /// 設計判断:
-/// - **集計はセッション内のみで永続化しない**（「覚えた」率の保存や要復習キューへの
-///   投入は後回し。docs/DESIGN_TODO.md #3）。
+/// - **自己評価（覚えた／まだ）は [AnkiResults] にカード単位で永続化する**（最新の
+///   評価で上書き。docs/DESIGN_TODO.md #3）。セッション内の集計（[_known]/[_later]）は
+///   完了ビューの文言用にそのまま保持する。
 /// - **「まだ」を押したカードは末尾に回さず、シンプルに 1 周だけで完了する**。復習の
-///   再出題は上記の永続化とセットで扱うべきで、セッション内の並べ替えだけ入れても
-///   学習体験としては中途半端になるため、あえて入れない。
-class AnkiStudyScreen extends StatefulWidget {
+///   再出題は一覧の「覚えていないカードから10問」導線で扱うため、セッション内の
+///   並べ替えは入れない。
+class AnkiStudyScreen extends ConsumerStatefulWidget {
   const AnkiStudyScreen({
     super.key,
     required this.cards,
@@ -68,8 +70,9 @@ class AnkiStudyScreen extends StatefulWidget {
     this.deckLabel,
   });
 
-  /// 出題するカード（配列順に 1 枚ずつ表示する）。
-  final List<AnkiCard> cards;
+  /// 出題するカード（配列順に 1 枚ずつ表示する）。各カードは自己評価の記録に使う
+  /// deckId を保持する（[AnkiSessionCard]）。
+  final List<AnkiSessionCard> cards;
 
   /// 画面タイトル（セマンティクス用途。上部は [QuizTopBar] のため直接は表示しない）。
   final String title;
@@ -79,10 +82,10 @@ class AnkiStudyScreen extends StatefulWidget {
   final String? deckLabel;
 
   @override
-  State<AnkiStudyScreen> createState() => _AnkiStudyScreenState();
+  ConsumerState<AnkiStudyScreen> createState() => _AnkiStudyScreenState();
 }
 
-class _AnkiStudyScreenState extends State<AnkiStudyScreen>
+class _AnkiStudyScreenState extends ConsumerState<AnkiStudyScreen>
     with SingleTickerProviderStateMixin {
   /// フリップ角の進行（0=表 / 1=裏）。reduce-motion 時は駆動せず、[_showingBack]
   /// だけで面を切り替える（クロスフェード側を使う）。
@@ -94,7 +97,7 @@ class _AnkiStudyScreenState extends State<AnkiStudyScreen>
   bool _showingBack = false;
   bool _finished = false;
 
-  List<AnkiCard> get _cards => widget.cards;
+  List<AnkiSessionCard> get _cards => widget.cards;
   int get _total => _cards.length;
 
   @override
@@ -123,9 +126,14 @@ class _AnkiStudyScreenState extends State<AnkiStudyScreen>
     }
   }
 
-  /// 自己評価。[known] なら「覚えた」、false なら「まだ」。次のカードへ進み、
-  /// 最終カードなら完了ビューへ。
+  /// 自己評価。[known] なら「覚えた」、false なら「まだ」。カード単位で
+  /// [AnkiResults] に永続化し（最新で上書き）、次のカードへ進む。最終カードなら
+  /// 完了ビューへ。
   void _evaluate(bool known) {
+    final sc = _cards[_index];
+    ref
+        .read(ankiResultsProvider.notifier)
+        .record(ankiCardKey(sc.deckId, sc.card), known);
     if (known) {
       _known++;
     } else {
@@ -195,7 +203,7 @@ class _AnkiStudyScreenState extends State<AnkiStudyScreen>
   }
 
   Widget _buildStudy(AppColors c) {
-    final card = _cards[_index];
+    final card = _cards[_index].card;
     return ContentMaxWidth(
       child: Padding(
         padding: const EdgeInsets.symmetric(

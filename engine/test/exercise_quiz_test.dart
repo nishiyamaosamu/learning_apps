@@ -76,7 +76,7 @@ void main() {
     await tester.tap(find.text('結果を見る'));
     await tester.pumpAndSettle();
     expect(find.text('もう少し！'), findsOneWidget);
-    expect(find.textContaining('間違えた問題を復習'), findsOneWidget);
+    expect(find.textContaining('要復習の'), findsOneWidget);
     expect(find.text('一覧に戻る'), findsOneWidget);
   });
 
@@ -225,7 +225,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('結果を見る'));
     await tester.pumpAndSettle();
-    await tester.tap(find.textContaining('間違えた問題を復習'));
+    await tester.tap(find.textContaining('要復習の'));
     await tester.pumpAndSettle();
 
     // 復習run：正解（イ=2）→ 確定 → 結果を見る → 一覧に戻る。
@@ -240,5 +240,86 @@ void main() {
 
     expect(find.text('問題集を開く'), findsOneWidget);
     expect(find.text('一覧に戻る'), findsNothing);
+  });
+
+  testWidgets('誤答は要復習キューに自動追加され、完了画面に「+n 要復習」と追加ずみ報告が出る', (
+    tester,
+  ) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          theme: buildEngineTheme(AppColors.light()),
+          home: ExerciseQuizScreen(
+            questions: [_q('Q1', 1), _q('Q2', 2)],
+            assetBasePath: 'contents',
+            title: 'キューテスト',
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Q1 正解（ア=1）→ キューに入らない。
+    await tester.tap(find.text('ア'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('回答する'));
+    await tester.pumpAndSettle();
+    expect(container.read(reviewQueueProvider).contains('Q1'), isFalse);
+    await tester.tap(find.text('次の問題へ'));
+    await tester.pumpAndSettle();
+
+    // Q2 不正解（ア=1, 正解=2）→ 自動でキューに入る。
+    await tester.tap(find.text('ア'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('回答する'));
+    await tester.pumpAndSettle();
+    expect(container.read(reviewQueueProvider).contains('Q2'), isTrue);
+    await tester.tap(find.text('結果を見る'));
+    await tester.pumpAndSettle();
+
+    // 完了画面：要復習 +1、追加ずみ報告、まちがい直しの主導線。
+    expect(find.text('+1'), findsOneWidget);
+    expect(find.text('要復習'), findsOneWidget);
+    expect(find.text('まちがえた1問は要復習に追加ずみ'), findsOneWidget);
+    expect(find.textContaining('要復習の1問をもう一度'), findsOneWidget);
+  });
+
+  testWidgets('解説の「要復習に追加」チップで正答の設問を手動追加できる（→追加済み）', (
+    tester,
+  ) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          theme: buildEngineTheme(AppColors.light()),
+          home: ExerciseQuizScreen(
+            questions: [_q('Q1', 1)],
+            assetBasePath: 'contents',
+            title: 'チップテスト',
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // 正解（ア=1）→ 確定 → 解説にチップが出る。まだ未追加。
+    await tester.tap(find.text('ア'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('回答する'));
+    await tester.pumpAndSettle();
+    expect(find.text('要復習に追加'), findsOneWidget);
+    expect(container.read(reviewQueueProvider).contains('Q1'), isFalse);
+
+    // チップをタップ → 手動追加され「追加済み」に変わる。
+    await tester.tap(find.text('要復習に追加'));
+    await tester.pumpAndSettle();
+    expect(container.read(reviewQueueProvider).contains('Q1'), isTrue);
+    expect(find.text('追加済み'), findsOneWidget);
+    expect(find.text('要復習に追加'), findsNothing);
   });
 }

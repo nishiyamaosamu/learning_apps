@@ -74,4 +74,25 @@ void main() {
     expect(find.text('1.2.3 (4)'), findsOneWidget);
     expect(find.text('バージョン 1.2.3'), findsOneWidget);
   });
+
+  testWidgets('ダークモード: 既定「システム」を表示し、シートで切替できる', (tester) async {
+    await tester.pumpWidget(_host());
+    await tester.pumpAndSettle();
+
+    // 行のラベルと現在値（既定=システム）。
+    expect(find.text('ダークモード'), findsOneWidget);
+    expect(find.text('システム'), findsOneWidget);
+
+    // 行タップでボトムシートが開き、3 択が並ぶ。
+    await tester.tap(find.text('ダークモード'));
+    await tester.pumpAndSettle();
+    expect(find.text('ライト'), findsOneWidget);
+    expect(find.text('ダーク'), findsOneWidget);
+
+    // 「ダーク」を選ぶとシートが閉じ、行の値がダークに変わる。
+    await tester.tap(find.text('ダーク'));
+    await tester.pumpAndSettle();
+    expect(find.text('ライト'), findsNothing); // シートは閉じた
+    expect(find.text('ダーク'), findsOneWidget); // 行の値として残る
+  });
 }

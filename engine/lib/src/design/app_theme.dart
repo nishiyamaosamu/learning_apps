@@ -11,12 +11,23 @@ import 'app_typography.dart';
 /// その互換投影**。`ColorScheme.fromSeed` は使わず、役割ごとにトークンを手で写す。
 /// 画面は原則 `context.colors` を読むが、Material 標準コンポーネントや未改修画面が
 /// 参照する `colorScheme` / `theme.semantic` も破綻しないよう整合させる。
-ThemeData buildEngineTheme(AppColors c) {
+///
+/// [brightness] は Material 標準コンポーネント（ボトムシート・アイコン・テキスト
+/// 選択など）が明暗を判定するために使う。`AppColors.light()` を渡すときは
+/// [Brightness.light]（既定）、`AppColors.dark()` を渡すときは [Brightness.dark]
+/// を渡す。色トークン自体は [c] が唯一の真実なので、[brightness] は明暗のヒント
+/// にとどまる。
+ThemeData buildEngineTheme(
+  AppColors c, {
+  Brightness brightness = Brightness.light,
+}) {
+  final isDark = brightness == Brightness.dark;
+
   // ボタン共通のテキストスタイル（15dp / w700）。行間はボタン内で不要なので付けない。
   const buttonTextStyle = TextStyle(fontSize: 15, fontWeight: FontWeight.w700);
 
   final colorScheme = ColorScheme(
-    brightness: Brightness.light,
+    brightness: brightness,
     primary: c.primary600,
     onPrimary: Colors.white,
     primaryContainer: c.primary100,
@@ -37,8 +48,10 @@ ThemeData buildEngineTheme(AppColors c) {
     onSurface: c.textPrimary,
     onSurfaceVariant: c.textSecondary,
     surfaceContainerLow: c.bg,
-    surfaceContainer: const Color(0xFFF1F5F9),
-    surfaceContainerHighest: const Color(0xFFF1F5F9),
+    // surfaceContainer 系はカード積層の中間面。ライトは淡いグレー、ダークは
+    // neutral トークン（border / surface）へ寄せて破綻を防ぐ。
+    surfaceContainer: isDark ? c.surface : const Color(0xFFF1F5F9),
+    surfaceContainerHighest: isDark ? c.border : const Color(0xFFF1F5F9),
     outline: c.textMuted,
     outlineVariant: c.border,
   );

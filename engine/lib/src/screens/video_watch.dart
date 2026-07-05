@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,7 @@ import '../design/app_colors.dart';
 import '../design/app_dimens.dart';
 import '../design/app_typography.dart';
 import '../settings/audio_settings.dart';
+import '../settings/video_progress.dart';
 import '../widgets/layout/content_max_width.dart';
 import '../widgets/quiz/quiz_session_screen.dart';
 import 'widgets/video_list.dart';
@@ -71,15 +74,32 @@ class _WatchBodyState extends ConsumerState<_WatchBody>
   bool _initialized = false;
   bool _initFailed = false;
 
+  /// 進捗ストア（keepAlive）。dispose 後に ref を触らないよう initState で
+  /// notifier を捕捉し、以後は ref 経由でなくこの参照を使う。
+  late final VideoProgress _progress;
+
+  /// 再生中の定期記録タイマー。
+  Timer? _saveTimer;
+
   @override
   void initState() {
     super.initState();
+    _progress = ref.read(videoProgressProvider.notifier);
+    // 画面を開いた時点で「最後に視聴した動画」を更新する（つづきからヒーロー用）。
+    _progress.markOpened(widget.item.id);
     WidgetsBinding.instance.addObserver(this);
     _initController();
   }
 
   Future<void> _initController() async {
     final basePath = ref.read(appConfigProvider).contentBasePath;
+    // 保存済みの再生位置（seek 判定に使う）。視聴済み or ほぼ末尾なら先頭から。
+    final savedPositionSec = ref
+        .read(videoProgressProvider)
+        .positionSecOf(widget.item.id);
+    final alreadyWatched =
+        ref.read(videoProgressProvider).statusOf(widget.item.id) ==
+        VideoWatchStatus.watched;
     final controller = VideoPlayerController.asset(
       '$basePath/${widget.item.asset}',
     );
@@ -87,14 +107,38 @@ class _WatchBodyState extends ConsumerState<_WatchBody>
     try {
       await controller.initialize();
       if (!mounted) return;
+      // 保存位置があり、視聴済みでも末尾でもなければそこから再開する。
+      final totalSec = controller.value.duration.inSeconds;
+      final nearEnd = totalSec > 0 && savedPositionSec >= totalSec - 2;
+      if (savedPositionSec > 0 && !alreadyWatched && !nearEnd) {
+        await controller.seekTo(Duration(seconds: savedPositionSec));
+        if (!mounted) return;
+      }
       await controller.setPlaybackSpeed(ref.read(audioSpeedProvider));
       await controller.play();
       if (!mounted) return;
       setState(() => _initialized = true);
+      // 数秒間隔で再生位置を記録する（ラフでよい）。
+      _saveTimer = Timer.periodic(
+        const Duration(seconds: 5),
+        (_) => _saveProgress(),
+      );
     } catch (e, s) {
       debugPrint('video init failed (${widget.item.asset}): $e\n$s');
       if (mounted) setState(() => _initFailed = true);
     }
+  }
+
+  /// 現在の再生位置を進捗ストアへ記録する。dispose 後も安全に呼べるよう、
+  /// ref ではなく捕捉済みの [_progress] を使う。
+  void _saveProgress() {
+    final controller = _controller;
+    if (controller == null || !controller.value.isInitialized) return;
+    _progress.record(
+      id: widget.item.id,
+      positionSec: controller.value.position.inSeconds,
+      durationSec: widget.item.durationSec,
+    );
   }
 
   @override
@@ -102,11 +146,14 @@ class _WatchBodyState extends ConsumerState<_WatchBody>
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
       _controller?.pause();
+      _saveProgress();
     }
   }
 
   @override
   void dispose() {
+    _saveTimer?.cancel();
+    _saveProgress();
     WidgetsBinding.instance.removeObserver(this);
     _controller?.dispose();
     super.dispose();
@@ -135,6 +182,7 @@ class _WatchBodyState extends ConsumerState<_WatchBody>
 
   void _openQuiz() {
     _controller?.pause();
+    _saveProgress();
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => QuizSessionScreen(

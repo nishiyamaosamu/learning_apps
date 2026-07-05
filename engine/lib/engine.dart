@@ -16,8 +16,12 @@ export 'src/screens/anki_study.dart' show AnkiStudyScreen, AnkiStudyRoute;
 export 'src/screens/home_screen.dart';
 export 'src/screens/tabs/widgets/exercise_chunks.dart'
     show ExerciseChunk, buildExerciseChunks;
+export 'src/settings/anki_results.dart';
 export 'src/settings/audio_settings.dart';
 export 'src/settings/exercise_results.dart';
+export 'src/settings/review_queue.dart';
+export 'src/settings/theme_settings.dart';
+export 'src/settings/video_progress.dart';
 // 共有レンダーキット（コンテンツ本文）。
 export 'src/widgets/content/markdown_text.dart' show MarkdownText;
 // レイアウト部品。
@@ -28,6 +32,7 @@ export 'src/widgets/empty_state.dart' show EmptyState;
 export 'src/widgets/quiz/choice_tile.dart' show ChoiceTile, ChoiceTileState;
 export 'src/widgets/quiz/result_banner.dart' show ResultBanner;
 export 'src/widgets/quiz/explanation_card.dart' show ExplanationCard;
+export 'src/widgets/quiz/review_chip.dart' show ReviewChip;
 export 'src/widgets/quiz/quiz_top_bar.dart' show QuizTopBar;
 export 'src/widgets/quiz/completion_ring.dart' show CompletionRing;
 export 'src/widgets/quiz/fill_blank_board.dart' show FillBlankBoard;

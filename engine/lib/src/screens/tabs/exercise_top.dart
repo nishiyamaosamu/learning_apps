@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,12 +9,17 @@ import '../../content/content_providers.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_dimens.dart';
 import '../../settings/exercise_results.dart';
+import '../../settings/review_queue.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/layout/content_max_width.dart';
 import '../widgets/entity_list.dart';
 import '../widgets/exercise_summary_card.dart';
 import '../widgets/video_list.dart' show VideoSectionHeader;
+import 'exercise_quiz.dart';
 import 'widgets/exercise_summary.dart';
+
+/// 要復習セッションで1回に出題する最大問題数（DESIGN「要復習をランダムに5問」）。
+const int _kReviewSessionSize = 5;
 
 /// 問題集タブのトップ。
 ///
@@ -54,10 +61,15 @@ class _ExerciseTopBody extends ConsumerWidget {
     // 読み込み中は総数不明のため回答件数だけ（進捗バーは空）で先に描く。
     final results = ref.watch(exerciseResultsProvider);
     final allExercises = ref.watch(allExercisesProvider);
+    final loadedExercises = allExercises.valueOrNull ?? const <Exercise>[];
     final summary = computeExerciseSummary(
-      exercises: allExercises.valueOrNull ?? const <Exercise>[],
+      exercises: loadedExercises,
       results: results,
     );
+
+    // 要復習キューを設問に解決（問題集の読み込み前は空＝ボタン非表示）。
+    final queue = ref.watch(reviewQueueProvider);
+    final reviewQuestions = resolveReviewQuestions(loadedExercises, queue);
 
     return ContentMaxWidth(
       child: ListView(
@@ -67,6 +79,11 @@ class _ExerciseTopBody extends ConsumerWidget {
         ),
         children: [
           ExerciseSummaryCard(summary: summary),
+          // 主導線：要復習をランダムに最大5問。キューが空なら出さない。
+          if (reviewQuestions.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            _ReviewCta(questions: reviewQuestions),
+          ],
           const SizedBox(height: 12),
           const VideoSectionHeader(title: '問題集'),
           const SizedBox(height: 12),
@@ -87,6 +104,41 @@ class _ExerciseTopBody extends ConsumerWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// 「要復習をランダムに5問」の主導線ボタン（DESIGN.html `btn-primary` + shuffle）。
+///
+/// [questions]（キュー内の全設問）からランダムに最大 [_kReviewSessionSize] 問を
+/// 抽出して演習セッションを開始する。
+class _ReviewCta extends ConsumerWidget {
+  const _ReviewCta({required this.questions});
+
+  final List<ExerciseQuestion> questions;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final basePath = ref.watch(appConfigProvider).contentBasePath;
+    return SizedBox(
+      width: double.infinity,
+      child: FilledButton.icon(
+        icon: const Icon(Icons.shuffle, size: 18),
+        label: const Text('要復習をランダムに5問'),
+        onPressed: () {
+          final pool = [...questions]..shuffle(Random());
+          final picked = pool.take(_kReviewSessionSize).toList();
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => ExerciseQuizScreen(
+                questions: picked,
+                assetBasePath: basePath,
+                title: '要復習',
+              ),
+            ),
+          );
+        },
       ),
     );
   }

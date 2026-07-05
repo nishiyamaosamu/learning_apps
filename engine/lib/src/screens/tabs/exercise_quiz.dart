@@ -6,6 +6,7 @@ import '../../design/app_colors.dart';
 import '../../design/app_dimens.dart';
 import '../../design/app_haptics.dart';
 import '../../settings/exercise_results.dart';
+import '../../settings/review_queue.dart';
 import '../../widgets/content/content_image.dart';
 import '../../widgets/content/markdown_text.dart';
 import '../../widgets/layout/content_max_width.dart';
@@ -14,6 +15,7 @@ import '../../widgets/quiz/completion_ring.dart';
 import '../../widgets/quiz/explanation_card.dart';
 import '../../widgets/quiz/quiz_top_bar.dart';
 import '../../widgets/quiz/result_banner.dart';
+import '../../widgets/quiz/review_chip.dart';
 
 /// 選択肢ID（1始まり）と「アイウエ…」の対応。最大10択（ア〜コ）まで対応する。
 const List<String> _kanaLabels = [
@@ -160,6 +162,10 @@ class _ExerciseQuizScreenState extends ConsumerState<ExerciseQuizScreen> {
     ref
         .read(exerciseResultsProvider.notifier)
         .recordAll({question.qid: correct});
+    // 要復習キューへ連動（不正解=自動追加 / 正解=解消）。
+    ref
+        .read(reviewQueueProvider.notifier)
+        .syncFromResults({question.qid: correct});
     if (correct) AppHaptics.correct();
     _scrollToTop();
   }
@@ -311,6 +317,7 @@ class _QuestionView extends StatelessWidget {
                     if (revealed && question.explanation.isNotEmpty) ...[
                       const SizedBox(height: 6),
                       ExplanationCard(
+                        trailing: ReviewChip(qid: question.qid),
                         child: _Blocks(
                           blocks: question.explanation,
                           assetBasePath: assetBasePath,
@@ -403,7 +410,8 @@ class _CompletionView extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final rate = total == 0 ? 0.0 : correctCount / total;
-    final allCorrect = wrongQuestions.isEmpty;
+    final wrongCount = wrongQuestions.length;
+    final allCorrect = wrongCount == 0;
     final message = rate >= 1.0
         ? 'パーフェクト！'
         : rate >= 0.8
@@ -433,6 +441,37 @@ class _CompletionView extends StatelessWidget {
                         color: c.textPrimary,
                       ),
                     ),
+                    if (!allCorrect) ...[
+                      const SizedBox(height: 6),
+                      // まちがいは責めず、次の行動（要復習）につなげて報告する。
+                      Text(
+                        'まちがえた$wrongCount問は要復習に追加ずみ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: c.textSecondary,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    // stats: 今回の正解率 ＋ 要復習 +n（アンバー）。連続日数は範囲外。
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _CompletionStat(
+                          value: '${(rate * 100).round()}',
+                          unit: '%',
+                          label: '今回の正解率',
+                        ),
+                        const SizedBox(width: 28),
+                        _CompletionStat(
+                          value: '+$wrongCount',
+                          label: '要復習',
+                          amber: true,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -440,15 +479,15 @@ class _CompletionView extends StatelessWidget {
             if (!allCorrect) ...[
               SizedBox(
                 width: double.infinity,
-                child: OutlinedButton.icon(
+                child: FilledButton.icon(
                   icon: const Icon(Icons.replay, size: 18),
-                  label: Text('間違えた問題を復習（${wrongQuestions.length}問）'),
+                  label: Text('要復習の$wrongCount問をもう一度'),
                   onPressed: () => Navigator.of(context).pushReplacement(
                     MaterialPageRoute<void>(
                       builder: (_) => ExerciseQuizScreen(
                         questions: wrongQuestions,
                         assetBasePath: assetBasePath,
-                        title: '間違えた問題の復習',
+                        title: 'まちがい直し',
                       ),
                     ),
                   ),
@@ -467,6 +506,64 @@ class _CompletionView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// 完了サマリーの stat（大きな数値＋小さなラベル）。
+///
+/// DESIGN.html クイズ完了の `.stats .stat`。[amber] を true にすると要復習系
+/// （reviewText）で数値を強調する。既定は textPrimary。
+class _CompletionStat extends StatelessWidget {
+  const _CompletionStat({
+    required this.value,
+    required this.label,
+    this.unit,
+    this.amber = false,
+  });
+
+  final String value;
+  final String? unit;
+  final String label;
+  final bool amber;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text.rich(
+          TextSpan(
+            text: value,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: amber ? c.reviewText : c.textPrimary,
+            ),
+            children: [
+              if (unit != null)
+                TextSpan(
+                  text: unit,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: amber ? c.reviewText : c.textPrimary,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: c.textSecondary,
+          ),
+        ),
+      ],
     );
   }
 }

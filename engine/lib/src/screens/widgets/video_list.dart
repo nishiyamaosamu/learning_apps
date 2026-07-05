@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/content_models.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_dimens.dart';
 import '../../design/app_typography.dart';
+import '../../settings/video_progress.dart';
 
 /// 秒数を mm:ss（例: 312 → "5:12"）へ整形する。
 String formatDuration(int seconds) {
@@ -68,15 +70,31 @@ class VideoSectionHeader extends StatelessWidget {
   }
 }
 
+/// vthumb の視聴状態に応じたアイコン（DESIGN.html: ✓=視聴済み `check` /
+/// equalizer=再生中 / ▶=未視聴 `play_arrow`）。
+IconData _vthumbIcon(VideoWatchStatus status) => switch (status) {
+  VideoWatchStatus.watched => Icons.check_rounded,
+  VideoWatchStatus.playing => Icons.equalizer_rounded,
+  VideoWatchStatus.unwatched => Icons.play_arrow_rounded,
+};
+
 /// 動画1本を表す行（DESIGN.html `.ls` + `.vthumb`）。
 ///
-/// vthumb（36×21・角丸5・primary50 面＋中央に再生アイコン）＋ タイトル（13/w600・
+/// vthumb（36×21・角丸5・primary50 面＋中央に状態アイコン）＋ タイトル（13/w600・
 /// 1行省略）＋ 右端に尺（mm:ss、mono caption / textMuted）。行高は 48 以上。
+/// vthumb の面色 (primary50)・アイコン色 (primary600) は3状態で共通で、中央の
+/// グリフだけが視聴状態で切り替わる（DESIGN.html の `.vthumb` 仕様どおり）。
 class VideoRow extends StatelessWidget {
-  const VideoRow({super.key, required this.video, required this.onTap});
+  const VideoRow({
+    super.key,
+    required this.video,
+    required this.onTap,
+    this.status = VideoWatchStatus.unwatched,
+  });
 
   final VideoItem video;
   final VoidCallback onTap;
+  final VideoWatchStatus status;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +116,7 @@ class VideoRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Icon(
-                  Icons.play_arrow_rounded,
+                  _vthumbIcon(status),
                   size: 14,
                   color: c.primary600,
                 ),
@@ -135,16 +153,19 @@ class VideoRow extends StatelessWidget {
 /// 動画行をまとめるカード（DESIGN.html `.lesson-list`）。
 ///
 /// surface 面＋border 枠＋角丸 lg。行間は 1px の区切り線。行タップは
-/// [onTapVideo] に委譲する（遷移方法は呼び出し側が決める）。
-class VideoList extends StatelessWidget {
+/// [onTapVideo] に委譲する（遷移方法は呼び出し側が決める）。各行の vthumb 状態は
+/// [videoProgressProvider] を watch して導出するため、ホーム・視聴ページの
+/// 「次の動画」いずれでも同じ視聴状態が反映される。
+class VideoList extends ConsumerWidget {
   const VideoList({super.key, required this.videos, required this.onTapVideo});
 
   final List<VideoItem> videos;
   final void Function(VideoItem video) onTapVideo;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final progress = ref.watch(videoProgressProvider);
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -158,6 +179,7 @@ class VideoList extends StatelessWidget {
             if (i > 0) Divider(height: 1, thickness: 1, color: c.border),
             VideoRow(
               video: videos[i],
+              status: progress.statusOf(videos[i].id),
               onTap: () => onTapVideo(videos[i]),
             ),
           ],

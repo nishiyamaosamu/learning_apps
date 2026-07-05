@@ -7,6 +7,7 @@ import '../../content/content_providers.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_dimens.dart';
 import '../../design/app_typography.dart';
+import '../../settings/video_progress.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/layout/content_max_width.dart';
 import '../widgets/video_list.dart';
@@ -33,13 +34,13 @@ class VideoTop extends ConsumerWidget {
   }
 }
 
-class _VideoBody extends StatelessWidget {
+class _VideoBody extends ConsumerWidget {
   const _VideoBody({required this.chapters});
 
   final List<VideoChapter> chapters;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // 動画を1本以上持つ章だけを対象にする。
     final chaptersWithVideos = [
       for (final ch in chapters)
@@ -54,16 +55,31 @@ class _VideoBody extends StatelessWidget {
       );
     }
 
-    // 「つづきから」の実挙動（最終視聴動画への再開）は視聴進捗の永続化が未実装の
-    // ため、当面は先頭章の先頭動画へ遷移する（docs/DESIGN_TODO.md #2）。
+    final progress = ref.watch(videoProgressProvider);
+
+    // ヒーローは「最後に視聴した動画」があれば『つづきから』でそこへ、無ければ
+    // 先頭動画へ『はじめる』。最終視聴IDが現在のコンテンツに無い場合は先頭に戻す。
     final firstVideo = chaptersWithVideos.first.videos.first;
+    final lastId = progress.lastWatchedId;
+    VideoItem? resumeVideo;
+    if (lastId != null) {
+      for (final ch in chaptersWithVideos) {
+        for (final v in ch.videos) {
+          if (v.id == lastId) resumeVideo = v;
+        }
+      }
+    }
+    final heroVideo = resumeVideo ?? firstVideo;
 
     final blocks = <Widget>[
-      _HeroCard(video: firstVideo),
+      _HeroCard(video: heroVideo, resuming: resumeVideo != null),
       for (final chapter in chaptersWithVideos) ...[
         VideoSectionHeader(
           title: chapter.title,
-          trailing: '${chapter.videos.length}本',
+          // DESIGN.html の cnt「2 / 5」＝視聴済み / 全本数。
+          trailing:
+              '${chapter.videos.where((v) => progress.statusOf(v.id) == VideoWatchStatus.watched).length}'
+              ' / ${chapter.videos.length}',
         ),
         VideoList(
           videos: chapter.videos,
@@ -90,9 +106,12 @@ class _VideoBody extends StatelessWidget {
 ///
 /// primary600 面に円装飾を薄く敷き、先頭動画への1タップ導線を置く。
 class _HeroCard extends StatelessWidget {
-  const _HeroCard({required this.video});
+  const _HeroCard({required this.video, required this.resuming});
 
   final VideoItem video;
+
+  /// 「つづきから」再開か（false なら初回の「はじめる」）。
+  final bool resuming;
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +157,7 @@ class _HeroCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'はじめる',
+                    resuming ? 'つづきから' : 'はじめる',
                     style: AppTypography.micro.copyWith(
                       color: Colors.white.withValues(alpha: 0.85),
                       letterSpacing: 0.6, // .06em @ 10dp
@@ -155,7 +174,7 @@ class _HeroCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  _HeroCta(videoId: video.id),
+                  _HeroCta(videoId: video.id, resuming: resuming),
                 ],
               ),
             ),
@@ -168,9 +187,10 @@ class _HeroCard extends StatelessWidget {
 
 /// ヒーローカードの白い全幅 CTA（面=白 / 文字=primary600）。
 class _HeroCta extends StatelessWidget {
-  const _HeroCta({required this.videoId});
+  const _HeroCta({required this.videoId, required this.resuming});
 
   final String videoId;
+  final bool resuming;
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +210,7 @@ class _HeroCta extends StatelessWidget {
               Icon(Icons.play_arrow_rounded, size: 18, color: c.primary600),
               const SizedBox(width: 5),
               Text(
-                '再生する',
+                resuming ? 'つづける' : '再生する',
                 style: TextStyle(
                   color: c.primary600,
                   fontSize: 12,
