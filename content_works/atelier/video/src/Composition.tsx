@@ -1,20 +1,6 @@
 import { AbsoluteFill, Sequence, useVideoConfig } from "remotion";
 import { videoType, SCALE } from "./design/tokens";
-import {
-  IcCable,
-  IcCalc,
-  IcDns,
-  IcGlobe,
-  IcKey,
-  IcLayers,
-  IcLock,
-  IcRouter,
-  IcShieldAlert,
-  IcThumbDown,
-  IcThumbUp,
-  IcTrendUp,
-  IcWarning,
-} from "./parts/icons";
+import { Ms } from "./parts/Ms";
 import { TitleCard } from "./scenes/TitleCard";
 import { BulletSlide } from "./scenes/BulletSlide";
 import { VsSlide } from "./scenes/VsSlide";
@@ -47,7 +33,7 @@ const SCENES: { durationSec: number; element: React.ReactNode }[] = [
     element: (
       <BulletSlide
         heading="パスワード攻撃の主な手口"
-        icon={<IcShieldAlert size={headIcon} />}
+        icon={<Ms name="gpp_maybe" size={headIcon} />}
         bullets={[
           { text: "リスト型攻撃", sub: "流出したID・パスワードを流用", marker: "blue" },
           { text: "総当たり攻撃", sub: "あらゆる組み合わせを機械的に試行", marker: "blue" },
@@ -63,10 +49,10 @@ const SCENES: { durationSec: number; element: React.ReactNode }[] = [
     element: (
       <VsSlide
         heading="共通鍵暗号と公開鍵暗号"
-        icon={<IcLock size={headIcon} />}
+        icon={<Ms name="encrypted" size={headIcon} />}
         left={{
           title: "共通鍵暗号方式",
-          icon: <IcKey size={14 * SCALE} />,
+          icon: <Ms name="key" size={14 * SCALE} />,
           rows: [
             { k: "使う鍵", v: "同じ鍵を2人で共有" },
             { k: "処理速度", v: "速い" },
@@ -75,7 +61,7 @@ const SCENES: { durationSec: number; element: React.ReactNode }[] = [
         }}
         right={{
           title: "公開鍵暗号方式",
-          icon: <IcGlobe size={14 * SCALE} />,
+          icon: <Ms name="public" size={14 * SCALE} />,
           rows: [
             { k: "使う鍵", v: "公開鍵 + 秘密鍵のペア" },
             { k: "処理速度", v: "遅い" },
@@ -113,21 +99,21 @@ const SCENES: { durationSec: number; element: React.ReactNode }[] = [
           {
             abc: "S",
             name: "強み",
-            icon: <IcThumbUp size={cellIcon} />,
+            icon: <Ms name="thumb_up" size={cellIcon} />,
             desc: "技術力・ブランド",
             tone: "hi",
             highlightAtSec: 2.4,
           },
-          { abc: "W", name: "弱み", icon: <IcThumbDown size={cellIcon} />, desc: "人材不足・コスト" },
+          { abc: "W", name: "弱み", icon: <Ms name="thumb_down" size={cellIcon} />, desc: "人材不足・コスト" },
           {
             abc: "O",
             name: "機会",
-            icon: <IcTrendUp size={cellIcon} />,
+            icon: <Ms name="trending_up" size={cellIcon} />,
             desc: "市場の拡大・規制緩和",
             tone: "lo",
             highlightAtSec: 3.1,
           },
-          { abc: "T", name: "脅威", icon: <IcWarning size={cellIcon} />, desc: "競合参入・景気後退" },
+          { abc: "T", name: "脅威", icon: <Ms name="warning" size={cellIcon} />, desc: "競合参入・景気後退" },
         ]}
         telop="内部か外部か、プラスかマイナスかで整理します"
       />
@@ -138,9 +124,9 @@ const SCENES: { durationSec: number; element: React.ReactNode }[] = [
     element: (
       <LayersSlide
         heading="OSI基本参照モデル（7階層）"
-        icon={<IcLayers size={headIcon} />}
+        icon={<Ms name="stacks" size={headIcon} />}
         layers={[
-          { no: 7, name: "アプリケーション層", note: "HTTP・SMTP", noteIcon: <IcGlobe size={noteIcon} /> },
+          { no: 7, name: "アプリケーション層", note: "HTTP・SMTP", noteIcon: <Ms name="language" size={noteIcon} /> },
           { no: 6, name: "プレゼンテーション層" },
           { no: 5, name: "セッション層" },
           { no: 4, name: "トランスポート層", note: "TCP" },
@@ -148,11 +134,11 @@ const SCENES: { durationSec: number; element: React.ReactNode }[] = [
             no: 3,
             name: "ネットワーク層",
             note: "IPはここ",
-            noteIcon: <IcRouter size={noteIcon} />,
+            noteIcon: <Ms name="router" size={noteIcon} />,
             highlightAtSec: 2.8,
           },
           { no: 2, name: "データリンク層" },
-          { no: 1, name: "物理層", note: "ケーブル・電波", noteIcon: <IcCable size={noteIcon} /> },
+          { no: 1, name: "物理層", note: "ケーブル・電波", noteIcon: <Ms name="cable" size={noteIcon} /> },
         ]}
         telop="下の層ほど、物理的な世界に近づきます"
       />
@@ -163,7 +149,7 @@ const SCENES: { durationSec: number; element: React.ReactNode }[] = [
     element: (
       <GraphSlide
         heading="損益分岐点の考え方"
-        icon={<IcCalc size={headIcon} />}
+        icon={<Ms name="calculate" size={headIcon} />}
         formula={
           <>
             損益分岐点売上高
@@ -185,7 +171,7 @@ const SCENES: { durationSec: number; element: React.ReactNode }[] = [
     durationSec: 4.5,
     element: (
       <TermSlide
-        icon={<IcDns size={27 * SCALE} />}
+        icon={<Ms name="dns" size={27 * SCALE} />}
         term="DNS"
         sub="Domain Name System — ドメイン名とIPアドレスを対応づけるしくみ"
         telop="電話帳のように、名前から住所を引けるしくみです"
@@ -197,7 +183,7 @@ const SCENES: { durationSec: number; element: React.ReactNode }[] = [
     element: (
       <BinarySlide
         heading="2進数「1101」を10進数に"
-        icon={<IcCalc size={headIcon} />}
+        icon={<Ms name="calculate" size={headIcon} />}
         digits={[
           { weightLabel: <>2<sup>3</sup>＝8</>, digit: "1", product: "8" },
           { weightLabel: <>2<sup>2</sup>＝4</>, digit: "1", product: "4" },

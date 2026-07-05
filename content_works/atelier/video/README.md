@@ -32,7 +32,9 @@ video/
 │   ├── parts/             # シーン間で再利用する共通部品
 │   │   ├── SlideShell.tsx # .v-slide シェル（見出しアイコン/ブルータブ + テロップ浮きカード常設）
 │   │   ├── animate.ts     # useAppear / usePop / useProgress（--ease-out・オーバーシュート）
-│   │   └── icons.tsx      # ミニアイコン集（Material Symbols 相当の stroke SVG）
+│   │   └── Ms.tsx         # Material Symbols（Rounded・FILL 1）。DESIGN.html の .ms と同一設定で、
+│   │                      #   リガチャ名をそのまま渡す（例: <Ms name="gpp_maybe" size={80} />）。
+│   │                      #   フォントは public/fonts/ のローカル woff2（オフライン・決定論的）
 │   ├── scenes/            # DESIGN.html のスライドパターン 1:1
 │   │   ├── TitleCard.tsx  # タイトルカード（bgDark + primary円 + accentPink斜め帯）
 │   │   ├── BulletSlide.tsx# ① 箇条書き+イラスト（基本形）
