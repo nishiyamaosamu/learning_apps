@@ -152,7 +152,7 @@ const PurposeScene: React.FC = () => {
           <span style={markerPinkStyle}>成長</span>する
         </span>
         <Img
-          src={staticFile("images/scene-shop-handoff.png")}
+          src={staticFile("images/ipa_ip/scene-shop-handoff.png")}
           style={{
             flex: 1,
             minHeight: 0,
@@ -682,7 +682,7 @@ export const L1v9CorporateActivity: VideoSpec = {
         { text: "ヒト・モノ・カネ・情報", sub: "企業活動を支える経営資源", marker: "blue" },
         { text: "足りなければ管理・補充する", sub: "限られた資源を有効に活かす" },
       ],
-      illust: "images/scene-resources-gather.png",
+      illust: "images/ipa_ip/scene-resources-gather.png",
       narration: SEG_P2,
     },
     { pattern: "custom", name: "info-split", durationSec: 5.5, narration: SEG_P3, component: InfoResourceScene },
@@ -708,7 +708,7 @@ export const L1v9CorporateActivity: VideoSpec = {
         { text: "CSR・SRI", sub: "社会的責任と、それを重視した投資" },
         { text: "コーポレートブランド", sub: "信頼の積み重ねが企業価値になる" },
       ],
-      illust: "images/scene-company-community.png",
+      illust: "images/ipa_ip/scene-company-community.png",
       narration: SEG_P8,
     },
     { pattern: "custom", name: "environment", durationSec: 5.5, narration: SEG_P9, component: EnvironmentScene },

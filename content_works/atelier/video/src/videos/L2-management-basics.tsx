@@ -1,7 +1,8 @@
+import { Img, staticFile } from "remotion";
 import { colors, videoType, markerStyle, SCALE } from "../design/tokens";
 import { SlideShell } from "../parts/SlideShell";
 import { SectionTitle } from "../parts/SectionTitle";
-import { useAppear, usePop, useProgress } from "../parts/animate";
+import { useAppear, usePop } from "../parts/animate";
 import { DrawPath } from "../parts/draw";
 import { Ms } from "../parts/Ms";
 import { narrationLoader } from "../parts/narration";
@@ -16,8 +17,10 @@ import durations from "./L2-management-basics.audio.json";
  *
  * 前半（PDCA・OODA・BCP）→ wipe で人的資源管理へ大転換（HRM・育成・行動科学・多様性）→
  * クイズ幕間 → クイズ3問 → wipe でまとめ、という二部構成。
- * 手描きイラストは使わず全ページ custom SVG / レイアウトで組む
- * （画像生成が一時的に使えないため。custom はこの環境の標準的な作り方）。
+ * 構造ページ（PDCA・OODA・BCP曲線・マズロー）は custom SVG / レイアウトで組み、
+ * 語りが主役の情景ページ（P1 導入・P5 HRM）にだけ手描きイラストを添える
+ *   - scene-mgmt-steer: 経営管理＝目標に舵を取る（P1）
+ *   - scene-team-strength: 人こそ最大の経営資源（P5, 章の転換ヒーロー）
  */
 
 const N = narrationLoader(durations, "audio/L2-management-basics");
@@ -215,61 +218,37 @@ const Overlay: React.FC<{ left: string; top: string; children: React.ReactNode }
 );
 
 // ---------------------------------------------------------------------------
-// P5: HRM（中央ヒーロー）— 人こそ最大の力。ここで章が人的資源管理へ切り替わる（wipe）
+// P5: HRM（左テキスト + 右チームイラスト）— 人こそ最大の資源。
+// ここで章が人的資源管理へ切り替わる（wipe）。手描きの人物情景で温度感を出す
 // ---------------------------------------------------------------------------
 
 const HrmScene: React.FC = () => {
-  const iconPop = usePop(0.3);
-  const termAppear = useAppear(0.8);
-  const underline = useProgress(1.2, 0.5);
-  const subAppear = useAppear(1.9);
+  const termAppear = useAppear(0.3);
+  const subAppear = useAppear(0.7);
+  const illustAppear = useAppear(0.5);
 
   return (
     <SlideShell narration={SEG_P5}>
-      <div
-        style={{
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 7 * SCALE,
-        }}
-      >
-        <span
-          style={{
-            width: 58 * SCALE,
-            height: 58 * SCALE,
-            borderRadius: "50%",
-            backgroundColor: colors.primary600,
-            color: colors.surface,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            ...iconPop,
-          }}
-        >
-          <Ms name="groups" size={30 * SCALE} />
-        </span>
-        <span style={{ fontSize: 22 * SCALE, fontWeight: 800, ...termAppear }}>
-          人こそ、<span style={markerStyle}>最大の経営資源</span>
-        </span>
-        <div style={{ position: "relative", width: 60 * SCALE, height: 3 * SCALE, backgroundColor: colors.border }}>
-          <div
-            style={{
-              position: "absolute",
-              left: 0,
-              top: 0,
-              height: "100%",
-              width: `${underline * 100}%`,
-              backgroundColor: colors.primary500,
-            }}
-          />
+      <div style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "center", gap: "5%" }}>
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 * SCALE }}>
+          <span style={{ fontSize: 20 * SCALE, fontWeight: 800, lineHeight: 1.45, ...termAppear }}>
+            人こそ、<span style={markerStyle}>最大の経営資源</span>
+          </span>
+          <span style={{ fontSize: 12.5 * SCALE, fontWeight: 700, color: colors.textSecondary, ...subAppear }}>
+            HRM ｜ 人を活かすマネジメント
+          </span>
         </div>
-        <span style={{ fontSize: 12.5 * SCALE, fontWeight: 700, color: colors.textSecondary, ...subAppear }}>
-          HRM ｜ 人を活かすマネジメント
-        </span>
+        <Img
+          src={staticFile("images/ipa_ip/scene-team-strength.png")}
+          style={{
+            flex: 1.15,
+            minWidth: 0,
+            alignSelf: "stretch",
+            objectFit: "contain",
+            mixBlendMode: "multiply",
+            ...illustAppear,
+          }}
+        />
       </div>
     </SlideShell>
   );
@@ -566,6 +545,7 @@ export const L2ManagementBasics: VideoSpec = {
         { text: "目標を立てて達成へ導く", sub: "経営目標に向けて舵を取る", marker: "blue" },
         { text: "資源を管理する", sub: "ヒト・カネ・情報を活かす" },
       ],
+      illust: "images/ipa_ip/scene-mgmt-steer.png",
       narration: SEG_P1,
     },
     {

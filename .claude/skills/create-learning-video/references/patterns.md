@@ -19,7 +19,7 @@
 
 - `marker: "blue"` は覚えてほしい用語に。`"pink"` は動画内で1〜2回だけの最強調。
 - `sub` は text の補足説明。text と同じ内容を繰り返さない。
-- `illust` は `public/images/` に実在するファイルのみ。`ls public/images/` で確認してから。
+- `illust` は `public/images/<app>/` に実在するファイルのみ（例 `images/ipa_ip/scene-xxx.png`）。`ls public/images/<app>/` で確認してから。
   無ければ省略してよい（箇条書きだけで成立するレイアウトになる）。
 
 ## vs（対比）

@@ -42,7 +42,7 @@ export type BulletsScene = {
   bullets: { text: string; sub?: string; marker?: "blue" | "pink" }[]; // 3項目まで
   /** narration を付けるシーンでは省略（字幕が音声から出る） */
   telop?: string;
-  /** public/ 配下のパス（例: "images/xxx.png"）。手描きイラストがある場合のみ */
+  /** public/ 配下のパス（例: "images/<app>/xxx.png"）。手描きイラストがある場合のみ */
   illust?: string;
 };
 

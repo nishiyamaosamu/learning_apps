@@ -106,16 +106,18 @@ description: ナレーション音声＋同期字幕つきの学習動画（16:9
 - **分量**: 1動画 2〜4枚まで。多用すると1枚の効果が薄れる
 
 イラストを使うときの手順:
-1. **まず既存部品を探す**: `content_works/<app>/video/assets_common/`（`icon/`・`images/`）と
-   動画プロジェクトの `public/images/`。同じ概念には必ず同じ絵を使い回す（記憶のフック）
+1. **まず既存部品を探す**: `public/images/<app>/`。スタイルは全プロジェクト共通なので
+   **他アプリのフォルダも見てよい**（例: ipa_ip の動画から `images/ipa_sg/icon-shield.png` を
+   直接参照してよい。ただし色に意味を持たせているアプリの部品は流用先で違和感がないか確認）。
+   同じ概念には必ず同じ絵を使い回す（記憶のフック）
 2. 無ければ **create-video-illust スキルを Skill ツールで呼んで生成する**（1枚数分・必ず直列)。
-   `<app>` はレッスンが属するアプリ（例: ipa_ip）。透過処理まで済ませる。
+   `<app>` はレッスンが属するアプリ（例: ipa_ip）。制作フロー内からの呼び出しなので
+   生成先は `public/images/<app>/` 直下（draft を経由しない — 動画レビューが承認を兼ねる）。
+   透過処理まで済ませる。
    codex はフォアグラウンドで実行し、**「バックグラウンドの完了待ち」を理由に作業を止めない**
    （待ち時間には他ページの実装・lint・stills を進める）。イラストが揃わないときは
    該当ページをイラストなし設計に切り替えて完成を優先する
-3. 生成物は `assets_common/draft/` に落ちる。動画で使う分だけ `public/images/` に **cp する**
-   （draft の原本は動かさない — 共有部品への本採用はユーザー承認が要る）
-4. シーンでは `<Img src={staticFile("images/xxx.png")} style={{ mixBlendMode: "multiply", ... }} />`
+3. シーンでは `<Img src={staticFile("images/<app>/xxx.png")} style={{ mixBlendMode: "multiply", ... }} />`
    で白地を背景に溶かす（references/custom-scenes.md の左右分割レシピ参照）
 
 ### 4. 音声生成（実装の前に済ませる）

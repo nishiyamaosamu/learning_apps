@@ -50,11 +50,11 @@ bullets より文が少なく、絵を大きく見せたいとき。
     </span>
     <span style={{ fontSize: 11 * SCALE, color: colors.textSecondary, ...useAppear(0.5) }}>補足の一文</span>
   </div>
-  <Img src={staticFile("images/xxx.png")} style={{ flex: 1, minWidth: 0, alignSelf: "stretch",
+  <Img src={staticFile("images/<app>/xxx.png")} style={{ flex: 1, minWidth: 0, alignSelf: "stretch",
     objectFit: "contain", mixBlendMode: "multiply", ...useAppear(0.4) }} />
 </div>
 ```
-（`Img`/`staticFile` は remotion から import。画像は public/images/ に実在するものだけ）
+（`Img`/`staticFile` は remotion から import。画像は public/images/<app>/ に実在するものだけ）
 
 ### ダーク幕間（チャプター区切り・問いかけ）
 章の切り替えや「ここで質問です」の一拍に。SlideShell を使わない唯一の例外。

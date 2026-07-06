@@ -36,7 +36,7 @@ video/
 ├── stills/                # scripts/stills.mjs の出力（シーン確認用・git対象外）
 ├── scripts/stills.mjs     # 全シーンを1枚ずつ静止画化する確認ツール
 ├── public/                # 画像・音声アセット（staticFile() で参照）
-│   └── images/            # 手描きイラスト（assets_common からコピーして使う）
+│   └── images/<app>/      # 手描きイラスト部品ライブラリの原本（アプリ別・フラット。draft/ は確認待ち）
 ├── src/
 │   ├── design/tokens.ts   # 集中ブルー トークン（DESIGN.html の写し・原本は Flutter AppColors）
 │   │                      #   SCALE=4: モック(480px幅)のpx値を×4して1920pxで使う
@@ -70,7 +70,7 @@ video/
 
 - 本編スライドは全パターン共通で**下部にテロップ帯を常設**し、本文はその上に収める
 - 文字はアプリより大きく（見出し 60px〜、本文 44px〜 @1920幅）、要素は少なく
-- 手描きイラスト（`assets_common/images`）は白地を `mixBlendMode: multiply` で背景に溶かす
+- 手描きイラスト（`public/images/<app>/`）は白地を `mixBlendMode: multiply` で背景に溶かす
 - 強調マーカーは primary100、特に押す文だけ accentPinkSoft。accent は装飾専用で正誤には使わない
 - アニメーションは `useCurrentFrame()` + `interpolate()` のみ。CSS transition/animation は禁止（正しくレンダリングされない）
 - イラスト素材の生成は `create-video-illust` スキルで行う

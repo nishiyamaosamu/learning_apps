@@ -82,7 +82,7 @@ export const demo: VideoSpec = {
         { text: "推測による攻撃", sub: "誕生日・名前などから推測" },
       ],
       telop: "使い回したパスワードは、1か所の流出が全部に広がります",
-      illust: "images/attack-password.png",
+      illust: "images/ipa_sg/attack-password.png",
     },
     {
       pattern: "custom",

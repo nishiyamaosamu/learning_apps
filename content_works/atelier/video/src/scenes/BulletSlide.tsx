@@ -17,7 +17,7 @@ export type BulletSlideProps = {
   bullets: BulletItem[];
   telop?: string;
   narration?: NarrationSegment[];
-  /** public/ 配下の手描きイラスト（例: "images/attack-password.png"）。白地は multiply で溶かす */
+  /** public/ 配下の手描きイラスト（例: "images/ipa_sg/attack-password.png"）。白地は multiply で溶かす */
   illust?: string;
 };
 
