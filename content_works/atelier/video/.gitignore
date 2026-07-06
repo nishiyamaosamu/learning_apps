@@ -5,3 +5,9 @@ dist
 
 # Ignore the output video from Git but not videos you import into src/.
 out
+
+# シーン確認用の静止画（生成物）
+stills/
+
+# 完成動画（再レンダリングで復元可能・大容量のためgit対象外）
+draft/

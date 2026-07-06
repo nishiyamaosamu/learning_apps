@@ -1,6 +1,7 @@
 import { Img, staticFile } from "remotion";
 import { colors, videoType, markerStyle, markerPinkStyle, SCALE } from "../design/tokens";
 import { SlideShell } from "../parts/SlideShell";
+import type { NarrationSegment } from "../videos/types";
 import { useAppear } from "../parts/animate";
 
 export type BulletItem = {
@@ -14,7 +15,8 @@ export type BulletSlideProps = {
   heading: string;
   icon?: React.ReactNode;
   bullets: BulletItem[];
-  telop: string;
+  telop?: string;
+  narration?: NarrationSegment[];
   /** public/ 配下の手描きイラスト（例: "images/attack-password.png"）。白地は multiply で溶かす */
   illust?: string;
 };
@@ -76,12 +78,13 @@ export const BulletSlide: React.FC<BulletSlideProps> = ({
   icon,
   bullets,
   telop,
+  narration,
   illust,
 }) => {
   const illustAppear = useAppear(0.5);
 
   return (
-    <SlideShell heading={heading} icon={icon} telop={telop}>
+    <SlideShell heading={heading} icon={icon} telop={telop} narration={narration}>
       <div
         style={{
           display: "flex",

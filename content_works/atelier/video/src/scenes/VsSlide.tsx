@@ -1,7 +1,8 @@
 import { interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { colors, SCALE } from "../design/tokens";
 import { SlideShell } from "../parts/SlideShell";
-import { easeOut, useAppear, usePop } from "../parts/animate";
+import type { NarrationSegment } from "../videos/types";
+import { easeOut, useAppear } from "../parts/animate";
 
 export type VsColumn = {
   title: string;
@@ -14,7 +15,8 @@ export type VsSlideProps = {
   icon?: React.ReactNode;
   left: VsColumn;
   right: VsColumn;
-  telop: string;
+  telop?: string;
+  narration?: NarrationSegment[];
 };
 
 const Col: React.FC<{ col: VsColumn; fromX: number; delaySec: number }> = ({
@@ -105,17 +107,14 @@ const Row: React.FC<{ k: string; v: string; delaySec: number }> = ({ k, v, delay
 };
 
 /**
- * 本編スライド② 対比（VS）— DESIGN.html .vs-wrap
- * 左右のカラムが両側からスライドイン → 行が時間差 → VSバッジがポップ。
+ * 本編スライド② 対比 — DESIGN.html .vs-wrap
+ * 左右のカラムが両側からスライドイン → 行が時間差で立ち上がる。
  */
-export const VsSlide: React.FC<VsSlideProps> = ({ heading, icon, left, right, telop }) => {
-  const badgePop = usePop(1.3, { from: 0.3, durSec: 0.5 });
-
+export const VsSlide: React.FC<VsSlideProps> = ({ heading, icon, left, right, telop, narration }) => {
   return (
-    <SlideShell heading={heading} icon={icon} telop={telop}>
+    <SlideShell heading={heading} icon={icon} telop={telop} narration={narration}>
       <div
         style={{
-          position: "relative",
           display: "flex",
           gap: 10 * SCALE,
           flex: 1,
@@ -125,31 +124,6 @@ export const VsSlide: React.FC<VsSlideProps> = ({ heading, icon, left, right, te
       >
         <Col col={left} fromX={-60} delaySec={0.35} />
         <Col col={right} fromX={60} delaySec={0.55} />
-        {/* .vs-badge */}
-        <span
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "46%",
-            width: 30 * SCALE,
-            height: 30 * SCALE,
-            marginLeft: -15 * SCALE,
-            marginTop: -15 * SCALE,
-            borderRadius: "50%",
-            zIndex: 2,
-            backgroundColor: colors.primary600,
-            color: "#fff",
-            fontWeight: 800,
-            fontSize: 10 * SCALE,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: `${3 * SCALE}px solid ${colors.bg}`,
-            ...badgePop,
-          }}
-        >
-          VS
-        </span>
       </div>
     </SlideShell>
   );

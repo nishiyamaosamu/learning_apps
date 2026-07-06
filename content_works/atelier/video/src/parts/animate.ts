@@ -35,6 +35,27 @@ export const usePop = (delaySec: number, opts?: { durSec?: number; from?: number
   };
 };
 
+/**
+ * 任意方向からのスライドイン（フェード付き）。style に spread して使う。
+ * useAppear の dy 版に加えて dx（横方向）も指定できる。
+ * 既存の transform / 位置指定（translate(-50%,-50%) 等）と混ぜたい場合は、
+ * このスタイルを「内側のラッパー div」に当てて、位置決めは外側の div で行うこと。
+ */
+export const useFlyIn = (
+  delaySec: number,
+  opts?: { dx?: number; dy?: number; durSec?: number },
+) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const { dx = 0, dy = 20, durSec = 0.45 } = opts ?? {};
+  const range = [delaySec * fps, (delaySec + durSec) * fps];
+  const t = interpolate(frame, range, [1, 0], { ...clampOpts, easing: easeOut });
+  return {
+    opacity: interpolate(frame, range, [0, 1], { ...clampOpts, easing: easeOut }),
+    translate: `${dx * t}px ${dy * t}px`,
+  };
+};
+
 /** 「発火しない」を表す遅延秒の番兵（interpolate が安全に扱える大きさ） */
 export const NEVER_SEC = 9999;
 

@@ -6,6 +6,8 @@ import {
   useVideoConfig,
 } from "remotion";
 import { colors, fontFamily, SCALE } from "../design/tokens";
+import type { NarrationSegment } from "../videos/types";
+import { NarrationTelopText } from "../parts/narration";
 import { easeOut, useAppear, usePop, useProgress } from "../parts/animate";
 
 export type QuizChoice = { key: string; text: string; correct?: boolean };
@@ -14,6 +16,8 @@ export type QuizSlideProps = {
   question: string;
   choices: QuizChoice[];
   foot?: string;
+  /** ナレーション字幕。渡すと foot 帯が音声同期字幕になる（revealAtSec は「正解を読み上げるセグメントの開始秒」に合わせる） */
+  narration?: NarrationSegment[];
   /** 正解をリビールする秒 */
   revealAtSec?: number;
 };
@@ -45,8 +49,10 @@ const Choice: React.FC<{ choice: QuizChoice; delaySec: number; revealAtSec: numb
       })
     : 1;
 
-  // ○マークの円を描画（stroke draw）
-  const markDraw = useProgress(revealAtSec + 0.15, 0.35);
+  // ○マークはアルファ+ポップで出す。
+  // stroke-dashoffset の描画方式はリビール前に微小な点が残り（丸め誤差）、
+  // 描き終わりも真円に見えないことがあるため使わない
+  const markPop = usePop(revealAtSec + 0.15, { from: 0.4 });
 
   return (
     <div
@@ -85,7 +91,7 @@ const Choice: React.FC<{ choice: QuizChoice; delaySec: number; revealAtSec: numb
       </span>
       {choice.text}
       {choice.correct ? (
-        <span style={{ marginLeft: "auto", color: colors.correct, display: "flex" }}>
+        <span style={{ marginLeft: "auto", color: colors.correct, display: "flex", ...markPop }}>
           <svg
             width={20 * SCALE}
             height={20 * SCALE}
@@ -95,15 +101,7 @@ const Choice: React.FC<{ choice: QuizChoice; delaySec: number; revealAtSec: numb
             strokeWidth={2.4}
             aria-label="正解"
           >
-            <circle
-              cx={10}
-              cy={10}
-              r={6.5}
-              pathLength={1}
-              strokeDasharray={1}
-              strokeDashoffset={1 - markDraw}
-              transform="rotate(-90 10 10)"
-            />
+            <circle cx={10} cy={10} r={6.5} />
           </svg>
         </span>
       ) : null}
@@ -121,6 +119,7 @@ export const QuizSlide: React.FC<QuizSlideProps> = ({
   choices,
   foot = "答えは ○ で表示 — 色 + 記号の二重符号化はアプリと共通ルール",
   revealAtSec = 3.4,
+  narration,
 }) => {
   const qPop = usePop(0.15, { from: 0.85 });
   const footAppear = useAppear(revealAtSec + 0.8, { dy: 8 });
@@ -180,7 +179,7 @@ export const QuizSlide: React.FC<QuizSlideProps> = ({
           ...footAppear,
         }}
       >
-        {foot}
+        {narration?.length ? <NarrationTelopText segments={narration} /> : foot}
       </div>
     </AbsoluteFill>
   );

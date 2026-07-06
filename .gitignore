@@ -30,3 +30,6 @@ __pycache__/
 *.pyc
 .venv/
 content_works/scripts/output.mp3
+
+# Claude
+.claude/skills/*-workspace

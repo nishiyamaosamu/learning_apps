@@ -1,36 +1,91 @@
 import { colors, markerPinkStyle, SCALE } from "../design/tokens";
 import { SlideShell } from "../parts/SlideShell";
+import type { NarrationSegment } from "../videos/types";
 import { useAppear, usePop, useProgress } from "../parts/animate";
+
+/**
+ * グラフの座標系は DESIGN.html モックと同じ viewBox 220×150。
+ * 軸は左下原点で x:18→214 / y:8→138 の範囲に描く（軸自体はシェルが描画）。
+ */
+export type GraphLine = {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  /** main = primary600(太・最後に描画) / sub = textSecondary / guide = 破線(textMuted) */
+  role: "main" | "sub" | "guide";
+  label?: string;
+  labelX?: number;
+  labelY?: number;
+};
+
+export type GraphPoint = {
+  x: number;
+  y: number;
+  /** 注目点のラベル（accentPinkText） */
+  label?: string;
+  labelX?: number;
+  labelY?: number;
+  /** 点からX軸への垂線を描く */
+  dropLine?: boolean;
+};
 
 export type GraphSlideProps = {
   heading: string;
   icon?: React.ReactNode;
-  formula: React.ReactNode;
-  note: React.ReactNode;
-  telop: string;
+  lines: GraphLine[];
+  point?: GraphPoint;
+  /** 式カード（\n で改行） */
+  formula: string;
+  /** 結論ノート: highlight 部分は accentPinkSoft マーカー */
+  noteHighlight: string;
+  noteRest?: string;
+  telop?: string;
+  narration?: NarrationSegment[];
 };
 
+const roleStyle = {
+  main: { stroke: colors.primary600, width: 2.5, fill: colors.primary600 },
+  sub: { stroke: colors.textSecondary, width: 2, fill: colors.textSecondary },
+  guide: { stroke: colors.textMuted, width: 1, fill: colors.textMuted },
+} as const;
+
 /**
- * 本編スライド⑥ 計算・グラフ — DESIGN.html .graph-wrap（損益分岐点）
- * 軸 → 総費用線 → 売上高線の順に描画し、交点（accentPink）をポップ →
- * 右側に式カードと結論ノートが出る。左に図・右に式のペア構成。
- * 注目点は accentPink 系（装飾専用トークン——状態表示には使わない）。
+ * 本編スライド⑥ 計算・グラフ — DESIGN.html .graph-wrap
+ * 軸 → guide → sub線 → main線の順に描画し、注目点（accentPink）をポップ →
+ * 右側に式カードと結論ノート。左に図・右に式のペア構成。
  */
-export const GraphSlide: React.FC<GraphSlideProps> = ({ heading, icon, formula, note, telop }) => {
+export const GraphSlide: React.FC<GraphSlideProps> = ({
+  heading,
+  icon,
+  lines,
+  point,
+  formula,
+  noteHighlight,
+  noteRest,
+  telop,
+  narration,
+}) => {
   const axes = useProgress(0.2, 0.6);
-  const fixedLine = useAppear(0.8, { dy: 0 });
-  const costDraw = useProgress(1.0, 0.8);
-  const costLabel = useAppear(1.7, { dy: 8 });
-  const salesDraw = useProgress(2.0, 0.8);
-  const salesLabel = useAppear(2.7, { dy: 8 });
-  const dropDraw = useProgress(3.1, 0.4);
-  const pointPop = usePop(3.3, { from: 0.2 });
-  const bepLabel = useAppear(3.6, { dy: 8 });
-  const formulaAppear = useAppear(4.2);
-  const noteAppear = useAppear(4.8);
+  // 描画順: guide(フェード) → sub → main。同role内は0.4sずつずらす
+  const guides = lines.filter((l) => l.role === "guide");
+  const subs = lines.filter((l) => l.role === "sub");
+  const mains = lines.filter((l) => l.role === "main");
+  const drawStart = (l: GraphLine) => {
+    if (l.role === "guide") return 0.8 + guides.indexOf(l) * 0.3;
+    if (l.role === "sub") return 1.0 + subs.indexOf(l) * 0.5;
+    return 2.0 + mains.indexOf(l) * 0.5;
+  };
+  const pointAt = 2.0 + mains.length * 0.5 + 0.6;
+
+  const dropDraw = useProgress(pointAt - 0.2, 0.4);
+  const pointPop = usePop(pointAt, { from: 0.2 });
+  const pointLabel = useAppear(pointAt + 0.3, { dy: 8 });
+  const formulaAppear = useAppear(pointAt + 0.9);
+  const noteAppear = useAppear(pointAt + 1.5);
 
   return (
-    <SlideShell heading={heading} icon={icon} telop={telop}>
+    <SlideShell heading={heading} icon={icon} telop={telop} narration={narration}>
       <div
         style={{
           flex: 1,
@@ -41,12 +96,7 @@ export const GraphSlide: React.FC<GraphSlideProps> = ({ heading, icon, formula, 
           alignItems: "center",
         }}
       >
-        {/* 図（モックの viewBox をそのまま使用） */}
-        <svg
-          viewBox="0 0 220 150"
-          style={{ flex: 1.15, height: "96%", minWidth: 0 }}
-          aria-label="損益分岐点のグラフ"
-        >
+        <svg viewBox="0 0 220 150" style={{ flex: 1.15, height: "96%", minWidth: 0 }}>
           {/* 軸 */}
           <path
             d="M18 8v130h196"
@@ -57,83 +107,44 @@ export const GraphSlide: React.FC<GraphSlideProps> = ({ heading, icon, formula, 
             strokeDasharray={1}
             strokeDashoffset={1 - axes}
           />
-          {/* 固定費（破線） */}
-          <g opacity={fixedLine.opacity}>
-            <path
-              d="M18 96h190"
-              fill="none"
-              stroke={colors.textMuted}
-              strokeWidth={1}
-              strokeDasharray="4 3"
-            />
-            <text x={24} y={90} fontSize={9} fill={colors.textMuted}>
-              固定費
-            </text>
-          </g>
-          {/* 総費用 */}
-          <path
-            d="M18 96L205 56"
-            fill="none"
-            stroke={colors.textSecondary}
-            strokeWidth={2}
-            pathLength={1}
-            strokeDasharray={1}
-            strokeDashoffset={1 - costDraw}
-          />
-          <text
-            x={172}
-            y={50}
-            fontSize={9.5}
-            fontWeight={700}
-            fill={colors.textSecondary}
-            opacity={costLabel.opacity}
-          >
-            総費用
-          </text>
-          {/* 売上高（primary600・主series） */}
-          <path
-            d="M18 138L205 18"
-            fill="none"
-            stroke={colors.primary600}
-            strokeWidth={2.5}
-            pathLength={1}
-            strokeDasharray={1}
-            strokeDashoffset={1 - salesDraw}
-          />
-          <text
-            x={170}
-            y={14}
-            fontSize={9.5}
-            fontWeight={700}
-            fill={colors.primary600}
-            opacity={salesLabel.opacity}
-          >
-            売上高
-          </text>
-          {/* 損益分岐点（accentPink 注目点） */}
-          <path
-            d="M112 78v60"
-            fill="none"
-            stroke={colors.accentPink}
-            strokeWidth={1.2}
-            strokeDasharray="3 3"
-            pathLength={1}
-            strokeDashoffset={0}
-            opacity={dropDraw}
-          />
-          <g style={{ transformOrigin: "112px 78px", scale: pointPop.scale }}>
-            <circle cx={112} cy={78} r={5} fill={colors.accentPink} opacity={pointPop.opacity} />
-          </g>
-          <text
-            x={86}
-            y={66}
-            fontSize={9.5}
-            fontWeight={800}
-            fill={colors.accentPinkText}
-            opacity={bepLabel.opacity}
-          >
-            損益分岐点
-          </text>
+          {lines.map((l, i) => (
+            <GraphLineEl key={i} line={l} delaySec={drawStart(l)} />
+          ))}
+          {point ? (
+            <>
+              {point.dropLine !== false ? (
+                <path
+                  d={`M${point.x} ${point.y}V138`}
+                  fill="none"
+                  stroke={colors.accentPink}
+                  strokeWidth={1.2}
+                  strokeDasharray="3 3"
+                  opacity={dropDraw}
+                />
+              ) : null}
+              <g style={{ transformOrigin: `${point.x}px ${point.y}px`, scale: pointPop.scale }}>
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r={5}
+                  fill={colors.accentPink}
+                  opacity={pointPop.opacity}
+                />
+              </g>
+              {point.label ? (
+                <text
+                  x={point.labelX ?? point.x - 26}
+                  y={point.labelY ?? point.y - 12}
+                  fontSize={9.5}
+                  fontWeight={800}
+                  fill={colors.accentPinkText}
+                  opacity={pointLabel.opacity}
+                >
+                  {point.label}
+                </text>
+              ) : null}
+            </>
+          ) : null}
         </svg>
 
         {/* 式と結論 */}
@@ -157,6 +168,7 @@ export const GraphSlide: React.FC<GraphSlideProps> = ({ heading, icon, formula, 
               fontWeight: 800,
               textAlign: "center",
               lineHeight: 1.6,
+              whiteSpace: "pre-line",
               ...formulaAppear,
             }}
           >
@@ -171,7 +183,10 @@ export const GraphSlide: React.FC<GraphSlideProps> = ({ heading, icon, formula, 
               ...noteAppear,
             }}
           >
-            {note}
+            <span style={{ ...markerPinkStyle, color: colors.textPrimary, fontWeight: 700 }}>
+              {noteHighlight}
+            </span>
+            {noteRest}
           </p>
         </div>
       </div>
@@ -179,7 +194,44 @@ export const GraphSlide: React.FC<GraphSlideProps> = ({ heading, icon, formula, 
   );
 };
 
-/** 結論の一文を accentPinkSoft マーカーで強調するヘルパー */
-export const PinkMarker: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <span style={{ ...markerPinkStyle, color: colors.textPrimary, fontWeight: 700 }}>{children}</span>
-);
+const GraphLineEl: React.FC<{ line: GraphLine; delaySec: number }> = ({ line, delaySec }) => {
+  const s = roleStyle[line.role];
+  const draw = useProgress(delaySec, line.role === "guide" ? 0.4 : 0.8);
+  const label = useAppear(delaySec + 0.7, { dy: 0 });
+  return (
+    <>
+      {line.role === "guide" ? (
+        <path
+          d={`M${line.x1} ${line.y1}L${line.x2} ${line.y2}`}
+          fill="none"
+          stroke={s.stroke}
+          strokeWidth={s.width}
+          strokeDasharray="4 3"
+          opacity={draw}
+        />
+      ) : (
+        <path
+          d={`M${line.x1} ${line.y1}L${line.x2} ${line.y2}`}
+          fill="none"
+          stroke={s.stroke}
+          strokeWidth={s.width}
+          pathLength={1}
+          strokeDasharray={1}
+          strokeDashoffset={1 - draw}
+        />
+      )}
+      {line.label ? (
+        <text
+          x={line.labelX ?? line.x2 - 30}
+          y={line.labelY ?? line.y2 - 6}
+          fontSize={9.5}
+          fontWeight={line.role === "main" ? 700 : line.role === "sub" ? 700 : 400}
+          fill={s.fill}
+          opacity={label.opacity}
+        >
+          {line.label}
+        </text>
+      ) : null}
+    </>
+  );
+};

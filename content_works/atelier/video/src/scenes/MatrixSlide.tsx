@@ -1,6 +1,7 @@
 import { interpolateColors } from "remotion";
 import { colors, fontMono, SCALE } from "../design/tokens";
 import { SlideShell } from "../parts/SlideShell";
+import type { NarrationSegment } from "../videos/types";
 import { NEVER_SEC, useAppear, usePop, useProgress } from "../parts/animate";
 
 export type MatrixCell = {
@@ -20,7 +21,8 @@ export type MatrixSlideProps = {
   colLabels: [string, string];
   rowLabels: [string, string];
   cells: [MatrixCell, MatrixCell, MatrixCell, MatrixCell]; // 左上→右上→左下→右下
-  telop: string;
+  telop?: string;
+  narration?: NarrationSegment[];
 };
 
 const Cell: React.FC<{ cell: MatrixCell; delaySec: number }> = ({ cell, delaySec }) => {
@@ -102,9 +104,10 @@ export const MatrixSlide: React.FC<MatrixSlideProps> = ({
   rowLabels,
   cells,
   telop,
+  narration,
 }) => {
   return (
-    <SlideShell heading={heading} icon={icon} telop={telop}>
+    <SlideShell heading={heading} icon={icon} telop={telop} narration={narration}>
       <div
         style={{
           flex: 1,

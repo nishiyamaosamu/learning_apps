@@ -1,6 +1,7 @@
 import { Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { colors, SCALE } from "../design/tokens";
 import { SlideShell } from "../parts/SlideShell";
+import type { NarrationSegment } from "../videos/types";
 import { easeOut, useAppear, usePop } from "../parts/animate";
 
 export type TermSlideProps = {
@@ -8,7 +9,8 @@ export type TermSlideProps = {
   icon: React.ReactNode;
   term: string;
   sub: string;
-  telop: string;
+  telop?: string;
+  narration?: NarrationSegment[];
 };
 
 /**
@@ -21,6 +23,7 @@ export const TermSlide: React.FC<TermSlideProps> = ({
   term,
   sub,
   telop,
+  narration,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -42,7 +45,7 @@ export const TermSlide: React.FC<TermSlideProps> = ({
   });
 
   return (
-    <SlideShell telop={telop}>
+    <SlideShell telop={telop} narration={narration}>
       <div
         style={{
           flex: 1,

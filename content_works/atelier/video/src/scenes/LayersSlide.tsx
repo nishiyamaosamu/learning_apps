@@ -1,6 +1,7 @@
 import { interpolateColors } from "remotion";
 import { colors, fontMono, SCALE } from "../design/tokens";
 import { SlideShell } from "../parts/SlideShell";
+import type { NarrationSegment } from "../videos/types";
 import { NEVER_SEC, useAppear, useProgress } from "../parts/animate";
 
 export type LayerItem = {
@@ -16,7 +17,8 @@ export type LayersSlideProps = {
   heading: string;
   icon?: React.ReactNode;
   layers: LayerItem[]; // 上（大きい番号）から順に
-  telop: string;
+  telop?: string;
+  narration?: NarrationSegment[];
 };
 
 const Layer: React.FC<{ layer: LayerItem; delaySec: number }> = ({ layer, delaySec }) => {
@@ -79,9 +81,9 @@ const Layer: React.FC<{ layer: LayerItem; delaySec: number }> = ({ layer, delayS
  * 本編スライド⑤ 階層図 — DESIGN.html .layers
  * 下の層（物理側）から順に積み上がり、説明中の層だけ点灯（primary50 + primary500枠）。
  */
-export const LayersSlide: React.FC<LayersSlideProps> = ({ heading, icon, layers, telop }) => {
+export const LayersSlide: React.FC<LayersSlideProps> = ({ heading, icon, layers, telop, narration }) => {
   return (
-    <SlideShell heading={heading} icon={icon} telop={telop}>
+    <SlideShell heading={heading} icon={icon} telop={telop} narration={narration}>
       <div
         style={{
           flex: 1,

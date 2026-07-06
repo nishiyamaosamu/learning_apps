@@ -2,6 +2,7 @@ import React from "react";
 import { interpolateColors, useCurrentFrame, useVideoConfig } from "remotion";
 import { colors, fontMono, SCALE } from "../design/tokens";
 import { SlideShell } from "../parts/SlideShell";
+import type { NarrationSegment } from "../videos/types";
 import { useAppear, usePop } from "../parts/animate";
 
 export type FlowStep = { abc: string; name: string; sub?: string };
@@ -10,7 +11,8 @@ export type FlowSlideProps = {
   heading: string;
   icon?: React.ReactNode;
   steps: FlowStep[];
-  telop: string;
+  telop?: string;
+  narration?: NarrationSegment[];
   /** ハイライト開始秒と1ステップあたりの滞在秒 */
   highlightFromSec?: number;
   highlightStaySec?: number;
@@ -113,11 +115,12 @@ export const FlowSlide: React.FC<FlowSlideProps> = ({
   icon,
   steps,
   telop,
+  narration,
   highlightFromSec = 1.6,
   highlightStaySec = 1.2,
 }) => {
   return (
-    <SlideShell heading={heading} icon={icon} telop={telop}>
+    <SlideShell heading={heading} icon={icon} telop={telop} narration={narration}>
       <div
         style={{
           flex: 1,

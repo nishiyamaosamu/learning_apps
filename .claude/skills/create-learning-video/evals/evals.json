@@ -1,0 +1,21 @@
+{
+  "skill_name": "create-learning-video",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "L1-management-resources",
+      "prompt": "ITパスポート講座の学習動画を1本作ってください。内容は content_works/ipa_ip/LESSON_PLAN.md の「L1：企業活動と経営資源」のレッスンです（企業活動の目的、経営資源＝ヒト・モノ・カネ・情報、企業理念とMVV、ガバナンスとコンプライアンス、CSR・SDGsなどの社会的責任）。60〜90秒でお願いします。",
+      "expected_output": "draft/ に 1920x1080 のmp4。タイトルカードで始まりクイズで終わる。集中ブルーのデザイントークンに準拠し、文字あふれがない。",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 1,
+      "eval_name": "break-even-point",
+      "prompt": "ITパスポートの「固定費・変動費と損益分岐点」を解説する学習動画を作ってください。固定費と変動費の違いと、損益分岐点の計算の考え方が伝わるようにしたいです。",
+      "expected_output": "draft/ に 1920x1080 のmp4。対比やグラフのスライドパターンを活用し、タイトルで始まりクイズで終わる。",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

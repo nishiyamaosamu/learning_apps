@@ -1,10 +1,11 @@
 import { interpolateColors } from "remotion";
 import { colors, fontMono, markerPinkStyle, SCALE } from "../design/tokens";
 import { SlideShell } from "../parts/SlideShell";
+import type { NarrationSegment } from "../videos/types";
 import { useAppear, usePop, useProgress } from "../parts/animate";
 
 export type BinaryDigit = {
-  weightLabel: React.ReactNode; // 例: 2³＝8
+  weight: string; // 例: "2³＝8"（上付きはUnicodeで: ⁰¹²³⁴⁵⁶⁷⁸⁹）
   digit: string; // "1" | "0"
   product: string; // 例: "8"（0の桁は "0"）
 };
@@ -15,7 +16,8 @@ export type BinarySlideProps = {
   digits: BinaryDigit[];
   /** 例: ["8", "4", "0", "1"] — 式の項（digits と同順） */
   answer: string;
-  telop: string;
+  telop?: string;
+  narration?: NarrationSegment[];
   /** 桁の評価を始める秒と1桁あたりの秒 */
   evalFromSec?: number;
   evalStepSec?: number;
@@ -57,7 +59,7 @@ const DigitCol: React.FC<{ d: BinaryDigit; index: number; litAtSec: number }> = 
           color: colors.textSecondary,
         }}
       >
-        {d.weightLabel}
+        {d.weight}
       </span>
       <span
         style={{
@@ -103,6 +105,7 @@ export const BinarySlide: React.FC<BinarySlideProps> = ({
   digits,
   answer,
   telop,
+  narration,
   evalFromSec = 1.3,
   evalStepSec = 0.7,
 }) => {
@@ -111,7 +114,7 @@ export const BinarySlide: React.FC<BinarySlideProps> = ({
   const ansPop = usePop(ansAt, { from: 0.4, durSec: 0.5 });
 
   return (
-    <SlideShell heading={heading} icon={icon} telop={telop}>
+    <SlideShell heading={heading} icon={icon} telop={telop} narration={narration}>
       <div
         style={{
           flex: 1,
