@@ -3,9 +3,9 @@
  * 「字幕1枚 = 1文 = 1音声ファイル」の作り方（パターン / カスタム両方）を示す。
  *
  * 制作手順:
- *   1. narration/<id>.jobs.json にセグメント原稿を書く
- *   2. cd ../../scripts && mise exec -- uv run tts.py --jobs ... --out-dir ../atelier/video/public/audio/<id>
- *   3. node scripts/audio-durations.mjs <id>  → <id>.audio.json が生まれる
+ *   1. narration/<app>/<id>.jobs.json にセグメント原稿を書く
+ *   2. cd ../scripts && mise exec -- uv run tts.py --jobs ... --out-dir ../video/public/audio/<app>/<id>
+ *   3. node scripts/audio-durations.mjs <id>  → <app>/<id>.audio.json が生まれる
  *   4. この形で narrationLoader から組み立てる
  */
 import { videoType, SCALE, colors } from "../../design/tokens";
@@ -14,9 +14,9 @@ import { Ms } from "../../parts/Ms";
 import { narrationLoader } from "../../parts/narration";
 import { SlideShell } from "../../parts/SlideShell";
 import type { VideoSpec } from "../types";
-import durations from "../narration-demo.audio.json";
+import durations from "./narration-demo.audio.json";
 
-const N = narrationLoader(durations, "audio/narration-demo");
+const N = narrationLoader(durations, "audio/demo/narration-demo");
 
 // セグメント配列は「spec の narration」と「シーン内の SlideShell」の両方に同じものを渡す
 const SEG1 = [

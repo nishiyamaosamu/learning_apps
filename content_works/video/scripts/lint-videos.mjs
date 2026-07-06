@@ -4,7 +4,7 @@
  *
  *   node scripts/lint-videos.mjs
  *
- * src/videos/ 配下の動画定義（infra ファイルを除く）を検査し、
+ * src/videos/ 配下（アプリ別サブディレクトリ含む）の動画定義（infra ファイルを除く）を検査し、
  * デザインシステム違反を検出したら一覧を出して exit 1。
  */
 import { readdirSync, readFileSync } from "node:fs";
@@ -41,8 +41,10 @@ const RULES = [
 ];
 
 let violations = 0;
-for (const f of readdirSync(dir)) {
-  if (INFRA.has(f) || (!f.endsWith(".ts") && !f.endsWith(".tsx"))) continue;
+const targets = readdirSync(dir, { recursive: true })
+  .map(String)
+  .filter((f) => !INFRA.has(f) && (f.endsWith(".ts") || f.endsWith(".tsx")));
+for (const f of targets) {
   const lines = readFileSync(join(dir, f), "utf8").split("\n");
   lines.forEach((line, i) => {
     if (/^\s*(\/\/|\*)/.test(line)) return; // コメント行は除外

@@ -16,9 +16,13 @@ leaning_apps/
 ├── pubspec.yaml       # Dart workspace定義
 ├── engine/            # コアエンジンパッケージ
 ├── apps/
-│   └── ipa_ip/        # 個別学習アプリ
-├── content_works/
-│   └── scripts/       # コンテンツ制作補助スクリプト（Python: TTSなど）
+│   ├── ipa_ip/        # 個別学習アプリ（ITパスポート）
+│   └── ipa_sg/        # 個別学習アプリ（情報セキュリティマネジメント）
+├── content_works/     # コンテンツ制作の作業場（アプリ本体には含まれない）
+│   ├── scripts/       # コンテンツ制作補助スクリプト（Python: TTS・背景透過など）
+│   ├── video/         # 学習動画の制作環境（Remotion）。詳細は content_works/video/README.md
+│   │                  #   アプリ別成果物は <app>/ サブディレクトリ、動画IDは ip-/sg- 接頭辞
+│   └── <app>/         # アプリ別の原材料・計画（LESSON_PLAN.md・シラバス・問題データなど）
 └── docs/
     └── LESSON.md      # レッスンコンテンツ（JSON）の構造仕様
 ```

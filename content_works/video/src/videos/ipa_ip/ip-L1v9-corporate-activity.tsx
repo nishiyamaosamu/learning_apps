@@ -1,12 +1,12 @@
 import { Img, staticFile } from "remotion";
-import { colors, videoType, markerStyle, markerPinkStyle, SCALE } from "../design/tokens";
-import { SlideShell } from "../parts/SlideShell";
-import { SectionTitle } from "../parts/SectionTitle";
-import { useAppear, usePop, useProgress } from "../parts/animate";
-import { Ms } from "../parts/Ms";
-import { narrationLoader } from "../parts/narration";
-import type { VideoSpec } from "./types";
-import durations from "./L1v9-corporate-activity.audio.json";
+import { colors, videoType, markerStyle, markerPinkStyle, SCALE } from "../../design/tokens";
+import { SlideShell } from "../../parts/SlideShell";
+import { SectionTitle } from "../../parts/SectionTitle";
+import { useAppear, usePop, useProgress } from "../../parts/animate";
+import { Ms } from "../../parts/Ms";
+import { narrationLoader } from "../../parts/narration";
+import type { VideoSpec } from "../types";
+import durations from "./ip-L1v9-corporate-activity.audio.json";
 
 /**
  * ITパスポート講座 L1: 企業活動と経営資源（v6 / create-learning-video スキル現行手順版）
@@ -23,7 +23,7 @@ import durations from "./L1v9-corporate-activity.audio.json";
  * P1・P2・P8 は L1v4/L1v5 から手描きイラストを流用（同じ概念には同じ絵を使い回す）。
  */
 
-const N = narrationLoader(durations, "audio/L1v9-corporate-activity");
+const N = narrationLoader(durations, "audio/ipa_ip/ip-L1v9-corporate-activity");
 
 // ---------------------------------------------------------------------------
 // セグメント定義（spec の narration と SlideShell の narration の両方に同じものを渡す）
@@ -664,7 +664,7 @@ const SummaryScene: React.FC = () => {
 // ---------------------------------------------------------------------------
 
 export const L1v9CorporateActivity: VideoSpec = {
-  id: "L1v9-corporate-activity",
+  id: "ip-L1v9-corporate-activity",
   scenes: [
     {
       pattern: "title",

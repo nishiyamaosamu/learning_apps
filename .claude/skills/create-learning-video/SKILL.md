@@ -1,6 +1,6 @@
 ---
 name: create-learning-video
-description: ナレーション音声＋同期字幕つきの学習動画（16:9・集中ブルーデザイン・5分以内）を content_works/atelier/video の Remotion 環境で制作するワークフロー。シナリオライティング→TTS音声生成→実装→レンダリングまでを一気通貫で行う。レッスン内容・シラバス・LESSON_PLAN の項目を動画にする依頼は必ずこのスキルを使うこと。「動画を作って」「Lxを動画化」「学習動画」「レッスン動画」「解説動画」「ナレーション付き動画」などはすべて対象。動画に載せるイラスト素材の生成だけを頼まれた場合は対象外（create-video-illust の領分）。
+description: ナレーション音声＋同期字幕つきの学習動画（16:9・集中ブルーデザイン・5分以内）を content_works/video の Remotion 環境で制作するワークフロー。シナリオライティング→TTS音声生成→実装→レンダリングまでを一気通貫で行う。レッスン内容・シラバス・LESSON_PLAN の項目を動画にする依頼は必ずこのスキルを使うこと。「動画を作って」「Lxを動画化」「学習動画」「レッスン動画」「解説動画」「ナレーション付き動画」などはすべて対象。動画に載せるイラスト素材の生成だけを頼まれた場合は対象外（create-video-illust の領分）。
 ---
 
 # 学習動画の制作（Remotion / 集中ブルー / ナレーション同期）
@@ -17,7 +17,12 @@ description: ナレーション音声＋同期字幕つきの学習動画（16:9
 - 文字は大きく・要素は少なく（動画は視聴距離が遠い）
 - **尺は1本5分以内が目標。5:59（359秒）まではセーフ、6分以上はアウト**。原稿の文字数で管理する
 
-作業ディレクトリ: `content_works/atelier/video`
+作業ディレクトリ: `content_works/video`
+
+アプリ別の名前空間: パス中の `<app>` はレッスンが属するアプリのディレクトリ（`ipa_ip` / `ipa_sg`）。
+動画ID `<id>` はアプリ接頭辞つきでグローバル一意にする（ipa_ip → `ip-…`、ipa_sg → `sg-…`。
+例 `ip-L1v9-corporate-activity`）。スクリプト類（audio-durations / stills / render）には `<id>` だけ渡せばよい
+（接頭辞から `<app>` が決まる）。
 
 ## ワークフロー
 
@@ -58,8 +63,8 @@ description: ナレーション音声＋同期字幕つきの学習動画（16:9
    1,500字を超えたら音声を作る前に削る — ページごと削るのが効く。作った後に削ると再生成コストがかかる。
    逆に3分を大きく下回るなら、キーワードの説明が浅くないか（工程2の観点で）見直す
 6. 成果物を2つ書く:
-   - `narration/<id>.md` — シナリオ（ページ表: メッセージ・レイアウト案・原稿）。後から見返す用
-   - `narration/<id>.jobs.json` — セグメント原稿（`s{ページ2桁}-{通し}.mp3` → 文）。TTSの入力
+   - `narration/<app>/<id>.md` — シナリオ（ページ表: メッセージ・レイアウト案・原稿）。後から見返す用
+   - `narration/<app>/<id>.jobs.json` — セグメント原稿（`s{ページ2桁}-{通し}.mp3` → 文）。TTSの入力
 
 ### 3. ページ設計（原稿を絵にする）
 
@@ -126,11 +131,11 @@ description: ナレーション音声＋同期字幕つきの学習動画（16:9
 
 ```bash
 cd content_works/scripts
-mise exec -- uv run tts.py --jobs ../atelier/video/narration/<id>.jobs.json \
-    --out-dir ../atelier/video/public/audio/<id>
+mise exec -- uv run tts.py --jobs ../video/narration/<app>/<id>.jobs.json \
+    --out-dir ../video/public/audio/<app>/<id>
 
-cd ../atelier/video
-node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<id>.audio.json
+cd ../video
+node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<app>/<id>.audio.json
 ```
 
 - audio-durations が合計秒数を報告する。**警告（330秒超）が出たらここで原稿を削る** —
@@ -139,10 +144,10 @@ node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<id>.audio
 
 ### 5. 実装
 
-`src/videos/<id>.tsx` を作り、`src/videos/index.ts` の `videos` 配列に追加する。
+`src/videos/<app>/<id>.tsx` を作り、`src/videos/index.ts` の `videos` 配列に追加する。
 ナレーションの組み立ては `narration-demo.tsx` の形をなぞる:
 
-- `narrationLoader(durations, "audio/<id>")` で `N()` を作り、セグメント配列を組む
+- `narrationLoader(durations, "audio/<app>/<id>")` で `N()` を作り、セグメント配列を組む
 - **既製パターン**: spec に `narration: [...]` を書くだけ（telop は書かない）
 - **カスタム**: セグメント配列を定数にして **spec と SlideShell の両方に同じものを渡す**
   （spec 側が音声と尺、SlideShell 側が字幕。片方だけだと音か字幕が欠ける）
@@ -176,7 +181,7 @@ node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<id>.audio
 ### 6. 機械検証
 
 ```bash
-cd content_works/atelier/video
+cd content_works/video
 node scripts/lint-videos.mjs   # デザイン違反の検出（ハードコード色・CSSアニメ等）
 npx tsc                        # 型チェック
 ```
@@ -205,9 +210,9 @@ node scripts/stills.mjs <id>
 ### 8. レンダリングして納品
 
 ```bash
-npx remotion render <id> draft/<id>.mp4
-ffprobe -v error -show_entries format=duration -of csv=p=0 draft/<id>.mp4   # 359秒以下を確認
-ffprobe -v error -show_entries stream=codec_type -of csv draft/<id>.mp4     # audio ストリームがあること
+npx remotion render <id> draft/<app>/<id>.mp4
+ffprobe -v error -show_entries format=duration -of csv=p=0 draft/<app>/<id>.mp4   # 359秒以下を確認
+ffprobe -v error -show_entries stream=codec_type -of csv draft/<app>/<id>.mp4     # audio ストリームがあること
 ```
 
 成果物は必ず `draft/` へ。**359秒を超えていたら納品しない** — 原稿を削って該当音声だけ

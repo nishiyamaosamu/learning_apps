@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
- * ナレーション音声（public/audio/<videoId>/*.mp3）の実測秒数を ffprobe で採り、
- * src/videos/<videoId>.audio.json に書き出す。
+ * ナレーション音声（public/audio/<app>/<videoId>/*.mp3）の実測秒数を ffprobe で採り、
+ * src/videos/<app>/<videoId>.audio.json に書き出す。
+ * <app> は videoId の接頭辞から決まる（ip-* → ipa_ip、sg-* → ipa_sg、それ以外 → demo）。
  *
  *   node scripts/audio-durations.mjs <videoId>
  *
- * 動画側は narrationLoader(durations, "audio/<videoId>") でこの JSON を読む。
+ * 動画側は narrationLoader(durations, "audio/<app>/<videoId>") でこの JSON を読む。
  * 音声を生成・再生成したら必ず実行し直すこと（秒数が字幕同期とシーン尺の根拠になる）。
  */
 import { execFileSync } from "node:child_process";
@@ -21,16 +22,22 @@ if (!videoId) {
   process.exit(1);
 }
 
-const dir = join(root, "public", "audio", videoId);
+const appDir = videoId.startsWith("ip-")
+  ? "ipa_ip"
+  : videoId.startsWith("sg-")
+    ? "ipa_sg"
+    : "demo";
+
+const dir = join(root, "public", "audio", appDir, videoId);
 if (!existsSync(dir)) {
-  console.error(`public/audio/${videoId}/ がありません。先に tts.py で音声を生成してください`);
+  console.error(`public/audio/${appDir}/${videoId}/ がありません。先に tts.py で音声を生成してください`);
   process.exit(1);
 }
 const files = readdirSync(dir)
   .filter((f) => f.endsWith(".mp3"))
   .sort();
 if (files.length === 0) {
-  console.error(`public/audio/${videoId}/ に mp3 がありません`);
+  console.error(`public/audio/${appDir}/${videoId}/ に mp3 がありません`);
   process.exit(1);
 }
 
@@ -52,10 +59,10 @@ for (const f of files) {
   total += sec;
 }
 
-const outPath = join(root, "src", "videos", `${videoId}.audio.json`);
+const outPath = join(root, "src", "videos", appDir, `${videoId}.audio.json`);
 writeFileSync(outPath, JSON.stringify(out, null, 2) + "\n");
 
-console.log(`src/videos/${videoId}.audio.json に ${files.length} ファイル分を書き出しました`);
+console.log(`src/videos/${appDir}/${videoId}.audio.json に ${files.length} ファイル分を書き出しました`);
 console.log(`ナレーション合計: ${total.toFixed(1)}秒（${Math.floor(total / 60)}分${Math.round(total % 60)}秒）`);
 
 // 動画尺 ≈ ナレーション合計 + シーン数 × テール(0.9s) + タイトル等の余白。上限は 5:59 = 359 秒

@@ -1,13 +1,13 @@
 import { Img, staticFile } from "remotion";
-import { colors, videoType, markerStyle, SCALE } from "../design/tokens";
-import { SlideShell } from "../parts/SlideShell";
-import { SectionTitle } from "../parts/SectionTitle";
-import { useAppear, usePop } from "../parts/animate";
-import { DrawPath } from "../parts/draw";
-import { Ms } from "../parts/Ms";
-import { narrationLoader } from "../parts/narration";
-import type { VideoSpec } from "./types";
-import durations from "./L2-management-basics.audio.json";
+import { colors, videoType, markerStyle, SCALE } from "../../design/tokens";
+import { SlideShell } from "../../parts/SlideShell";
+import { SectionTitle } from "../../parts/SectionTitle";
+import { useAppear, usePop } from "../../parts/animate";
+import { DrawPath } from "../../parts/draw";
+import { Ms } from "../../parts/Ms";
+import { narrationLoader } from "../../parts/narration";
+import type { VideoSpec } from "../types";
+import durations from "./ip-L2-management-basics.audio.json";
 
 /**
  * ITパスポート講座 L2: 経営管理の基本
@@ -23,7 +23,7 @@ import durations from "./L2-management-basics.audio.json";
  *   - scene-team-strength: 人こそ最大の経営資源（P5, 章の転換ヒーロー）
  */
 
-const N = narrationLoader(durations, "audio/L2-management-basics");
+const N = narrationLoader(durations, "audio/ipa_ip/ip-L2-management-basics");
 
 // ---------------------------------------------------------------------------
 // セグメント定義（spec の narration と SlideShell の narration の両方に同じものを渡す）
@@ -528,7 +528,7 @@ const SummaryScene: React.FC = () => {
 // ---------------------------------------------------------------------------
 
 export const L2ManagementBasics: VideoSpec = {
-  id: "L2-management-basics",
+  id: "ip-L2-management-basics",
   scenes: [
     {
       pattern: "title",
