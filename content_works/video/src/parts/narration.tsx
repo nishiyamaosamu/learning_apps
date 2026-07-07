@@ -25,6 +25,25 @@ export const narrationLoader =
   };
 
 /**
+ * セグメント index の読み上げ開始秒（シーン頭からの秒。gapBeforeSec 込み）。
+ * 「N文目の開始」を手計算（durationSec の足し算）しないためのヘルパー。
+ *
+ *   revealAtSec: segStart(QSEG, 2)              // quiz: 正解セグメントと同時にリビール
+ *   const b = useAppear(segStart(SEG5, 1));     // custom: 2文目の読み上げに合わせて出す
+ */
+export const segStart = (segments: NarrationSegment[], index: number): number => {
+  if (index < 0 || index >= segments.length) {
+    throw new Error(`segStart: index ${index} は範囲外です（セグメント数 ${segments.length}）`);
+  }
+  let acc = 0;
+  for (let i = 0; i <= index; i++) {
+    acc += segments[i].gapBeforeSec ?? 0;
+    if (i < index) acc += segments[i].durationSec;
+  }
+  return acc;
+};
+
+/**
  * ナレーション音声をセグメント順に隙間なく再生する。
  * renderScene が spec.narration から自動で置くので、シーン側で手動で使わないこと（二重再生になる）。
  */
@@ -64,13 +83,7 @@ export const NarrationTelopText: React.FC<{ segments: NarrationSegment[] }> = ({
 
   // starts[i] = セグメントiの読み上げ開始秒（gapBeforeSec の後）。
   // gap の間は「前のセグメントの字幕を出したまま」にする（クイズの正解などを間の間に先出ししない）
-  const starts: number[] = [];
-  let acc = 0;
-  for (const s of segments) {
-    acc += s.gapBeforeSec ?? 0;
-    starts.push(acc);
-    acc += s.durationSec;
-  }
+  const starts = segments.map((_, i) => segStart(segments, i));
   let idx = 0;
   for (let i = 0; i < segments.length; i++) {
     if (t >= starts[i]) idx = i;

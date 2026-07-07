@@ -1,6 +1,7 @@
 /**
  * ナレーション付き動画の最小手本。
- * 「字幕1枚 = 1文 = 1音声ファイル」の作り方（パターン / カスタム両方）を示す。
+ * 「字幕1枚 = 1文 = 1音声ファイル」の作り方（パターン / カスタム両方）と、
+ * segStart（「N文目の読み上げ開始」に画面の演出を同期させる）の手本を兼ねる。
  *
  * 制作手順:
  *   1. narration/<app>/<id>.jobs.json にセグメント原稿を書く
@@ -8,10 +9,10 @@
  *   3. node scripts/audio-durations.mjs <id>  → <app>/<id>.audio.json が生まれる
  *   4. この形で narrationLoader から組み立てる
  */
-import { videoType, SCALE, colors } from "../../design/tokens";
-import { usePop } from "../../parts/animate";
+import { videoType, SCALE, colors, markerStyle } from "../../design/tokens";
+import { useAppear, usePop } from "../../parts/animate";
 import { Ms } from "../../parts/Ms";
-import { narrationLoader } from "../../parts/narration";
+import { narrationLoader, segStart } from "../../parts/narration";
 import { SlideShell } from "../../parts/SlideShell";
 import type { VideoSpec } from "../types";
 import durations from "./narration-demo.audio.json";
@@ -36,19 +37,26 @@ const ResourceIcons: React.FC = () => (
         minHeight: 0,
         marginTop: "2%",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 14 * SCALE,
+        gap: 12 * SCALE,
       }}
     >
-      {[
-        { icon: "group", label: "ヒト" },
-        { icon: "inventory_2", label: "モノ" },
-        { icon: "payments", label: "カネ" },
-        { icon: "storage", label: "情報" },
-      ].map((x, i) => (
-        <Resource key={x.label} icon={x.icon} label={x.label} delaySec={0.4 + i * 0.35} />
-      ))}
+      <div style={{ display: "flex", gap: 14 * SCALE }}>
+        {[
+          { icon: "group", label: "ヒト" },
+          { icon: "inventory_2", label: "モノ" },
+          { icon: "payments", label: "カネ" },
+          { icon: "storage", label: "情報" },
+        ].map((x, i) => (
+          <Resource key={x.label} icon={x.icon} label={x.label} delaySec={0.4 + i * 0.35} />
+        ))}
+      </div>
+      {/* 2文目の読み上げ開始に同期して出す — segStart(SEG2, 1) がその開始秒 */}
+      <b style={{ fontSize: 13 * SCALE, ...useAppear(segStart(SEG2, 1)) }}>
+        <span style={markerStyle}>配分</span>が腕の見せどころ
+      </b>
     </div>
   </SlideShell>
 );

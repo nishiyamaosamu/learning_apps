@@ -124,9 +124,11 @@ N("s10-3.mp3", "正解は、イの経営資源です。", { gapBeforeSec: 1.8 })
 ### quiz のリビール同期（考える間つき）
 
 問いを読み終えたら考える間を置き、正解読み上げと同時にリビールする。
-`revealAtSec` は「正解セグメントの開始秒 = 前セグメントの合計 + gap」:
+`revealAtSec` は正解セグメントの開始秒 — `segStart(QSEG, i)` で取る（手で足し算しない）:
 
 ```tsx
+import { narrationLoader, segStart } from "../parts/narration";
+
 const QSEG = [
   N("s10-1.mp3", "ここで問題です。…"),
   N("s10-2.mp3", "…でしょうか。"),
@@ -137,9 +139,22 @@ const QSEG = [
   question: "…",
   choices: [...],
   narration: QSEG,
-  revealAtSec: QSEG[0].durationSec + QSEG[1].durationSec + 1.8, // s10-3 の開始 = 正解発表
+  revealAtSec: segStart(QSEG, 2), // s10-3 の読み上げ開始（gapBeforeSec 込み）= 正解発表
 }
 ```
+
+### 語りに画面を同期させる（segStart）
+
+カスタムシーンで「N文目に合わせて要素を出す・光らせる」も同じヘルパーで組む。
+シーン内の音声はシーン頭から始まるので、`segStart(SEG, i)` がそのまま演出の `delaySec` になる:
+
+```tsx
+// 2文目の読み上げ開始と同時に結論カードを出す
+const b = useAppear(segStart(SEG5, 1));
+```
+
+ナレーションが3文以上あるページは、少なくとも1つの要素を後半のセグメントに同期させて
+「語りに画面がついてくる」感を作る（全要素を頭で出し切ると後半が止まった絵になる）。
 
 ### オープニングジングル（title で自動再生）
 

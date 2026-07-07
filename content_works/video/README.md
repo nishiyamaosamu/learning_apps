@@ -49,7 +49,7 @@ video/
 │   │                      #   SCALE=4: モック(480px幅)のpx値を×4して1920pxで使う
 │   ├── parts/             # シーン間で再利用する共通部品
 │   │   ├── SlideShell.tsx # .v-slide シェル（見出しアイコン/ブルータブ + テロップ浮きカード常設）
-│   │   ├── animate.ts     # useAppear / usePop / useProgress（--ease-out・オーバーシュート）
+│   │   ├── animate.ts     # useAppear / usePop / useFlyIn / useProgress（--ease-out・オーバーシュート）
 │   │   └── Ms.tsx         # Material Symbols（Rounded・FILL 1）。DESIGN.html の .ms と同一設定で、
 │   │                      #   リガチャ名をそのまま渡す（例: <Ms name="gpp_maybe" size={80} />）。
 │   │                      #   フォントは public/fonts/ のローカル woff2（オフライン・決定論的）
@@ -99,6 +99,9 @@ node scripts/audio-durations.mjs <id>                  # 3. 実測 → src/video
 # 4. 動画側: narrationLoader(durations, "audio/<app>/<id>") でセグメントを組み、
 #    spec の narration（音声・尺）と SlideShell の narration（字幕）に渡す
 ```
+
+「N文目の読み上げ開始秒」は `segStart(SEG, i)`（parts/narration.tsx）で取れる。
+quiz の `revealAtSec` や、カスタムシーンで語りに合わせて要素を出す `delaySec` に使う（手計算しない）。
 
 - 音声はレンダラー（renderScene）が spec.narration から自動再生する。シーンに `<Audio>` を手動で置かない
 - シーン尺は「ナレーション合計 + テール0.9s」とアニメ尺の長い方（`src/videos/duration.ts`）

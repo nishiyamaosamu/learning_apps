@@ -155,7 +155,9 @@ node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<app>/<id>
 - 音声はレンダラーが自動で鳴らす。シーン内に `<Audio>` を手動で置かない（二重再生）
 - title はジングルが自動で鳴る（ナレーションなし）。ダーク幕間は中央の大きな文字を読み上げ文と一致させる
 - クイズは正解セグメントに `gapBeforeSec: 1.5〜2` を付けて考える間を作り、
-  `revealAtSec` をその正解セグメントの開始秒（前セグメント合計 + gap）に合わせる
+  `revealAtSec: segStart(QSEG, i)`（正解セグメントの開始秒。parts/narration.tsx のヘルパー）に合わせる
+- 「N文目に合わせて要素を出す」も同じく `useAppear(segStart(SEG, i))` —
+  語りに画面がついてくる演出は手計算せずこれで組む
 - 章の切り替えは spec の `transitionIn`: まとめ前は `"wipe"`（専用）、本編内の場面転換は `"wipe-light"`
   （自前でワイプを実装しない — parts/transition.tsx が正）
 
