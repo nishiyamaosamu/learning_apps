@@ -40,6 +40,8 @@ const baseDurationSec = (s: SceneSpec): number => {
       return 4.7 + 0.7 * s.digits.length; // 4桁 → 7.5s
     case "quiz":
       return 7.5;
+    case "summary":
+      return 3.0 + 1.1 * s.points.length;
     case "custom":
       return s.durationSec;
   }

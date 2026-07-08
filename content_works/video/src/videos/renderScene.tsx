@@ -13,6 +13,7 @@ import { GraphSlide } from "../scenes/GraphSlide";
 import { TermSlide } from "../scenes/TermSlide";
 import { BinarySlide } from "../scenes/BinarySlide";
 import { QuizSlide } from "../scenes/QuizSlide";
+import { SummarySlide } from "../scenes/SummarySlide";
 import type { SceneSpec, VideoSpec } from "./types";
 import { sceneDurationSec } from "./duration";
 
@@ -170,6 +171,8 @@ const renderSceneBody = (s: SceneSpec): React.ReactNode => {
           revealAtSec={s.revealAtSec}
         />
       );
+    case "summary":
+      return <SummarySlide chip={s.chip} points={s.points} narration={s.narration} />;
     case "custom": {
       const C = s.component;
       return <C />;

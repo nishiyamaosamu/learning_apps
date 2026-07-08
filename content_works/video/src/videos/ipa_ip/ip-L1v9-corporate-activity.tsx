@@ -4,7 +4,7 @@ import { SlideShell } from "../../parts/SlideShell";
 import { SectionTitle } from "../../parts/SectionTitle";
 import { useAppear, usePop, useProgress } from "../../parts/animate";
 import { Ms } from "../../parts/Ms";
-import { narrationLoader } from "../../parts/narration";
+import { narrationLoader, segStart } from "../../parts/narration";
 import { QUIZ_INTRO_SEG, OUTRO_SEG } from "../../parts/common-narration";
 import type { VideoSpec } from "../types";
 import durations from "./ip-L1v9-corporate-activity.audio.json";
@@ -585,82 +585,6 @@ const EnvironmentScene: React.FC = () => (
 const QuizIntroScene: React.FC = () => <SectionTitle title="クイズで確認" />;
 
 // ---------------------------------------------------------------------------
-// P10: まとめ（アイコン3連 + プラス記号）
-// ---------------------------------------------------------------------------
-
-const SUMMARY_ITEMS = [
-  { icon: "diversity_3", label: "資源", delay: 0.4 },
-  { icon: "flag", label: "理念", delay: 0.85 },
-  { icon: "volunteer_activism", label: "責任", delay: 1.3 },
-] as const;
-
-const SummaryItem: React.FC<{ icon: string; label: string; delaySec: number }> = ({ icon, label, delaySec }) => {
-  const pop = usePop(delaySec);
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 * SCALE, ...pop }}>
-      <span
-        style={{
-          width: 44 * SCALE,
-          height: 44 * SCALE,
-          borderRadius: 16 * SCALE,
-          backgroundColor: colors.primary50,
-          color: colors.primary600,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Ms name={icon} size={24 * SCALE} />
-      </span>
-      <b style={{ fontSize: 13 * SCALE }}>{label}</b>
-    </div>
-  );
-};
-
-const SummaryScene: React.FC = () => {
-  const plusAppear = useAppear(0.75);
-  return (
-    <SlideShell narration={SEG_P10}>
-      <div
-        style={{
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 10 * SCALE,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 9 * SCALE }}>
-          {SUMMARY_ITEMS.map((it, i) => (
-            <div key={it.label} style={{ display: "flex", alignItems: "center", gap: 9 * SCALE }}>
-              {i > 0 ? (
-                <span style={{ fontSize: 15 * SCALE, fontWeight: 800, color: colors.textMuted, ...plusAppear }}>
-                  +
-                </span>
-              ) : null}
-              <SummaryItem icon={it.icon} label={it.label} delaySec={it.delay} />
-            </div>
-          ))}
-        </div>
-        <span
-          style={{
-            fontSize: 12.5 * SCALE,
-            fontWeight: 700,
-            color: colors.textSecondary,
-            textAlign: "center",
-            ...useAppear(2.2),
-          }}
-        >
-          この3つを大切にしながら、企業は成長し続けます
-        </span>
-      </div>
-    </SlideShell>
-  );
-};
-
-// ---------------------------------------------------------------------------
 // VideoSpec
 // ---------------------------------------------------------------------------
 
@@ -751,12 +675,16 @@ export const L1v9CorporateActivity: VideoSpec = {
       revealAtSec: SEG_Q3[0].durationSec + SEG_Q3[1].durationSec + 1.8,
     },
     {
-      pattern: "custom",
-      name: "summary-icons",
-      durationSec: 5,
+      pattern: "summary",
+      points: [
+        { text: "企業は、経営資源を活かしながら活動しています。", checkAtSec: segStart(SEG_P10, 0) },
+        {
+          text: "そして、企業理念のもとで社会的な責任を果たしていきます。",
+          checkAtSec: segStart(SEG_P10, 1),
+        },
+      ],
       narration: SEG_P10,
       transitionIn: "wipe",
-      component: SummaryScene,
     },
   ],
 };

@@ -162,6 +162,17 @@ export type CustomScene = {
   component: FC;
 };
 
+export type SummaryScene = {
+  pattern: "summary";
+  durationSec?: number;
+  chip?: string; // 既定: 今日のポイント
+  /**
+   * 要点の復唱（3行まで）。文のまま書き、圧縮しない。
+   * checkAtSec は対応するナレーション文の開始秒（例: `segStart(SEG_P11, 0)`）— 読み上げに合わせてチェックが入る。
+   */
+  points: { text: string; checkAtSec: number }[];
+};
+
 export type QuizScene = {
   pattern: "quiz";
   durationSec?: number;
@@ -193,6 +204,7 @@ export type SceneSpec = (
   | TermScene
   | BinaryScene
   | QuizScene
+  | SummaryScene
   | CustomScene
 ) & { narration?: NarrationSegment[]; transitionIn?: "wipe" | "wipe-light" };
 

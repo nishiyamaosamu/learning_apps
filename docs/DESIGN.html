@@ -724,6 +724,25 @@ h2.sec::before {
 }
 .bin-eq .z { color: var(--textMuted); }
 .bin-eq .ans { font-size: 23px; }
+/* --- スライドパターン: まとめ --- */
+.sum-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 11px; min-height: 0; }
+.sum-checks { display: flex; flex-direction: column; gap: 7px; width: 86%; }
+.sum-check {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 7px 14px; font-size: 12px; font-weight: 700; line-height: 1.55;
+}
+.sum-check .ms { font-size: 17px; color: var(--primary600); flex: none; }
+.sum-kws { display: flex; gap: 10px; width: 92%; }
+.sum-kw {
+  flex: 1; background: var(--surface); border: 1.5px solid var(--primary300); border-radius: 12px;
+  padding: 10px 8px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.sum-kw .ms { font-size: 18px; color: var(--primary600); }
+.sum-kw b { font-size: 12.5px; }
+.sum-kw span { font-size: 9px; color: var(--textSecondary); line-height: 1.45; }
+
 /* 動画クイズ */
 .v-quiz { background: var(--primary50); padding: 4.5% 6%; display: flex; flex-direction: column; gap: 3.5%; }
 .v-quiz .qhead { display: flex; align-items: center; gap: 10px; }
@@ -2208,11 +2227,51 @@ footer { margin-top: 88px; padding-top: 20px; border-top: 1px solid var(--border
         </div>
       </div>
 
+      <!-- まとめ① ポイント復唱（標準） -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="sum-wrap">
+            <span class="term-chip">今日のポイント</span>
+            <div class="sum-checks">
+              <div class="sum-check"><span class="ms" aria-hidden="true">check_circle</span>使い回しは、1か所の流出がすべてに広がる</div>
+              <div class="sum-check"><span class="ms" aria-hidden="true">check_circle</span>パスワードは「長く・複雑に・別々に」</div>
+              <div class="sum-check"><span class="ms" aria-hidden="true">check_circle</span>二要素認証で、もう一段の備えを</div>
+            </div>
+          </div>
+          <div class="v-telop">今回のレッスンはここまでです。お疲れさまでした！</div>
+        </div>
+        <div class="cap">
+          <b>まとめ① ポイント復唱（チェックリスト・標準形）</b>
+          <p>まとめページの標準。要点を文のまま3行以内で復唱し、ナレーションの読み上げに同期してチェックが1つずつ入る。チェックは primary600 —— correct（緑）は正誤リビール専用なので、まとめでは使わない（ルール2）。まとめ共通ルール: 直前に wipe で場面転換し、最終セグメントは共通音声「今回のレッスンはここまでです。お疲れさまでした！」。</p>
+          <div class="toks"><span class="tok">primary100 見出しチップ</span><span class="tok">primary600 チェック</span><span class="tok">surface 行カード</span></div>
+        </div>
+      </div>
+
+      <!-- まとめ② キーワード回収（用語中心回のみ） -->
+      <div class="vmock">
+        <div class="frame v-slide">
+          <div class="sum-wrap">
+            <span class="term-chip">今日のキーワード</span>
+            <div class="sum-kws">
+              <div class="sum-kw"><span class="ms" aria-hidden="true">list_alt</span><b>リスト型攻撃</b><span>流出したID・パスワードを流用</span></div>
+              <div class="sum-kw"><span class="ms" aria-hidden="true">apps</span><b>総当たり攻撃</b><span>あらゆる組み合わせを試行</span></div>
+              <div class="sum-kw"><span class="ms" aria-hidden="true">phonelink_lock</span><b>二要素認証</b><span>パスワード＋もう1つの証明</span></div>
+            </div>
+          </div>
+          <div class="v-telop">この3つの言葉、意味を思い出せますか？</div>
+        </div>
+        <div class="cap">
+          <b>まとめ② キーワード回収（用語中心回のみ）</b>
+          <p>新出用語の習得が主眼の回だけの限定オプション。タイトルカードで小さく予告したキーワード（ゴーストチップ）を、意味つきのカードにして回収する。予告→回収の呼応で1本の動画が閉じる。3語まで・意味は1行に収める。用語ドン⑦を本編で使った回と相性がよい。要点が主張・行動指針の回では使わず、まとめ①に寄せる。</p>
+          <div class="toks"><span class="tok">primary100 見出しチップ</span><span class="tok">primary300 枠カード</span><span class="tok">primary600 アイコン</span></div>
+        </div>
+      </div>
+
     </div>
   </section>
 
   <footer>
-    トークンの原本: AppColors / AppTypography（Flutter）／ mialab Design System と同期 ・ 集中ブルー v1.1 — 2026-07（v1.1: タイポ・スペーシング・モーション追加、accentをトークン昇格、アンバー用途をルール4で限定、コントラスト修正、暗記カード学習・クイズ完了・穴埋め・空状態のモック追加）
+    トークンの原本: AppColors / AppTypography（Flutter）／ mialab Design System と同期 ・ 集中ブルー v1.2 — 2026-07（v1.1: タイポ・スペーシング・モーション追加、accentをトークン昇格、アンバー用途をルール4で限定、コントラスト修正、暗記カード学習・クイズ完了・穴埋め・空状態のモック追加 ／ v1.2: 動画まとめページ2パターン追加（標準=ポイント復唱、用語中心回のみキーワード回収））
   </footer>
 
 </div>

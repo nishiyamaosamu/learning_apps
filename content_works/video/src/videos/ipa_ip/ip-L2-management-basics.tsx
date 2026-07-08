@@ -5,7 +5,7 @@ import { SectionTitle } from "../../parts/SectionTitle";
 import { useAppear, usePop } from "../../parts/animate";
 import { DrawPath } from "../../parts/draw";
 import { Ms } from "../../parts/Ms";
-import { narrationLoader } from "../../parts/narration";
+import { narrationLoader, segStart } from "../../parts/narration";
 import { QUIZ_INTRO_SEG, OUTRO_SEG } from "../../parts/common-narration";
 import type { VideoSpec } from "../types";
 import durations from "./ip-L2-management-basics.audio.json";
@@ -449,82 +449,6 @@ const TeleworkScene: React.FC = () => (
 const QuizIntroScene: React.FC = () => <SectionTitle title="クイズで確認" />;
 
 // ---------------------------------------------------------------------------
-// P11: まとめ（アイコン3連 + プラス記号。wipe で転換）
-// ---------------------------------------------------------------------------
-
-const SUMMARY_ITEMS = [
-  { icon: "sync", label: "改善", delay: 0.4 },
-  { icon: "shield", label: "備え", delay: 0.85 },
-  { icon: "groups", label: "育成", delay: 1.3 },
-] as const;
-
-const SummaryItem: React.FC<{ icon: string; label: string; delaySec: number }> = ({ icon, label, delaySec }) => {
-  const pop = usePop(delaySec);
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 * SCALE, ...pop }}>
-      <span
-        style={{
-          width: 44 * SCALE,
-          height: 44 * SCALE,
-          borderRadius: 16 * SCALE,
-          backgroundColor: colors.primary50,
-          color: colors.primary600,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Ms name={icon} size={24 * SCALE} />
-      </span>
-      <b style={{ fontSize: 13 * SCALE }}>{label}</b>
-    </div>
-  );
-};
-
-const SummaryScene: React.FC = () => {
-  const plusAppear = useAppear(0.75);
-  return (
-    <SlideShell narration={SEG_P11}>
-      <div
-        style={{
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 10 * SCALE,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 9 * SCALE }}>
-          {SUMMARY_ITEMS.map((it, i) => (
-            <div key={it.label} style={{ display: "flex", alignItems: "center", gap: 9 * SCALE }}>
-              {i > 0 ? (
-                <span style={{ fontSize: 15 * SCALE, fontWeight: 800, color: colors.textMuted, ...plusAppear }}>
-                  +
-                </span>
-              ) : null}
-              <SummaryItem icon={it.icon} label={it.label} delaySec={it.delay} />
-            </div>
-          ))}
-        </div>
-        <span
-          style={{
-            fontSize: 12.5 * SCALE,
-            fontWeight: 700,
-            color: colors.textSecondary,
-            textAlign: "center",
-            ...useAppear(2.2),
-          }}
-        >
-          この3つが、経営管理を支える柱です
-        </span>
-      </div>
-    </SlideShell>
-  );
-};
-
-// ---------------------------------------------------------------------------
 // VideoSpec
 // ---------------------------------------------------------------------------
 
@@ -671,12 +595,19 @@ export const L2ManagementBasics: VideoSpec = {
       revealAtSec: SEG_Q3[0].durationSec + SEG_Q3[1].durationSec + 1.8,
     },
     {
-      pattern: "custom",
-      name: "summary-icons",
-      durationSec: 5,
+      pattern: "summary",
+      points: [
+        {
+          text: "経営管理では、PDCAで改善を続け、BCPで危機に備えます。",
+          checkAtSec: segStart(SEG_P11, 0),
+        },
+        {
+          text: "そして、人を育て活かすことが、成長につながります。",
+          checkAtSec: segStart(SEG_P11, 1),
+        },
+      ],
       narration: SEG_P11,
       transitionIn: "wipe",
-      component: SummaryScene,
     },
   ],
 };
