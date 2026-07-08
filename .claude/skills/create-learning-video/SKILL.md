@@ -42,10 +42,12 @@ description: ナレーション音声＋同期字幕つきの学習動画（16:9
    全体で12〜16ページ
    - title はオープニングジングル（6.8秒）が自動で鳴る。**title にナレーションは付けない**
    - クイズの前に幕間ページを1枚置いて一拍おく。画面は `parts/SectionTitle.tsx` で
-     短い題の文字アニメ（例: 「クイズで確認」）、読み上げは
-     「ここまで学んだことをクイズ形式で確認していきましょう！」のように長くてよい
-   - まとめは本編の要点を短く復唱し、最後のセグメントは必ず
-     「今回のレッスンはここまでです。お疲れさまでした！」で締める
+     短い題の文字アニメ（例: 「クイズで確認」）、読み上げは**共通音声を使い回す**
+     `QUIZ_INTRO_SEG`（「ここまで学んだことを、クイズ形式で確認していきましょう。」固定文言。
+     工程4参照）。この文言をジョブJSONに書いて新規TTS生成しない
+   - まとめは本編の要点を短く復唱し、最後のセグメントは必ず**共通音声**
+     `OUTRO_SEG`（「今回のレッスンはここまでです。お疲れさまでした！」固定文言。工程4参照）で締める。
+     この文言をジョブJSONに書いて新規TTS生成しない
    - **まとめの頭にはワイプ**: まとめページの spec に `transitionIn: "wipe"` を付ける
      （太めの角丸ラインが画面を埋めてから抜ける約1.5秒の切り替え）。**まとめ前専用・1動画1回**。
      本編内で話題が大きく変わるページには軽量版 `transitionIn: "wipe-light"`
@@ -141,6 +143,12 @@ node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<app>/<id>
 - audio-durations が合計秒数を報告する。**警告（330秒超）が出たらここで原稿を削る** —
   実装後に削るより圧倒的に安い
 - 実装は `<id>.audio.json` を import するので、音声を先に作らないと型チェックが通らない（意図的な順序強制）
+- **クイズ導入・締めの一言は共通音声（毎回生成しない）**: 文言が固定の定型セリフは
+  `public/audio/common/` に一度だけ生成済み。ジョブJSONには**書かず**、
+  `src/parts/common-narration.ts` の `QUIZ_INTRO_SEG` / `OUTRO_SEG` を import して使う
+  （工程5参照）。新しい定型セリフを追加したいときだけ
+  `narration/common/common.jobs.json` に足して `tts.py` → `node scripts/audio-durations.mjs common` を実行し、
+  `common-narration.ts` に export を足す
 
 ### 5. 実装
 
@@ -148,6 +156,11 @@ node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<app>/<id>
 ナレーションの組み立ては `narration-demo.tsx` の形をなぞる:
 
 - `narrationLoader(durations, "audio/<app>/<id>")` で `N()` を作り、セグメント配列を組む
+- **クイズ導入の幕間・まとめの締め**は音声を新規生成せず、
+  `import { QUIZ_INTRO_SEG, OUTRO_SEG } from "../../parts/common-narration"` で共通セグメントを使う。
+  幕間シーンには `narration: QUIZ_INTRO_SEG` をそのまま渡し、まとめのセグメント配列は
+  末尾に `OUTRO_SEG` を足す（`[...own, OUTRO_SEG]`）。どちらも `NarrationSegment`（`N()` の戻り値と同じ形）
+  なので他のセグメントと混在させてよい
 - **既製パターン**: spec に `narration: [...]` を書くだけ（telop は書かない）
 - **カスタム**: セグメント配列を定数にして **spec と SlideShell の両方に同じものを渡す**
   （spec 側が音声と尺、SlideShell 側が字幕。片方だけだと音か字幕が欠ける）
@@ -211,10 +224,14 @@ node scripts/stills.mjs <id>
 
 ### 8. レンダリングして納品
 
+出力ファイル名は `<app接頭辞>-L<レッスン番号>-v<バージョン>.mp4` の app-lesson-version 形式
+（例 `ip-L1-v1.mp4`）。初回は `v1`、同じ動画を作り直すたびに `v2`, `v3`… と上げる
+（既存ファイルは上書きしない）。
+
 ```bash
-npx remotion render <id> draft/<app>/<id>.mp4
-ffprobe -v error -show_entries format=duration -of csv=p=0 draft/<app>/<id>.mp4   # 359秒以下を確認
-ffprobe -v error -show_entries stream=codec_type -of csv draft/<app>/<id>.mp4     # audio ストリームがあること
+npx remotion render <id> draft/<app>/<出力名>.mp4   # 例: draft/ipa_ip/ip-L1-v1.mp4
+ffprobe -v error -show_entries format=duration -of csv=p=0 draft/<app>/<出力名>.mp4   # 359秒以下を確認
+ffprobe -v error -show_entries stream=codec_type -of csv draft/<app>/<出力名>.mp4     # audio ストリームがあること
 ```
 
 成果物は必ず `draft/` へ。**359秒を超えていたら納品しない** — 原稿を削って該当音声だけ

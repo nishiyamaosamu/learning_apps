@@ -5,6 +5,7 @@ import { SectionTitle } from "../../parts/SectionTitle";
 import { useAppear, usePop, useProgress } from "../../parts/animate";
 import { Ms } from "../../parts/Ms";
 import { narrationLoader } from "../../parts/narration";
+import { QUIZ_INTRO_SEG, OUTRO_SEG } from "../../parts/common-narration";
 import type { VideoSpec } from "../types";
 import durations from "./ip-L1v9-corporate-activity.audio.json";
 
@@ -92,7 +93,7 @@ const SEG_P9 = [
   N("s10-4.mp3", "カーボンフットプリントは、活動で排出したCO2の総量を表します。"),
 ];
 
-const SEG_QUIZ_INTRO = [N("s11-1.mp3", "ここまで学んだことを、クイズ形式で確認していきましょう。")];
+const SEG_QUIZ_INTRO = QUIZ_INTRO_SEG; // 定型セリフ。共通音声を使い回す（src/parts/common-narration.ts）
 
 const SEG_Q1 = [
   N("s12-1.mp3", "ここで問題です。"),
@@ -115,7 +116,7 @@ const SEG_Q3 = [
 const SEG_P10 = [
   N("s15-1.mp3", "企業は、経営資源を活かしながら活動しています。"),
   N("s15-2.mp3", "そして、企業理念のもとで社会的な責任を果たしていきます。"),
-  N("s15-3.mp3", "今回のレッスンはここまでです。お疲れさまでした！"),
+  OUTRO_SEG, // 定型セリフ。共通音声を使い回す（src/parts/common-narration.ts）
 ];
 
 // ---------------------------------------------------------------------------

@@ -6,6 +6,7 @@ import { useAppear, usePop } from "../../parts/animate";
 import { DrawPath } from "../../parts/draw";
 import { Ms } from "../../parts/Ms";
 import { narrationLoader } from "../../parts/narration";
+import { QUIZ_INTRO_SEG, OUTRO_SEG } from "../../parts/common-narration";
 import type { VideoSpec } from "../types";
 import durations from "./ip-L2-management-basics.audio.json";
 
@@ -93,7 +94,7 @@ const SEG_P10 = [
   N("s11-3.mp3", "拠点で働くサテライトオフィスや、旅先で働くワーケーションもあります。"),
 ];
 
-const SEG_QUIZ_INTRO = [N("s12-1.mp3", "ここまで学んだことを、クイズ形式で確認していきましょう。")];
+const SEG_QUIZ_INTRO = QUIZ_INTRO_SEG; // 定型セリフ。共通音声を使い回す（src/parts/common-narration.ts）
 
 const SEG_Q1 = [
   N("s13-1.mp3", "ここで問題です。"),
@@ -116,7 +117,7 @@ const SEG_Q3 = [
 const SEG_P11 = [
   N("s16-1.mp3", "経営管理では、PDCAで改善を続け、BCPで危機に備えます。"),
   N("s16-2.mp3", "そして、人を育て活かすことが、成長につながります。"),
-  N("s16-3.mp3", "今回のレッスンはここまでです。お疲れさまでした！"),
+  OUTRO_SEG, // 定型セリフ。共通音声を使い回す（src/parts/common-narration.ts）
 ];
 
 // ---------------------------------------------------------------------------

@@ -22,7 +22,8 @@ cd content_works/video
 node scripts/lint-videos.mjs        # 3. デザインガードレール lint
 npx tsc                             # 4. 型チェック
 node scripts/stills.mjs <id>        # 5. 全シーンの静止画を stills/<id>/ に出力 → 全部目視確認
-npx remotion render <id> draft/<app>/<id>.mp4   # 6. フルレンダリング（成果物は draft/<app>/ へ）
+npx remotion render <id> draft/<app>/<出力名>.mp4   # 6. フルレンダリング（成果物は draft/<app>/ へ）
+#    出力名は app-lesson-version 形式（例 ip-L1-v1.mp4）。作り直すたびに v2, v3… と上げる
 
 npm run dev     # Remotion Studio（プレビューしながら調整したいとき）
 ```
