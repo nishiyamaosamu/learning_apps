@@ -60,6 +60,13 @@ description: ナレーション音声＋同期字幕つきの学習動画（16:9
      本編内で話題が大きく変わるページには軽量版 `transitionIn: "wipe-light"`
      （斜めの平行四辺形3枚が流れ抜けるだけ・約1.0秒）を使ってよい（1〜2回まで）。
      クイズ導入の幕間にはどちらも付けない（SectionTitle が主役）
+   - **科目B（試験のケース問題）のレッスンは、確認パートを「知識クイズ」ではなく「ケース問題」にする**
+     （ipa_sg LESSON_PLAN 第9章 L78-L96 が対象。ただし L78 はオリエンテーション回なので従来のクイズで例外）。
+     用語の一問一答ではなく、**A社などの状況（＝本文・図表）を提示するシーンを1枚置いてから、
+     その状況を参照して判断させる quiz を2〜3問**続ける（例: 与えられた評価値から重要度を出す／
+     状況の記述から効く対策を選ぶ）。幕間の題は「ケースで確認」、読み上げは共通音声
+     `CASE_INTRO_SEG`（「ここまでを踏まえて、ケース問題で確認していきましょう。」固定文言。工程4参照）を
+     `QUIZ_INTRO_SEG` の代わりに渡す。実例は `src/videos/ipa_sg/sg-L79-asset-register.tsx`
 2. **キーワードは説明してから先へ進む**: 画面に出す用語（例: ミッション・ビジョン・バリュー、
    グリーンIT、カーボンフットプリント）は、名前を読み上げるだけで流さず、それぞれ一言の定義か
    身近な例を必ず語る。用語の羅列は記憶に残らない。語る時間が足りないなら項目ごと削って
@@ -158,8 +165,8 @@ node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<app>/<id>
 - 実装は `<id>.audio.json` を import するので、音声を先に作らないと型チェックが通らない（意図的な順序強制）
 - **クイズ導入・締めの一言は共通音声（毎回生成しない）**: 文言が固定の定型セリフは
   `public/audio/common/` に一度だけ生成済み。ジョブJSONには**書かず**、
-  `src/parts/common-narration.ts` の `QUIZ_INTRO_SEG` / `OUTRO_SEG` を import して使う
-  （工程5参照）。新しい定型セリフを追加したいときだけ
+  `src/parts/common-narration.ts` の `QUIZ_INTRO_SEG` /（科目Bのケース確認は `CASE_INTRO_SEG`）/
+  `OUTRO_SEG` を import して使う（工程5参照）。新しい定型セリフを追加したいときだけ
   `narration/common/common.jobs.json` に足して `tts.py` → `node scripts/audio-durations.mjs common` を実行し、
   `common-narration.ts` に export を足す
 
@@ -173,7 +180,9 @@ node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<app>/<id>
   `import { QUIZ_INTRO_SEG, OUTRO_SEG } from "../../parts/common-narration"` で共通セグメントを使う。
   幕間シーンには `narration: QUIZ_INTRO_SEG` をそのまま渡し、まとめのセグメント配列は
   末尾に `OUTRO_SEG` を足す（`[...own, OUTRO_SEG]`）。どちらも `NarrationSegment`（`N()` の戻り値と同じ形）
-  なので他のセグメントと混在させてよい
+  なので他のセグメントと混在させてよい。**科目Bのケース確認回は `QUIZ_INTRO_SEG` の代わりに
+  `CASE_INTRO_SEG` を使い、幕間の直後にケース提示シーン（本文・図表）を1枚置いてから quiz を続ける**
+  （工程2の構成参照。実例 `src/videos/ipa_sg/sg-L79-asset-register.tsx`）
 - **既製パターン**: spec に `narration: [...]` を書くだけ（telop は書かない）
 - **カスタム**: セグメント配列を定数にして **spec と SlideShell の両方に同じものを渡す**
   （spec 側が音声と尺、SlideShell 側が字幕。片方だけだと音か字幕が欠ける）
