@@ -108,6 +108,11 @@ description: ナレーション音声＋同期字幕つきの学習動画（16:9
 - 同じ形（同じ視覚文法）を2ページ連続させない。循環図の直後に放射図など「線で繋ぐ図」を重ねない
 - 密なページの次は疎なページ（数字ドン・用語ドンなど）で息継ぎを作る
 - ナレーションが長いページ（4文以上）は、要素を時間差で順に出して「語りに画面がついてくる」感を作る
+- **並列項目（bullets／vs／flow）は既定タイミングのままにしない**: 何も指定しないと全項目が
+  最初の1〜2秒でほぼ同時に出る／点灯が一定間隔で機械的に切り替わる。ナレーションが項目ごとに
+  順番へ話す構成なら、必ず該当文の開始秒に同期させる（工程5の `appearAtSec`／`columnAtSec`／
+  `highlightAtSec` 参照）。同期させないと、画面が語りより先行して「もう出ているのにまだ説明中」
+  というズレが起きる（BECの3ステップ図で実際に起きた不具合）
 
 **イラストを入れるか考える**（ページ設計の一部として毎回検討する）:
 
@@ -179,6 +184,18 @@ node scripts/audio-durations.mjs <id>   # 実測秒数 → src/videos/<app>/<id>
   `revealAtSec: segStart(QSEG, i)`（正解セグメントの開始秒。parts/narration.tsx のヘルパー）に合わせる
 - 「N文目に合わせて要素を出す」も同じく `useAppear(segStart(SEG, i))` —
   語りに画面がついてくる演出は手計算せずこれで組む
+- **bullets／vs／flow は項目ごとのナレーション同期プロパティを持つ**（省略時は均等割りの
+  早出しタイミングになり、語りより画面が先行してズレる）。ナレーションが項目ごとに順番へ
+  話す構成では必ず指定する:
+  - `bullets`: `appearAtSec: number[]`（bullets と同じ長さ。各項目の出現秒）
+  - `vs`: `columnAtSec: [number, number]`（[left, right] の出現秒）
+  - `flow`: `highlightAtSec: number[]`（steps と同じ長さ。各ステップの点灯開始秒）
+  すべて `segStart(SEG, i)` で組む（例: `appearAtSec: [segStart(SEG, 1), segStart(SEG, 2)]`）。
+  matrix・layers のハイライトは現状ページ内蔵の固定タイミングのみ（ナレーション同期は未対応）
+- カスタムシーンで「1つの要素の中の一部だけを語りに合わせて強調」したい場合（例: 副題に並ぶ
+  2つの用語をそれぞれの説明文の開始で色を変える）は `useProgress(segStart(SEG, i), 0.3)` +
+  `interpolateColors` で組む（`src/videos/ipa_sg/sg-L3-human-deception.tsx` の `HighlightSpan`
+  が実例。詳細は references/custom-scenes.md）
 - 章の切り替えは spec の `transitionIn`: まとめ前は `"wipe"`（専用）、本編内の場面転換は `"wipe-light"`
   （自前でワイプを実装しない — parts/transition.tsx が正）
 

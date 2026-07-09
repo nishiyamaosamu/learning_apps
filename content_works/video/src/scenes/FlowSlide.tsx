@@ -13,7 +13,13 @@ export type FlowSlideProps = {
   steps: FlowStep[];
   telop?: string;
   narration?: NarrationSegment[];
-  /** ハイライト開始秒と1ステップあたりの滞在秒 */
+  /**
+   * 各ステップの点灯開始秒。ナレーションに同期させたいときに指定する
+   * （例: `[segStart(SEG, 1), segStart(SEG, 2), segStart(SEG, 4)]`）。
+   * 省略時は highlightFromSec / highlightStaySec による均等割りにフォールバックする。
+   */
+  highlightAtSec?: number[];
+  /** ハイライト開始秒と1ステップあたりの滞在秒（highlightAtSec 省略時のみ使う） */
   highlightFromSec?: number;
   highlightStaySec?: number;
 };
@@ -21,25 +27,21 @@ export type FlowSlideProps = {
 const Step: React.FC<{
   step: FlowStep;
   index: number;
-  isLast: boolean;
-  highlightFromSec: number;
-  highlightStaySec: number;
-}> = ({ step, index, isLast, highlightFromSec, highlightStaySec }) => {
+  start: number;
+  /** null = 次のステップが無い（点灯を保持して締める） */
+  end: number | null;
+}> = ({ step, index, start, end }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const pop = usePop(0.35 + index * 0.18, { from: 0.85 });
 
-  // ハイライト量: 自分の番で 1、次のステップに移ると 0（最後のステップは保持）
-  const start = highlightFromSec + index * highlightStaySec;
-  const end = start + highlightStaySec;
   const t = frame / fps;
   const fade = 0.25;
   let on = 0;
   if (t >= start) {
     on = Math.min(1, (t - start) / fade);
   }
-  // 最後のステップは点灯を保持して締める
-  if (!isLast && t >= end) {
+  if (end != null && t >= end) {
     on = Math.max(0, 1 - (t - end) / fade);
   }
 
@@ -116,9 +118,11 @@ export const FlowSlide: React.FC<FlowSlideProps> = ({
   steps,
   telop,
   narration,
+  highlightAtSec,
   highlightFromSec = 1.6,
   highlightStaySec = 1.2,
 }) => {
+  const starts = highlightAtSec ?? steps.map((_, i) => highlightFromSec + i * highlightStaySec);
   return (
     <SlideShell heading={heading} icon={icon} telop={telop} narration={narration}>
       <div
@@ -134,13 +138,7 @@ export const FlowSlide: React.FC<FlowSlideProps> = ({
         {steps.map((s, i) => (
           <React.Fragment key={s.abc + s.name}>
             {i > 0 ? <Arrow delaySec={0.35 + i * 0.18 - 0.06} /> : null}
-            <Step
-              step={s}
-              index={i}
-              isLast={i === steps.length - 1}
-              highlightFromSec={highlightFromSec}
-              highlightStaySec={highlightStaySec}
-            />
+            <Step step={s} index={i} start={starts[i]} end={i < steps.length - 1 ? starts[i + 1] : null} />
           </React.Fragment>
         ))}
       </div>

@@ -40,6 +40,11 @@ export type BulletsScene = {
   heading: string;
   icon: string;
   bullets: { text: string; sub?: string; marker?: "blue" | "pink" }[]; // 3項目まで
+  /**
+   * 各項目の出現秒（bullets と同じ長さ）。ナレーションが項目ごとに話す構成のときに
+   * `[segStart(SEG, 1), segStart(SEG, 2)]` のように指定する。省略時は均等割りの自動タイミング。
+   */
+  appearAtSec?: number[];
   /** narration を付けるシーンでは省略（字幕が音声から出る） */
   telop?: string;
   /** public/ 配下のパス（例: "images/<app>/xxx.png"）。手描きイラストがある場合のみ */
@@ -53,6 +58,11 @@ export type VsScene = {
   icon: string;
   left: VsColumnSpec;
   right: VsColumnSpec;
+  /**
+   * 左右カラムの出現秒 [left, right]。ナレーションが左→右の順で話す構成のときに
+   * `[segStart(SEG, 1), segStart(SEG, 2)]` のように指定する。省略時は既定の早出しタイミング。
+   */
+  columnAtSec?: [number, number];
   /** narration を付けるシーンでは省略（字幕が音声から出る） */
   telop?: string;
 };
@@ -69,6 +79,12 @@ export type FlowScene = {
   heading: string;
   icon?: string; // 省略時はブルータブ（見本③と同じ）
   steps: { abc: string; name: string; sub?: string }[]; // 3〜5ステップ
+  /**
+   * 各ステップの点灯開始秒（steps と同じ長さ）。ナレーションで「いま何の話をしているか」に
+   * 合わせてハイライトを動かしたいときに指定する。`segStart(SEG, i)` で組む（手計算しない）。
+   * 省略時は均等割りの自動タイミングになる（ナレーションとズレるので narration 付きシーンでは指定推奨）。
+   */
+  highlightAtSec?: number[];
   /** narration を付けるシーンでは省略（字幕が音声から出る） */
   telop?: string;
 };

@@ -87,13 +87,24 @@ export const TransitionWipeLight: React.FC = () => {
   );
 };
 
+/**
+ * wipe が完全に晴れる（最後のバーが右へ抜けきる）までの秒数。
+ * renderScene はこの秒数だけ本編（音声＋映像）の開始を遅らせる —
+ * 覆っている裏で次ページのアニメーションや読み上げが先に進んでしまうのを防ぐため。
+ */
+export const WIPE_REVEAL_SEC = Math.max(...BARS.map((b) => b.delay)) + OUT_AT + OUT_DUR;
+
 export const TransitionWipe: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
   const ease = Easing.bezier(0.55, 0, 0.25, 1);
   return (
-    <AbsoluteFill style={{ overflow: "hidden", pointerEvents: "none" }}>
+    // 背景色で完全に覆う: renderScene が WIPE_REVEAL_SEC の間だけこのコンポーネントを
+    // 表示するので、常時塗っても本編を隠し続けることはない。
+    // 通常ページと同じ colors.bg にする（バーと同系色の濃い青にすると青いラインが背景に
+    // 溶けて見えなくなるため、バーが際立つ明るい地を選ぶ）
+    <AbsoluteFill style={{ overflow: "hidden", pointerEvents: "none", backgroundColor: colors.bg }}>
       {BARS.map((b, i) => {
         // translateX は自身の幅基準: -100%=左外 / 0=画面を覆う / +100%=右外
         const x = interpolate(

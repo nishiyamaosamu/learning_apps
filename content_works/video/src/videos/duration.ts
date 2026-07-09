@@ -1,4 +1,5 @@
 import type { NarrationSegment, SceneSpec, VideoSpec } from "./types";
+import { WIPE_REVEAL_SEC } from "../parts/transition";
 
 /** ナレーション最終セグメントの後に置く無音の間（次のシーンに移る呼吸） */
 export const NARRATION_TAIL_SEC = 0.9;
@@ -10,10 +11,14 @@ export const narrationDurationSec = (segments: NarrationSegment[]): number =>
  * シーンの標準尺（秒）。narration があれば「音声合計 + テール」と
  * アニメーション尺の長い方。無ければアニメーションの終了時刻 + 読む時間。
  * （React 非依存の純粋関数 — scripts/stills.mjs からも使う）
+ *
+ * `transitionIn: "wipe"` は本編（音声＋映像）の開始を WIPE_REVEAL_SEC だけ遅らせて
+ * 表示する（renderScene 参照）ため、その分をシーン尺に加算する。
  */
 export const sceneDurationSec = (s: SceneSpec): number => {
   const base = baseDurationSec(s);
-  return s.narration?.length ? Math.max(base, narrationDurationSec(s.narration)) : base;
+  const content = s.narration?.length ? Math.max(base, narrationDurationSec(s.narration)) : base;
+  return s.transitionIn === "wipe" ? content + WIPE_REVEAL_SEC : content;
 };
 
 const baseDurationSec = (s: SceneSpec): number => {

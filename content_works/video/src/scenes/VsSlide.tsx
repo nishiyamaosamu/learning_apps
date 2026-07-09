@@ -17,6 +17,11 @@ export type VsSlideProps = {
   right: VsColumn;
   telop?: string;
   narration?: NarrationSegment[];
+  /**
+   * 左右カラムの出現秒 [left, right]。ナレーションが左→右の順で話す構成のときに
+   * `[segStart(SEG, 1), segStart(SEG, 2)]` のように指定する。省略時は既定の早出しタイミング。
+   */
+  columnAtSec?: [number, number];
 };
 
 const Col: React.FC<{ col: VsColumn; fromX: number; delaySec: number }> = ({
@@ -110,7 +115,15 @@ const Row: React.FC<{ k: string; v: string; delaySec: number }> = ({ k, v, delay
  * 本編スライド② 対比 — DESIGN.html .vs-wrap
  * 左右のカラムが両側からスライドイン → 行が時間差で立ち上がる。
  */
-export const VsSlide: React.FC<VsSlideProps> = ({ heading, icon, left, right, telop, narration }) => {
+export const VsSlide: React.FC<VsSlideProps> = ({
+  heading,
+  icon,
+  left,
+  right,
+  telop,
+  narration,
+  columnAtSec,
+}) => {
   return (
     <SlideShell heading={heading} icon={icon} telop={telop} narration={narration}>
       <div
@@ -122,8 +135,8 @@ export const VsSlide: React.FC<VsSlideProps> = ({ heading, icon, left, right, te
           minHeight: 0,
         }}
       >
-        <Col col={left} fromX={-60} delaySec={0.35} />
-        <Col col={right} fromX={60} delaySec={0.55} />
+        <Col col={left} fromX={-60} delaySec={columnAtSec?.[0] ?? 0.35} />
+        <Col col={right} fromX={60} delaySec={columnAtSec?.[1] ?? 0.55} />
       </div>
     </SlideShell>
   );

@@ -19,6 +19,12 @@ export type BulletSlideProps = {
   narration?: NarrationSegment[];
   /** public/ 配下の手描きイラスト（例: "images/ipa_sg/attack-password.png"）。白地は multiply で溶かす */
   illust?: string;
+  /**
+   * 各項目の出現秒（bullets と同じ長さ）。ナレーションで「いま何の話をしているか」に
+   * 合わせて出したいときに指定する。`segStart(SEG, i)` で組む（手計算しない）。
+   * 省略時は均等割りの自動タイミングになる。
+   */
+  appearAtSec?: number[];
 };
 
 const Bullet: React.FC<{ item: BulletItem; delaySec: number }> = ({ item, delaySec }) => {
@@ -80,6 +86,7 @@ export const BulletSlide: React.FC<BulletSlideProps> = ({
   telop,
   narration,
   illust,
+  appearAtSec,
 }) => {
   const illustAppear = useAppear(0.5);
 
@@ -108,7 +115,7 @@ export const BulletSlide: React.FC<BulletSlideProps> = ({
           }}
         >
           {bullets.map((b, i) => (
-            <Bullet key={b.text} item={b} delaySec={0.5 + i * 0.6} />
+            <Bullet key={b.text} item={b} delaySec={appearAtSec?.[i] ?? 0.5 + i * 0.6} />
           ))}
         </ul>
         {illust ? (

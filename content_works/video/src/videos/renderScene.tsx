@@ -2,7 +2,7 @@ import { AbsoluteFill, Audio, Sequence, staticFile, useVideoConfig } from "remot
 import { SCALE, videoType } from "../design/tokens";
 import { Ms } from "../parts/Ms";
 import { NarrationAudio } from "../parts/narration";
-import { TransitionWipe, TransitionWipeLight } from "../parts/transition";
+import { TransitionWipe, TransitionWipeLight, WIPE_REVEAL_SEC } from "../parts/transition";
 import { TitleCard } from "../scenes/TitleCard";
 import { BulletSlide } from "../scenes/BulletSlide";
 import { VsSlide } from "../scenes/VsSlide";
@@ -26,18 +26,43 @@ const headMs = (name?: string) =>
 /**
  * シーン本体 + ナレーション音声。narration 付きシーンは音声がここで自動再生されるので、
  * シーン側（カスタム含む）で <Audio> を手動で置かないこと。
+ *
+ * `transitionIn: "wipe"` は本編（音声＋映像）を WIPE_REVEAL_SEC だけ遅らせて別 Sequence に置く —
+ * ワイプが完全に晴れる前に次ページの読み上げやアニメーションが進んでしまうのを防ぐため
+ * （duration.ts の sceneDurationSec がその分をシーン尺に加算済み）。
+ * "wipe-light" は画面を覆わない軽量な装飾なので遅延しない。
  */
-export const renderScene = (s: SceneSpec): React.ReactNode => {
+export const renderScene = (s: SceneSpec, fps: number): React.ReactNode => {
   const body = renderSceneBody(s);
-  if (!s.narration?.length && !s.transitionIn) return body;
-  return (
+  const content = (
     <>
       {s.narration?.length ? <NarrationAudio segments={s.narration} /> : null}
       {body}
-      {s.transitionIn === "wipe" ? <TransitionWipe /> : null}
-      {s.transitionIn === "wipe-light" ? <TransitionWipeLight /> : null}
     </>
   );
+
+  if (s.transitionIn === "wipe") {
+    const revealFrames = Math.round(WIPE_REVEAL_SEC * fps);
+    return (
+      <>
+        <Sequence from={0} durationInFrames={revealFrames}>
+          <TransitionWipe />
+        </Sequence>
+        <Sequence from={revealFrames}>{content}</Sequence>
+      </>
+    );
+  }
+
+  if (s.transitionIn === "wipe-light") {
+    return (
+      <>
+        {content}
+        <TransitionWipeLight />
+      </>
+    );
+  }
+
+  return content;
 };
 
 const renderSceneBody = (s: SceneSpec): React.ReactNode => {
@@ -59,6 +84,7 @@ const renderSceneBody = (s: SceneSpec): React.ReactNode => {
           telop={s.telop}
           narration={s.narration}
           illust={s.illust}
+          appearAtSec={s.appearAtSec}
         />
       );
     case "vs":
@@ -78,12 +104,13 @@ const renderSceneBody = (s: SceneSpec): React.ReactNode => {
           }}
           telop={s.telop}
           narration={s.narration}
+          columnAtSec={s.columnAtSec}
         />
       );
     case "flow":
       return (
         <FlowSlide heading={s.heading} icon={headMs(s.icon)} steps={s.steps} telop={s.telop}
-          narration={s.narration} />
+          narration={s.narration} highlightAtSec={s.highlightAtSec} />
       );
     case "matrix": {
       // tone 付き象限を順に点灯（2.4s から 0.7s 間隔）
@@ -202,7 +229,7 @@ export const VideoComposition: React.FC<{ spec: VideoSpec }> = ({ spec }) => {
         from += dur;
         return (
           <Sequence key={i} from={start} durationInFrames={dur}>
-            {renderScene(scene)}
+            {renderScene(scene, fps)}
           </Sequence>
         );
       })}
