@@ -1,7 +1,8 @@
 # SG動画 イラスト部品計画（ILLUST_PLAN）
 
-[LESSON_PLAN.md](LESSON_PLAN.md) の全84レッスンを動画化するにあたり、**先に作り置きして使い回すアイコン・イラスト部品**の計画。
+[LESSON_PLAN.md](LESSON_PLAN.md) の全96レッスンを動画化するにあたり、**先に作り置きして使い回すアイコン・イラスト部品**の計画。
 レッスンごとの一点物イラストを減らして制作を軽くするのが目的。
+※ レッスン番号は96本版（2026-07-07改番）の番号に更新済み。
 
 生成手順・スタイル規定・配置と命名の規則は `create-video-illust` スキル（[.claude/skills/create-video-illust/SKILL.md](../../.claude/skills/create-video-illust/SKILL.md)）に従う。部品は `content_works/video/public/images/ipa_sg/` に置く（フラット・接頭辞で分類。確認待ちは `draft/`）。レッスン固有の一点物も同じ場所に `l{n}-` 接頭辞で置く。
 
@@ -23,46 +24,46 @@
 
 ---
 
-## 1. 基本アイコン【優先度S】
+## 1. 基本アイコン【優先度S】✅ 作成済み
 
 全章横断で使う土台。これだけで説明シーンの大半を組める。
 
 | 部品 | 内容 | 主な用途 |
 |---|---|---|
 | icon-shield ✅ | 盾（チェック入り。L1のheroの単体版） | 防御・対策全般 |
-| icon-shield-broken | ひび割れた盾 | 脆弱性・対策の失敗 |
-| icon-lock / icon-lock-open | 南京錠（施錠／開錠） | 機密性・暗号化・アクセス制御 |
-| icon-key | 鍵1本 | 暗号鍵・パスワード |
-| icon-key-pair ✅ | 色違いの鍵2本（青＝公開鍵・黄＝秘密鍵） | 公開鍵暗号・PKI（L11〜L14） |
-| icon-document | 書類1枚（横線の本文） | 情報資産・規程・契約書 |
-| icon-document-stack | 書類の束／台帳 | 情報資産台帳・文書管理（L16, L68, L75） |
-| icon-folder | フォルダ | データ・分類 |
+| icon-shield-broken ✅ | ひび割れた盾 | 脆弱性・対策の失敗 |
+| icon-lock / icon-lock-open ✅ | 南京錠（施錠／開錠） | 機密性・暗号化・アクセス制御 |
+| icon-key ✅ | 鍵1本 | 暗号鍵・パスワード |
+| icon-key-pair ✅ | 色違いの鍵2本（青＝公開鍵・黄＝秘密鍵） | 公開鍵暗号・PKI（L15〜L17・L21） |
+| icon-document ✅ | 書類1枚（横線の本文） | 情報資産・規程・契約書 |
+| icon-document-stack ✅ | 書類の束／台帳 | 情報資産台帳・文書管理（L23, L79, L86） |
+| icon-folder ✅ | フォルダ | データ・分類 |
 | icon-database ✅ | データベース円筒 | DB・個人情報データベース |
-| icon-server | サーバラック | サーバ全般・ネットワーク図の部品 |
-| icon-cloud | 雲 | クラウド（L15, L47, L78） |
-| icon-laptop | ノートPC | 利用者端末 |
-| icon-smartphone | スマートフォン | モバイル・多要素認証・MDM |
-| icon-mail | 封筒 | メール（L8, L35, L53）・フィッシング |
-| icon-browser | ブラウザ画面（ウィンドウ枠） | Web関連（L7, L54） |
-| icon-network | ノードを線でつないだ網 | ネットワーク全般 |
-| icon-building | オフィスビル | 会社・組織・A社（科目B） |
-| icon-check | 緑チェックマーク | OK・適切な選択肢 |
-| icon-cross | 赤バツ | NG・不適切な選択肢 |
+| icon-server ✅ | サーバラック | サーバ全般・ネットワーク図の部品 |
+| icon-cloud ✅ | 雲 | クラウド（L22, L55, L90, L91） |
+| icon-laptop ✅ | ノートPC | 利用者端末 |
+| icon-smartphone ✅ | スマートフォン | モバイル・多要素認証・MDM |
+| icon-mail ✅ | 封筒 | メール（L10, L43, L44, L62）・フィッシング |
+| icon-browser ✅ | ブラウザ画面（ウィンドウ枠） | Web関連（L8, L9, L63） |
+| icon-network ✅ | ノードを線でつないだ網 | ネットワーク全般 |
+| icon-building ✅ | オフィスビル | 会社・組織・A社（科目B） |
+| icon-check ✅ | 緑チェックマーク | OK・適切な選択肢 |
+| icon-cross ✅ | 赤バツ | NG・不適切な選択肢 |
 | icon-warning ✅ | 黄色い警告三角（！） | 脅威・注意喚起 |
-| icon-skull-bug | 虫＋ドクロ的なマルウェア汎用 | マルウェア一般（種類別は§3） |
-| icon-magnifier | 虫めがね | 監査・検知・調査・分析 |
-| icon-gear | 歯車 | 運用・設定・プロセス |
-| icon-clipboard | チェックリスト付きクリップボード | 点検・計画・管理策 |
-| icon-graph | 棒グラフ＋上向き矢印 | 評価指標・分析（L49, L64〜L66） |
-| icon-scale | 天秤 | 法務全般（第5章） |
-| icon-gavel | 木槌 | 罰則・刑法（L43） |
-| icon-money | 硬貨／札束 | コスト・サイバー保険・会計（L18, L66） |
-| icon-clock | 時計 | RTO/RPO・時間計算（L49, L51, L59, L74) |
-| icon-backup | HDD／テープに巻き戻し矢印 | バックアップ（L19, L28, L51, L73, L74） |
+| icon-skull-bug ✅ | 虫＋ドクロ的なマルウェア汎用 | マルウェア一般（種類別は§3） |
+| icon-magnifier ✅ | 虫めがね | 監査・検知・調査・分析 |
+| icon-gear ✅ | 歯車 | 運用・設定・プロセス |
+| icon-clipboard ✅ | チェックリスト付きクリップボード | 点検・計画・管理策 |
+| icon-graph ✅ | 棒グラフ＋上向き矢印 | 評価指標・分析（L56, L75〜L77） |
+| icon-scale ✅ | 天秤 | 法務全般（第6章） |
+| icon-gavel ✅ | 木槌 | 罰則・刑法（L51） |
+| icon-money ✅ | 硬貨／札束 | コスト・サイバー保険・会計（L25, L77） |
+| icon-clock ✅ | 時計 | RTO/RPO・時間計算（L56, L59, L69, L85） |
+| icon-backup ✅ | HDD／テープに巻き戻し矢印 | バックアップ（L26, L35, L59, L84, L85） |
 
 ## 2. 人物キャラ【優先度S】✅ 作成済み
 
-シリーズ通しての「登場人物」。表情・ポーズ違いを最初に揃えると科目B（第8章）が特に楽になる。
+シリーズ通しての「登場人物」。表情・ポーズ違いを最初に揃えると科目B（第9章）が特に楽になる。
 
 全8キャラ・25ポーズを `content_works/video/public/images/ipa_sg/` に配置済み。ポーズの実名は下表のバリエーション列（`person-{キャラ}-{ポーズ}.png`、基本ポーズは接尾辞なし）。
 
@@ -77,126 +78,145 @@
 | person-vendor ✅ | 委託先・外部業者（作業服） | 通常（かばん）／`-card`名刺を出す |
 | person-customer ✅ | 顧客・本人（個人情報の主体） | 通常（手を振る）／`-worry`不安顔 |
 
-## 3. 脅威・攻撃の部品【優先度A／第1章・第3章・第8章】
+## 3. 脅威・攻撃の部品【優先度A／第1章・第4章・第9章】✅ 作成済み（attack-eavesdrop は見送り）
 
-第1章（L3〜L10）は攻撃手法の説明が続くので、ここが最も点数が要る。
-
-| 部品 | 内容 | 主な用途 |
-|---|---|---|
-| malware-virus | ウイルス（トゲトゲ球体） | L4 |
-| malware-worm | ワーム（芋虫が自己複製） | L4 |
-| malware-trojan | トロイの木馬（木馬） | L4 |
-| malware-bot | ボット（操り人形／リモコン付きPC） | L4, L9 |
-| malware-ransom | ランサムウェア（鎖と錠のかかったファイル＋身代金要求） | L4, L5, L28, L80 |
-| malware-spyware | スパイウェア（覗き見する目） | L4 |
-| attack-phishing | 釣り針に引っかかった封筒／ID | L8, L10, L35, L80 |
-| attack-mitm | 通信線の途中に割り込む攻撃者 | L8, L34 |
-| attack-dos | サーバに矢印が殺到してパンク | L9 |
-| attack-targeted | 的（ダーツボード）＋矢 | L9（標的型・APT） |
-| attack-password | 鍵穴に総当たりする鍵の束 | L6 |
-| attack-injection | 入力フォームに注射器 | L7, L38 |
-| attack-eavesdrop | 通信線に聞き耳（盗聴） | L3, L8 |
-| attack-spoofing | お面をかぶったなりすまし | L3, L8, L12 |
-| attack-social | 肩越しに画面を覗く／電話で騙す | L3, L27 |
-| attack-ai | ロボット顔の攻撃者／ディープフェイクの仮面 | L10 |
-| threat-fire-quake | 火事・地震（災害系脅威） | L2, L19, L33, L63 |
-
-## 4. 防御・技術の部品【優先度A／第1章後半・第3章・第4章】
+第1章（L3〜L14）は攻撃手法の説明が続くので、ここが最も点数が要る。
 
 | 部品 | 内容 | 主な用途 |
 |---|---|---|
-| tech-firewall | レンガ壁＋炎 | L30, L36 |
-| tech-ids | サイレン／監視センサー | L30（IDS/IPS）, L76 |
-| tech-vpn-tunnel | 2点を結ぶ保護されたトンネル | L34, L36, L55 |
-| tech-cert | リボン付き証明書 | L14（PKI）, L44 |
-| tech-ca | 認証局（証明書を発行するビル＋ハンコ） | L14 |
-| tech-signature | 書類＋ペンと封蝋（デジタル署名） | L12, L44 |
-| tech-hash | 文書→ミキサー→短い文字列（ハッシュ） | L11, L12 |
-| tech-encrypt | 平文→鍵→暗号文（3コマ横並び） | L11 |
-| tech-fingerprint | 指紋 | L13（生体認証） |
-| tech-face-id | 顔認証の枠付き顔 | L13 |
-| tech-otp | ワンタイムパスワードのトークン（数字表示） | L13 |
-| tech-badge | 社員証・入館証（ICカード） | L13, L33, L71 |
-| tech-camera | 監視カメラ | L33, L71 |
-| tech-gate | フラッパーゲート・入退室扉 | L33, L71 |
-| tech-cabinet | 施錠できる書庫・キャビネット | L33, L75 |
-| tech-usb | USBメモリ | L33, L75（可搬媒体） |
-| tech-shredder | シュレッダー／溶解箱 | L33, L77（媒体処分） |
-| tech-log | ログの巻物／流れる行 | L29, L37, L76 |
-| tech-patch | 絆創膏（パッチ適用） | L29, L76 |
-| tech-quarantine | 検疫の柵に入ったPC | L29 |
-| tech-honeypot | 蜜壺（ハニーポット） | L36 |
-| tech-masking | 一部が黒塗り／モザイクの個人データ表 | L32, L42, L79（匿名加工） |
-| tech-forensic | 証拠品袋に入ったHDD | L32, L81 |
+| malware-virus ✅ | ウイルス（トゲトゲ球体） | L4 |
+| malware-worm ✅ | ワーム（芋虫が自己複製） | L4 |
+| malware-trojan ✅ | トロイの木馬（木馬） | L4 |
+| malware-bot ✅ | ボット（操り人形／リモコン付きPC） | L5, L12 |
+| malware-ransom ✅ | ランサムウェア（鎖と錠のかかったファイル＋身代金要求） | L5, L35, L93 |
+| malware-spyware ✅ | スパイウェア（覗き見する目） | L4 |
+| attack-phishing ✅ | 釣り針に引っかかった封筒／ID | L10, L14, L43, L93 |
+| attack-mitm ✅ | 通信線の途中に割り込む攻撃者 | L11, L42 |
+| attack-dos ✅ | サーバに矢印が殺到してパンク | L12 |
+| attack-targeted ✅ | 的（ダーツボード）＋矢 | L12（標的型・APT） |
+| attack-password ✅ | 鍵穴に総当たりする鍵の束 | L7 |
+| attack-injection ✅ | 入力フォームに注射器 | L8, L46 |
+| attack-eavesdrop ❌見送り | 通信線に聞き耳（盗聴）※比喩が安定せず作成しない（attack-mitm等で代用） | L11 |
+| attack-spoofing ✅ | お面をかぶったなりすまし | L3, L10, L17 |
+| attack-social ✅ | 肩越しに画面を覗く／電話で騙す | L3, L34 |
+| attack-ai ✅ | ロボット顔の攻撃者／ディープフェイクの仮面 | L14 |
+| threat-fire-quake ✅ | 火事・地震（災害系脅威） | L2, L26, L41, L74 |
 
-## 5. 管理・組織の部品【優先度A／第2章・第7章・第8章】
+## 4. 防御・技術の部品【優先度A／第2章・第4章・第5章】✅ 作成済み
 
 | 部品 | 内容 | 主な用途 |
 |---|---|---|
-| mgmt-pdca | PDCAの循環矢印（4分割円） | L21, L63, L84 |
-| mgmt-pyramid | 3層ピラミッド（方針・対策基準・実施手順） | L20 |
-| mgmt-risk-matrix | 縦横2軸のマトリックス（色分きマス） | L17, L69 |
-| mgmt-balance-risk | リスクの4対応（避ける・渡す・持つ・減らす）の4コマ用小物：迂回矢印・手渡し・抱える・盾で軽減 | L18, L57, L70 |
-| mgmt-csirt | 消防士風チーム／緊急対応バッジ | L23, L80, L81 |
-| mgmt-soc | モニターが並ぶ監視室 | L23, L31 |
-| mgmt-education | 教壇と受講者（研修） | L27, L82 |
-| mgmt-contract | 契約書＋2人の握手 | L27, L45, L77 |
-| mgmt-committee | 会議テーブルを囲む人々 | L20, L23 |
-| mgmt-escalation | 上へ報告する階段矢印 | L58, L80 |
-| mgmt-servicedesk | ヘッドセットの窓口担当 | L58 |
-| mgmt-bcp | 折れたビルから復旧する矢印／非常口 | L19, L63 |
-| mgmt-cert-badge | ISMS認証マーク風の盾バッジ | L21, L22 |
+| tech-firewall ✅ | レンガ壁＋炎 | L38, L45 |
+| tech-ids ✅ | サイレン／監視センサー | L38（IDS/IPS）, L87 |
+| tech-vpn-tunnel ✅ | 2点を結ぶ保護されたトンネル | L42, L45, L64 |
+| tech-cert ✅ | リボン付き証明書 | L21（PKI）, L52 |
+| tech-ca ✅ | 認証局（証明書を発行するビル＋ハンコ） | L21 |
+| tech-signature ✅ | 書類＋ペンと封蝋（デジタル署名） | L17, L52 |
+| tech-hash ✅ | 文書→ミキサー→短い文字列（ハッシュ） | L16, L17 |
+| tech-encrypt ✅ | 平文→鍵→暗号文（3コマ横並び） | L15 |
+| tech-fingerprint ✅ | 指紋 | L19, L20（生体認証） |
+| tech-face-id ✅ | 顔認証の枠付き顔 | L20 |
+| tech-otp ✅ | ワンタイムパスワードのトークン（数字表示） | L18 |
+| tech-badge ✅ | 社員証・入館証（ICカード） | L20, L41, L82 |
+| tech-camera ✅ | 監視カメラ | L41, L82 |
+| tech-gate ✅ | フラッパーゲート・入退室扉 | L41, L82 |
+| tech-cabinet ✅ | 施錠できる書庫・キャビネット | L41, L86 |
+| tech-usb ✅ | USBメモリ | L41, L86（可搬媒体） |
+| tech-shredder ✅ | シュレッダー／溶解箱 | L41, L89（媒体処分） |
+| tech-log ✅ | ログの巻物／流れる行 | L37, L58, L87 |
+| tech-patch ✅ | 絆創膏（パッチ適用） | L37, L88 |
+| tech-quarantine ✅ | 検疫の柵に入ったPC | L36 |
+| tech-honeypot ✅ | 蜜壺（ハニーポット） | L45 |
+| tech-masking ✅ | 一部が黒塗り／モザイクの個人データ表 | L40, L50, L92（匿名加工） |
+| tech-forensic ✅ | 証拠品袋に入ったHDD | L40, L94 |
 
-## 6. IT基礎の部品【優先度A／第4章・第6章】
-
-ネットワーク図を組むための「機材セット」。L52〜L56や前提知識ページ（L7・L8・L14・L30・L34〜L36の冒頭）で繰り返し使う。
-
-| 部品 | 内容 | 主な用途 |
-|---|---|---|
-| net-router | ルータ（矢印の交差する箱） | L52 |
-| net-switch | スイッチ（ポートの並ぶ箱） | L52 |
-| net-ap | 無線LANアクセスポイント（電波マーク付き） | L56 |
-| net-dns | 電話帳を持つサーバ（名前→番号） | L8, L52 |
-| net-mailserver | 封筒マーク付きサーバ | L35, L53 |
-| net-proxy | 中継役のサーバ（受け渡し） | L36, L54 |
-| net-globe | 地球儀（インターネット） | 全ネットワーク図 |
-| net-packet | 小包（パケット） | L52, L30 |
-| net-wifi-waves | 電波（3本弧） | L55, L56 |
-| net-raid | ディスクが複数並んだ箱 | L48 |
-| net-dual | 2台並びのサーバ（冗長化） | L48, L59 |
-| icon-ip-address | 番地札（住所プレート） | L52（IPアドレス） |
-
-## 7. 科目B・ケース演習の部品【優先度A／第8章】
-
-第8章18レッスンは「A社のケース」を毎回描く。舞台セットとして共通化する。
+## 5. 管理・組織の部品【優先度A／第3章・第8章・第9章】✅ ほぼ作成済み（mgmt-escalation のみ未作成）
 
 | 部品 | 内容 | 主な用途 |
 |---|---|---|
-| scene-office | A社オフィスの俯瞰（島型デスク＋サーバ室＋入口） | 第8章全レッスンの導入 |
-| scene-serverroom | サーバ室（ラック＋施錠扉） | L71, L73 |
-| scene-entrance | 受付＋フラッパーゲート | L71 |
-| scene-meeting ✅ | 会議室（ケース検討の場面） | 第8章の判断ポイント解説 |
-| scene-desk-work | リーダーがPCと台帳に向かう作業机 | L68, L69, L76 |
-| scene-incident | 赤い警告の出たPCと駆けつける人 | L80, L81 |
-| prop-ledger | 情報資産台帳（表組みの帳簿） | L68, L69 |
-| prop-thermometer | リスク値のメーター（低↔高） | L69, L70, L78 |
-| prop-timeline | 時間軸の帯（障害→復旧、RPO/RTO用） | L74 |
-| prop-calendar | カレンダー（取得サイクル・スケジュール） | L73, L51 |
+| mgmt-pdca ✅ | PDCAの循環矢印（4分割円） | L28, L74, L96 |
+| mgmt-pyramid ✅ | 3層ピラミッド（方針・対策基準・実施手順） | L27 |
+| mgmt-risk-matrix ✅ | 縦横2軸のマトリックス（色分きマス） | L24, L80 |
+| mgmt-balance-risk ✅ | リスクの4対応（避ける・渡す・持つ・減らす）の4コマ用小物：迂回矢印・手渡し・抱える・盾で軽減 | L25, L66, L73, L81 |
+| mgmt-csirt ✅ | 消防士風チーム／緊急対応バッジ | L30, L93, L94 |
+| mgmt-soc ✅ | モニターが並ぶ監視室 | L30, L39 |
+| mgmt-education ✅ | 教壇と受講者（研修） | L34, L95 |
+| mgmt-contract ✅ | 契約書＋2人の握手 | L34, L53, L89 |
+| mgmt-committee ✅ | 会議テーブルを囲む人々 | L27, L30 |
+| mgmt-escalation | 上へ報告する階段矢印 ※未作成 | L68, L93 |
+| mgmt-servicedesk ✅ | ヘッドセットの窓口担当 | L68 |
+| mgmt-bcp ✅ | 折れたビルから復旧する矢印／非常口 | L26, L74 |
+| mgmt-cert-badge ✅ | ISMS認証マーク風の盾バッジ | L28, L29 |
 
-## 8. 法務・その他の部品【優先度B／第5章・第7章】
+## 6. IT基礎の部品【優先度A／第5章・第7章】✅ ほぼ作成済み（net-ap のみ未作成）
+
+ネットワーク図を組むための「機材セット」。L60〜L65や前提知識ページ（L8〜L11・L38・L42・L43の冒頭）で繰り返し使う。
 
 | 部品 | 内容 | 主な用途 |
 |---|---|---|
-| law-book | 六法風の分厚い本 | 第5章全般 |
-| law-copyright | ©マーク＋作品（本・音楽・コード） | L39 |
-| law-privacy | 個人情報（顔＋名前カードを守る手） | L41, L42 |
-| law-mynumber | マイナンバーカード風カード | L42 |
-| law-police | 手錠／パトランプ（犯罪・摘発） | L40, L43 |
-| law-globe-eu | EU旗風の星円（GDPR） | L42 |
-| biz-chart-pareto | パレート図・特性要因図の白地図版 | L64 |
-| biz-decision-tree | 分岐する木 | L65 |
-| biz-bs-sheet | 貸借対照表風の2分割ボックス | L66 |
-| biz-gantt | 帯が並ぶ工程表 | L57 |
+| net-router ✅ | ルータ（矢印の交差する箱） | L61 |
+| net-switch ✅ | スイッチ（ポートの並ぶ箱） | L61 |
+| net-ap | 無線LANアクセスポイント（電波マーク付き）※未作成 | L65 |
+| net-dns ✅ | 電話帳を持つサーバ（名前→番号） | L11, L43, L61 |
+| net-mailserver ✅ | 封筒マーク付きサーバ | L43, L44, L62 |
+| net-proxy ✅ | 中継役のサーバ（受け渡し） | L45, L63 |
+| net-globe ✅ | 地球儀（インターネット） | 全ネットワーク図 |
+| net-packet ✅ | 小包（パケット） | L60, L38 |
+| net-wifi-waves ✅ | 電波（3本弧） | L64, L65 |
+| net-raid ✅ | ディスクが複数並んだ箱 | L57 |
+| net-dual ✅ | 2台並びのサーバ（冗長化） | L57, L69 |
+| icon-ip-address ✅ | 番地札（住所プレート） | L60（IPアドレス） |
+
+## 7. 科目B・ケース演習の部品【優先度A／第9章】✅ ほぼ作成済み（prop-thermometer のみ未確定）
+
+第9章19レッスン（L78〜L96）は「A社のケース」を毎回描く。舞台セットとして共通化する。
+
+| 部品 | 内容 | 主な用途 |
+|---|---|---|
+| scene-office ✅ | A社オフィスの俯瞰（島型デスク＋サーバ室＋入口） | 第9章全レッスンの導入 |
+| scene-serverroom ✅ | サーバ室（ラック＋施錠扉） | L82, L84 |
+| scene-entrance ✅ | 受付＋フラッパーゲート | L82 |
+| scene-meeting ✅ | 会議室（ケース検討の場面） | 第9章の判断ポイント解説 |
+| scene-desk-work ✅ | リーダーがPCと台帳に向かう作業机 | L79, L80, L87, L88 |
+| scene-incident ✅ | 赤い警告の出たPCと駆けつける人 | L93, L94 |
+| prop-ledger ✅ | 情報資産台帳（表組みの帳簿） | L79, L80 |
+| prop-thermometer | リスク値のメーター（低↔高）※目盛り依存で生成が崩れやすく未確定（再生成／簡素化／見送りを判断） | L80, L81, L90, L91 |
+| prop-timeline ✅ | 時間軸の帯（障害→復旧、RPO/RTO用） | L85 |
+| prop-calendar ✅ | カレンダー（取得サイクル・スケジュール） | L59, L84 |
+
+## 8. 法務・その他の部品【優先度B／第6章・第8章】✅ 作成済み
+
+| 部品 | 内容 | 主な用途 |
+|---|---|---|
+| law-book ✅ | 六法風の分厚い本 | 第6章全般 |
+| law-copyright ✅ | ©マーク＋作品（本・音楽・コード） | L47 |
+| law-privacy ✅ | 個人情報（顔＋名前カードを守る手） | L49, L50 |
+| law-mynumber ✅ | マイナンバーカード風カード | L50 |
+| law-police ✅ | 手錠／パトランプ（犯罪・摘発） | L48, L51 |
+| law-globe-eu ✅ | EU旗風の星円（GDPR） | L50 |
+| biz-chart-pareto ✅ | パレート図・特性要因図の白地図版 | L75 |
+| biz-decision-tree ✅ | 分岐する木 | L76 |
+| biz-bs-sheet ✅ | 貸借対照表風の2分割ボックス | L77 |
+| biz-gantt ✅ | 帯が並ぶ工程表 | L66 |
+
+## 9. 96本版の改訂で追加が必要になった部品【未作成】
+
+レッスン計画の84本→96本改訂で新設・格上げされたテーマのうち、既存部品とレイアウト合成（矢印・枠・テキストは動画側で重ねる）ではカバーできないもの。接頭辞は既存セクションの分類に合わせる。
+
+| 部品 | 優先度 | 内容 | 主な用途 |
+|---|---|---|---|
+| mgmt-fraud-triangle | A | 三角形の3頂点に「機会・動機・正当化」のラベル（mgmt-pyramid・mgmt-risk-matrixと同系の図解部品） | L6（主担当）, L34, L95 |
+| net-cookie | A | クッキー菓子＋ID札（Webの「目印」の比喩） | L9【前提：cookieとセッション】, L63（R5問10の題材） |
+| icon-gov | A | 官公庁の建物（議事堂風・旗付き。会社のicon-buildingとは別物＝国・規制側） | L31（機関の地図）, L48, L49 |
+| attack-backdoor | B | PCの背面に付いた裏口ドア（半開き） | L5（バックドア・ルートキット・踏み台） |
+| attack-raas | B | 値札タグ付きのマルウェア商品箱（攻撃のビジネス化） | L13（RaaS・リークサイト） |
+| net-vm | B | 1台のサーバ筐体の中に小さなPCが複数入っている（仮想化） | L55（VM・VDI） |
+| net-celltower | B | 電波塔（移動体通信の基地局） | L64（LTE・5G・テザリング） |
+| net-iot | B | Wi-Fiマーク付きのネットワークカメラ（IoT機器の代表） | L32（IoTセキュリティ） |
+| law-fakenews | B | 「✕」マーク付きの新聞／拡声器から飛び出す偽ニュース | L54（偽・誤情報・ファクトチェック） |
+| biz-robot | B | 親しみやすいロボット（青系。赤いattack-aiとは別物） | L72（RPA・チャットボット） |
+
+見送り（レイアウト合成で足りる／生成が崩れやすい）：多要素認証の「記憶」要素（person＋icon-keyで合成）、サイバーキルチェーンの段階図（段数・幾何依存で崩れやすい失敗型。レイアウトの矢印で組む）、リークサイト（icon-browser＋icon-documentで合成）。
 
 ---
 
@@ -207,3 +227,10 @@
 3. レッスン固有の一点物（L1のheroのような「そのレッスンの顔」）は `l{n}-` 接頭辞で同じフォルダに作る。**hero画像はレッスンごとに固有で作る**のを推奨（動画サムネイル・導入の顔になるため）
 4. 同じ概念が複数レッスンに出るときは必ず同じ部品を使う（LESSON_PLAN の「用語の主担当」と同様、**絵の一貫性＝記憶のフック**）
 5. 作成が終わったセクションには ✅ を付ける
+
+### 残作業（2026-07-13時点）
+
+- 未作成2点: **mgmt-escalation**（L68, L93で使用）・**net-ap**（L65で使用）
+- **prop-thermometer** は生成が安定せず方針未確定（再生成／記号を簡素化／見送り）
+- **attack-eavesdrop** はユーザー判断で見送り確定（リスト上は❌のまま残す）
+- **§9（96本版の改訂による追加10点）はすべて未作成**。優先度Aの3点（mgmt-fraud-triangle・net-cookie・icon-gov）を先に、Bは該当レッスンの制作前に都度作成

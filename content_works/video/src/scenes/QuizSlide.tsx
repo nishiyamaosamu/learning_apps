@@ -171,9 +171,16 @@ export const QuizSlide: React.FC<QuizSlideProps> = ({
         ))}
       </div>
 
+      {/* foot: 高さは2行分で固定 — 字幕セグメントが1行/2行と変わっても
+          選択肢ブロック（flex:1 中央寄せ）の位置が揺れないようにする（SlideShell のテロップ帯と同じ理由） */}
       <div
         style={{
+          flex: "none",
+          height: 32 * SCALE,
+          display: "flex",
+          alignItems: "center",
           fontSize: 11 * SCALE,
+          lineHeight: 1.35,
           fontWeight: 700,
           color: colors.textSecondary,
           ...footAppear,

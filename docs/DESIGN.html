@@ -621,7 +621,7 @@ h2.sec::before {
   box-shadow: 0 3px 10px rgba(30, 41, 59, .08);
 }
 
-/* --- スライドパターン: 対比（VS） --- */
+/* --- スライドパターン: 対比 --- */
 .vs-wrap { position: relative; display: flex; gap: 10px; flex: 1; margin-top: 2%; min-height: 0; }
 .vs-col {
   flex: 1; background: var(--surface); border: 1.5px solid var(--primary300);
@@ -636,12 +636,9 @@ h2.sec::before {
 .vs-col .rows { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 6px 14px; }
 .vs-row { font-size: 11.5px; font-weight: 700; line-height: 1.5; }
 .vs-row .k { display: block; font-size: 9px; font-weight: 600; color: var(--textMuted); }
-.vs-badge {
-  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
-  width: 30px; height: 30px; border-radius: 50%; z-index: 2;
-  background: var(--primary600); color: #fff; font-weight: 800; font-size: 10px;
-  display: flex; align-items: center; justify-content: center;
-  border: 3px solid var(--bg);
+.vs-divider {
+  position: absolute; left: 50%; top: 6%; bottom: 6%; transform: translateX(-50%);
+  width: 2px; z-index: 2; border-radius: 1px; background: var(--primary300);
 }
 
 /* --- スライドパターン: ステップフロー --- */
@@ -2034,7 +2031,7 @@ footer { margin-top: 88px; padding-top: 20px; border-top: 1px solid var(--border
         </div>
       </div>
 
-      <!-- パターン② 対比（VS） -->
+      <!-- パターン② 対比 -->
       <div class="vmock">
         <div class="frame v-slide">
           <div class="head"><span class="ms" aria-hidden="true">encrypted</span><b>共通鍵暗号と公開鍵暗号</b></div>
@@ -2047,7 +2044,7 @@ footer { margin-top: 88px; padding-top: 20px; border-top: 1px solid var(--border
                 <div class="vs-row"><span class="k">弱点</span>鍵の受け渡しが難しい</div>
               </div>
             </div>
-            <span class="vs-badge" aria-hidden="true">VS</span>
+            <span class="vs-divider" aria-hidden="true"></span>
             <div class="vs-col">
               <h4><span class="ms" aria-hidden="true">public</span>公開鍵暗号方式</h4>
               <div class="rows">
@@ -2060,9 +2057,9 @@ footer { margin-top: 88px; padding-top: 20px; border-top: 1px solid var(--border
           <div class="v-telop">いちばんの違いは「鍵の扱い方」です</div>
         </div>
         <div class="cap">
-          <b>本編スライド② 対比（VS）</b>
-          <p>2つの概念を同じ観点で並べる。適用例: 共通鍵/公開鍵、集中処理/分散処理、変動費/固定費、プロダクト/プロセスイノベーション。</p>
-          <div class="toks"><span class="tok">primary300 枠 + primary50 ヘッダー</span><span class="tok">primary600 VSバッジ</span></div>
+          <b>本編スライド② 対比</b>
+          <p>2つの概念を同じ観点で並べる。対決構造である必要はなく、単純な比較・分類にも使える。適用例: 共通鍵/公開鍵、集中処理/分散処理、変動費/固定費、プロダクト/プロセスイノベーション。</p>
+          <div class="toks"><span class="tok">primary300 枠 + primary50 ヘッダー</span><span class="tok">primary300 中央ディバイダー</span></div>
         </div>
       </div>
 

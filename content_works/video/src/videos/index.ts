@@ -5,6 +5,11 @@ import { wipeDemo } from "./demo/wipe-demo";
 import { bepFixedVariableCost } from "./demo/bep-fixed-variable-cost";
 import { L1v9CorporateActivity } from "./ipa_ip/ip-L1v9-corporate-activity";
 import { L2ManagementBasics } from "./ipa_ip/ip-L2-management-basics";
+import { SgL3HumanDeception } from "./ipa_sg/sg-L3-human-deception";
+import { SgL4MalwareTypes } from "./ipa_sg/sg-L4-malware-types";
+import { SgL78SubjectBMethod } from "./ipa_sg/sg-L78-subject-b-method";
+import { SgL79AssetRegister } from "./ipa_sg/sg-L79-asset-register";
+import { SgL80RiskValue } from "./ipa_sg/sg-L80-risk-value";
 
 /**
  * ここに動画を登録すると Remotion のコンポジションとして現れる。
@@ -20,4 +25,9 @@ export const videos: VideoSpec[] = [
   bepFixedVariableCost,
   L1v9CorporateActivity,
   L2ManagementBasics,
+  SgL3HumanDeception,
+  SgL4MalwareTypes,
+  SgL78SubjectBMethod,
+  SgL79AssetRegister,
+  SgL80RiskValue,
 ];
