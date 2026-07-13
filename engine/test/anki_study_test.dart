@@ -168,4 +168,36 @@ void main() {
     expect(results[ankiCardKey('1', _cards[0].card)], true);
     expect(results[ankiCardKey('1', _cards[1].card)], false);
   });
+
+  testWidgets('初回アクセス（未評価）では前回バッジを出さない', (tester) async {
+    await tester.pumpWidget(
+      _app(const AnkiStudyScreen(cards: _cards, title: 'テストデッキ')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('前回:'), findsNothing);
+  });
+
+  testWidgets('2回目以降のアクセスでは前回「覚えた」/「まだ」がバッジで分かる', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      // 1枚目は前回「覚えた」、2枚目は前回「まだ」。
+      'anki.knownCards': [ankiCardKey('1', _cards[0].card)],
+      'anki.laterCards': [ankiCardKey('1', _cards[1].card)],
+    });
+    await tester.pumpWidget(
+      _app(const AnkiStudyScreen(cards: _cards, title: 'テストデッキ')),
+    );
+    await tester.pumpAndSettle();
+
+    // 1枚目（表）：前回「覚えた」バッジ。
+    expect(find.text('前回: 覚えた'), findsOneWidget);
+
+    // 1枚目を評価して次のカードへ進むと、2枚目は前回「まだ」バッジ。
+    await tester.tap(find.text('意味A'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('覚えた'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('前回: まだ'), findsOneWidget);
+  });
 }

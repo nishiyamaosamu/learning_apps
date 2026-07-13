@@ -8,14 +8,17 @@ import '../../content/content_models.dart';
 import '../../content/content_providers.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_dimens.dart';
+import '../../settings/exercise_progress.dart';
 import '../../settings/exercise_results.dart';
 import '../../settings/review_queue.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/layout/content_max_width.dart';
 import '../widgets/entity_list.dart';
 import '../widgets/exercise_summary_card.dart';
+import '../widgets/last_opened_badge.dart';
 import '../widgets/video_list.dart' show VideoSectionHeader;
 import 'exercise_quiz.dart';
+import 'widgets/exercise_chunks.dart';
 import 'widgets/exercise_summary.dart';
 
 /// 要復習セッションで1回に出題する最大問題数（DESIGN「要復習をランダムに5問」）。
@@ -77,6 +80,21 @@ class _ExerciseTopBody extends ConsumerWidget {
     final queue = ref.watch(reviewQueueProvider);
     final reviewQuestions = resolveReviewQuestions(loadedExercises, queue);
 
+    // 「前回」：最後に開いたチャンクを現在のコンテンツから再解決する。
+    // 問題集の読み込み前・該当チャンクが見つからない場合は表示しない。
+    final lastOpened = ref.watch(exerciseProgressProvider);
+    ExerciseChunk? resumeChunk;
+    if (lastOpened != null) {
+      for (final e in loadedExercises) {
+        if (e.id != lastOpened.exerciseId) continue;
+        for (final chunk in buildExerciseChunks(e)) {
+          if (chunk.categoryId == lastOpened.categoryId &&
+              chunk.chunkIndex == lastOpened.chunkIndex) {
+            resumeChunk = chunk;
+          }
+        }
+      }
+    }
     return ContentMaxWidth(
       child: ListView(
         padding: const EdgeInsets.symmetric(
@@ -100,10 +118,21 @@ class _ExerciseTopBody extends ConsumerWidget {
                   QicoRow(
                     icon: Icons.quiz_rounded,
                     title: item.title,
-                    trailing: Icon(
-                      Icons.chevron_right,
-                      size: 18,
-                      color: context.colors.textMuted,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // 前回開いたチャンクの問題集だけ、小さな「前回」ラベルを添える。
+                        if (resumeChunk != null &&
+                            item.id == lastOpened?.exerciseId) ...[
+                          const LastOpenedBadge(),
+                          const SizedBox(width: 8),
+                        ],
+                        Icon(
+                          Icons.chevron_right,
+                          size: 18,
+                          color: context.colors.textMuted,
+                        ),
+                      ],
                     ),
                     onTap: () => context.push(
                       '/exercises/${item.id}',

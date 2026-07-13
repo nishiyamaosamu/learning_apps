@@ -16,6 +16,8 @@ class QicoRow extends StatelessWidget {
     this.trailing,
     this.onTap,
     this.maxLines = 2,
+    this.iconColor,
+    this.iconBackgroundColor,
   });
 
   /// qico チップの中に置くアイコン。
@@ -33,6 +35,12 @@ class QicoRow extends StatelessWidget {
   /// タイトルの最大行数。
   final int maxLines;
 
+  /// qico チップのアイコン色。null なら既定（primary600）。
+  final Color? iconColor;
+
+  /// qico チップの面色。null なら既定（primary50）。
+  final Color? iconBackgroundColor;
+
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
@@ -44,16 +52,16 @@ class QicoRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
-              // qico（26×26・角丸 8・primary50 面／primary600 アイコン）。
+              // qico（26×26・角丸 8・既定は primary50 面／primary600 アイコン）。
               Container(
                 width: 26,
                 height: 26,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: c.primary50,
+                  color: iconBackgroundColor ?? c.primary50,
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
-                child: Icon(icon, size: 16, color: c.primary600),
+                child: Icon(icon, size: 16, color: iconColor ?? c.primary600),
               ),
               const SizedBox(width: 10),
               Expanded(

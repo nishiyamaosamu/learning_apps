@@ -5,9 +5,11 @@ import '../../content/content_providers.dart';
 import '../../design/app_colors.dart';
 import '../../design/app_dimens.dart';
 import '../../design/app_typography.dart';
+import '../../settings/exercise_progress.dart';
 import '../../settings/exercise_results.dart';
 import '../widgets/entity_list.dart';
 import '../widgets/exercise_summary_card.dart';
+import '../widgets/last_opened_badge.dart';
 import '../widgets/video_list.dart' show VideoSectionHeader;
 import 'exercise_quiz.dart';
 import 'widgets/exercise_chunks.dart';
@@ -26,6 +28,8 @@ class Exercise extends ConsumerWidget {
     final exercise = ref.watch(exerciseProvider(id));
     final results = ref.watch(exerciseResultsProvider);
     final basePath = ref.watch(appConfigProvider).contentBasePath;
+    final lastOpened = ref.watch(exerciseProgressProvider);
+    final c = context.colors;
 
     return Scaffold(
       appBar: AppBar(title: Text(title)),
@@ -36,6 +40,12 @@ class Exercise extends ConsumerWidget {
             results: results,
           );
           final chunks = buildExerciseChunks(e);
+          // 学習済み（全問正解）チャンクの集合。qico の左アイコンを緑チェックに
+          // 切り替える判定に使う（[_ChunkStatus] の全問正解判定と同じ基準）。
+          final completedChunks = {
+            for (final chunk in chunks)
+              if (_isChunkComplete(chunk, results)) chunk.chunkKey,
+          };
           // 分野ごとにチャンクをまとめて「セクションヘッダー＋リストカード」にする。
           final sections = <_ChunkSection>[];
           for (final chunk in chunks) {
@@ -66,22 +76,53 @@ class Exercise extends ConsumerWidget {
                   children: [
                     for (final chunk in section.chunks)
                       QicoRow(
-                        icon: Icons.quiz_rounded,
+                        icon: completedChunks.contains(chunk.chunkKey)
+                            ? Icons.check_rounded
+                            : Icons.quiz_rounded,
+                        iconColor: completedChunks.contains(chunk.chunkKey)
+                            ? c.correct
+                            : null,
+                        iconBackgroundColor:
+                            completedChunks.contains(chunk.chunkKey)
+                            ? c.correctSurface
+                            : null,
                         title: chunk.rangeLabel,
                         maxLines: 1,
-                        trailing: _ChunkStatus(
-                          chunk: chunk,
-                          results: results,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // 前回開いたチャンクだけ、小さな「前回」ラベルを添える。
+                            if (lastOpened != null &&
+                                lastOpened.exerciseId == id &&
+                                lastOpened.categoryId == chunk.categoryId &&
+                                lastOpened.chunkIndex == chunk.chunkIndex) ...[
+                              const LastOpenedBadge(),
+                              const SizedBox(width: 8),
+                            ],
+                            _ChunkStatus(chunk: chunk, results: results),
+                          ],
                         ),
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => ExerciseQuizScreen(
-                              questions: chunk.questions,
-                              assetBasePath: basePath,
-                              title: chunk.label,
+                        onTap: () {
+                          ref
+                              .read(exerciseProgressProvider.notifier)
+                              .markOpened(
+                                ExerciseLastOpened(
+                                  exerciseId: id,
+                                  exerciseTitle: title,
+                                  categoryId: chunk.categoryId,
+                                  chunkIndex: chunk.chunkIndex,
+                                ),
+                              );
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => ExerciseQuizScreen(
+                                questions: chunk.questions,
+                                assetBasePath: basePath,
+                                title: chunk.label,
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                   ],
                 ),
@@ -96,6 +137,12 @@ class Exercise extends ConsumerWidget {
   }
 }
 
+/// チャンクが学習済み（全問正解）かどうか。qico の左アイコンを緑チェックに
+/// 切り替える判定に使う（[_ChunkStatus] の全問正解判定と同じ基準）。
+bool _isChunkComplete(ExerciseChunk chunk, Map<String, bool> results) =>
+    chunk.questions.isNotEmpty &&
+    chunk.questions.every((q) => results[q.qid] == true);
+
 /// 同一分野のチャンクをまとめる中間表現。
 class _ChunkSection {
   _ChunkSection({required this.categoryId, required this.categoryLabel});
@@ -107,8 +154,8 @@ class _ChunkSection {
 
 /// チャンク行の右端の取り組み状態。
 ///
-/// - 全問正解: check_circle（correct 色）
-/// - 着手済み（一部回答/一部正解）: 正答数 n/総数 を等幅で
+/// - 着手済み（全問正解も含む）: 正答数 n/総数 を等幅で（学習済みの緑チェックは
+///   左の qico アイコン側が担うため、ここは全問正解でも n/total 表記のまま）
 /// - 未着手: chevron
 class _ChunkStatus extends StatelessWidget {
   const _ChunkStatus({required this.chunk, required this.results});
@@ -129,9 +176,6 @@ class _ChunkStatus extends StatelessWidget {
       if (r) correct++;
     }
 
-    if (correct == total) {
-      return Icon(Icons.check_circle, size: 18, color: c.correct);
-    }
     if (answered > 0) {
       return Text(
         '$correct/$total',

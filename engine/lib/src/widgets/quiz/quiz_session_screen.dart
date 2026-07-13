@@ -143,6 +143,24 @@ class _QuizSessionScreenState extends State<QuizSessionScreen> {
 
   void _close() => Navigator.of(context).maybePop();
 
+  /// 完了画面の「もう一度」。同じ設問セットを最初からやり直す。
+  void _restart() {
+    _controller?.removeListener(_onChanged);
+    _controller?.dispose();
+    _controller = null;
+    setState(() {
+      _index = 0;
+      _score = 0;
+      _revealed = false;
+      if (_total > 0) _bind(QuizController(_quizzes[_index]));
+    });
+  }
+
+  /// 完了画面の「一覧に戻る」。本画面は動画視聴ページの上に imperative push
+  /// されているため、maybePop だけでは動画視聴ページに戻ってしまう。ルート
+  /// （タブシェル）まで一気に pop して動画講座タブの一覧を見せる。
+  void _backToList() => Navigator.of(context).popUntil((route) => route.isFirst);
+
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
@@ -331,12 +349,27 @@ class _QuizSessionScreenState extends State<QuizSessionScreen> {
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 14),
-              child: SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: _close,
-                  child: const Text('一覧に戻る'),
-                ),
+              child: Column(
+                children: [
+                  if (_total > 0) ...[
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        icon: const Icon(Icons.replay, size: 18),
+                        label: const Text('もう一度'),
+                        onPressed: _restart,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: _backToList,
+                      child: const Text('一覧に戻る'),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

@@ -83,6 +83,14 @@ class _AnkiTopBody extends ConsumerWidget {
     final loadedDecks = allDecks.valueOrNull ?? const <AnkiDeck>[];
     final deckById = {for (final d in loadedDecks) d.id: d};
 
+    // 学習済み（全カード「覚えた」）デッキの集合。qico の左アイコンを緑チェックに
+    // 切り替える判定に使う。ロード前（実カード未取得）は判定できないため対象外。
+    final completeDeckIds = {
+      for (final d in loadedDecks)
+        if (d.cards.isNotEmpty && knownCountOf(d, results) == d.cards.length)
+          d.id,
+    };
+
     // グループ単位の「覚えた / 総語数」。ロード前の該当デッキは 0 語として扱い、
     // 総数だけ base.json のサマリ（cardCount）にフォールバックする。
     int knownCountIn(AnkiGroup group) => group.anki.fold<int>(0, (sum, s) {
@@ -154,17 +162,24 @@ class _AnkiTopBody extends ConsumerWidget {
               children: [
                 for (final deck in group.anki)
                   QicoRow(
-                    icon: Icons.style_rounded,
+                    icon: completeDeckIds.contains(deck.id)
+                        ? Icons.check_rounded
+                        : Icons.style_rounded,
+                    iconColor: completeDeckIds.contains(deck.id)
+                        ? c.correct
+                        : null,
+                    iconBackgroundColor: completeDeckIds.contains(deck.id)
+                        ? c.correctSurface
+                        : null,
                     title: deck.title,
-                    trailing: deck.cardCount == null
-                        ? null
-                        : Text(
-                            '${deck.cardCount}語',
-                            style: AppTypography.mono(
-                              AppTypography.caption,
-                            ).copyWith(color: c.textMuted),
-                          ),
-                    onTap: () => context.push('/anki/${deck.id}'),
+                    trailing: _deckCountTrailing(
+                      c,
+                      deck,
+                      deckById[deck.id],
+                      results,
+                    ),
+                    onTap: () =>
+                        _showAnkiViewSheet(context, deck, deckById[deck.id], results),
                   ),
               ],
             ),
@@ -187,6 +202,98 @@ class _AnkiTopBody extends ConsumerWidget {
         builder: (_) => AnkiStudyScreen(cards: picked, title: title),
       ),
     );
+  }
+}
+
+/// デッキ行の右端「覚えた/総語数」表示（例 `3/5`）。実カード未ロード時は
+/// base.json のサマリ（cardCount）を分母に、覚えた数は0として出す。
+/// 分母が不明（cardCountも実カードも無い）なら何も出さない。
+Widget? _deckCountTrailing(
+  AppColors c,
+  ContentSummary summary,
+  AnkiDeck? loadedDeck,
+  Map<String, bool> results,
+) {
+  final total = loadedDeck?.cards.length ?? summary.cardCount;
+  if (total == null) return null;
+  final known = loadedDeck == null ? 0 : knownCountOf(loadedDeck, results);
+  return Text(
+    '$known/$total',
+    style: AppTypography.mono(
+      AppTypography.caption,
+    ).copyWith(color: c.textMuted),
+  );
+}
+
+/// デッキ行タップ時の選択肢。
+enum _AnkiViewChoice { unknown, all }
+
+/// デッキ行タップ時に出す選択シート（「覚えていないカードを見る」/「全ての
+/// カードを見る」）。
+///
+/// 「覚えていないカードを見る」は、このデッキに一度も触れていない（自己評価が
+/// 1枚も無い＝初回アクセス）か、既に全カード「覚えた」（対象0枚）なら無効化する。
+/// 実カード未ロード時は判定できないため同様に無効化する。
+Future<void> _showAnkiViewSheet(
+  BuildContext context,
+  ContentSummary summary,
+  AnkiDeck? loadedDeck,
+  Map<String, bool> results,
+) async {
+  final unknownEnabled =
+      loadedDeck != null &&
+      hasAnyRatedCard(loadedDeck, results) &&
+      unknownAnkiSessionCards([loadedDeck], results).isNotEmpty;
+
+  final choice = await showModalBottomSheet<_AnkiViewChoice>(
+    context: context,
+    showDragHandle: true,
+    builder: (sheetContext) {
+      final sc = sheetContext.colors;
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppLayout.screenMargin,
+                4,
+                AppLayout.screenMargin,
+                8,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  summary.title,
+                  style: AppTypography.section.copyWith(color: sc.textPrimary),
+                ),
+              ),
+            ),
+            ListTile(
+              enabled: unknownEnabled,
+              leading: const Icon(Icons.shuffle_rounded),
+              title: const Text('覚えていないカードを見る'),
+              onTap: () =>
+                  Navigator.of(sheetContext).pop(_AnkiViewChoice.unknown),
+            ),
+            ListTile(
+              leading: const Icon(Icons.style_rounded),
+              title: const Text('全てのカードを見る'),
+              onTap: () => Navigator.of(sheetContext).pop(_AnkiViewChoice.all),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      );
+    },
+  );
+
+  if (!context.mounted || choice == null) return;
+  switch (choice) {
+    case _AnkiViewChoice.unknown:
+      context.push('/anki/${summary.id}', extra: true);
+    case _AnkiViewChoice.all:
+      context.push('/anki/${summary.id}');
   }
 }
 

@@ -29,11 +29,14 @@ GoRouter buildRouter(AppConfig config) {
             ),
           ),
           // 暗記カード学習（フリップ）。id でデッキをロードし、全カードを順番どおり
-          // 出題する（AnkiStudyRoute が ankiProvider を引く）。
+          // 出題する（AnkiStudyRoute が ankiProvider を引く）。extra=true なら
+          // 「覚えていないカードを見る」（デッキ内の未習得カードだけに絞る）。
           GoRoute(
             path: 'anki/:id',
-            builder: (context, state) =>
-                AnkiStudyRoute(id: state.pathParameters['id']!),
+            builder: (context, state) => AnkiStudyRoute(
+              id: state.pathParameters['id']!,
+              onlyUnknown: state.extra == true,
+            ),
           ),
         ],
       ),

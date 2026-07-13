@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:engine/engine.dart';
 import 'package:engine/src/screens/tabs/exercise_top.dart';
 import 'package:flutter/material.dart';
@@ -69,5 +71,30 @@ void main() {
     // 要復習セッションが起動し、キュー内の設問が出題される。
     expect(find.text('問題 R8002'), findsOneWidget);
     expect(find.text('回答する'), findsOneWidget);
+  });
+
+  testWidgets('前回開いたチャンクがあれば、該当行に小さな「前回」ラベルが出る', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'exercise.lastOpened': jsonEncode({
+        'exerciseId': 'R8',
+        'exerciseTitle': '令和8年度 問題集',
+        'categoryId': 'strategy',
+        'chunkIndex': 0,
+      }),
+    });
+    await tester.pumpWidget(_host());
+    await tester.pumpAndSettle();
+
+    // タイトル行自体は変わらず、行の右端に小さなラベルが添う。
+    expect(find.text('令和8年度 問題集'), findsOneWidget);
+    expect(find.text('前回'), findsOneWidget);
+  });
+
+  testWidgets('前回開いたチャンクがなければラベルは出ない', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await tester.pumpWidget(_host());
+    await tester.pumpAndSettle();
+
+    expect(find.text('前回'), findsNothing);
   });
 }

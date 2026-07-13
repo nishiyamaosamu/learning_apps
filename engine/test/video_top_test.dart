@@ -105,5 +105,14 @@ void main() {
     expect(find.byIcon(Icons.equalizer_rounded), findsOneWidget);
     // 未視聴(play_arrow) はヒーローCTAにも出るので、行に無いことは
     // check/equalizer が揃うことで担保する（両行とも既知状態）。
+
+    // 視聴済みだけ correct 系（緑）、再生中は primary のまま。
+    final c = AppColors.light();
+    final checkIcon = tester.widget<Icon>(find.byIcon(Icons.check_rounded));
+    expect(checkIcon.color, c.correct);
+    final playingIcon = tester.widget<Icon>(
+      find.byIcon(Icons.equalizer_rounded),
+    );
+    expect(playingIcon.color, c.primary600);
   });
 }

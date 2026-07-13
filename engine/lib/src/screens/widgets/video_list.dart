@@ -80,10 +80,10 @@ IconData _vthumbIcon(VideoWatchStatus status) => switch (status) {
 
 /// 動画1本を表す行（DESIGN.html `.ls` + `.vthumb`）。
 ///
-/// vthumb（36×21・角丸5・primary50 面＋中央に状態アイコン）＋ タイトル（13/w600・
+/// vthumb（36×21・角丸5・面＋中央に状態アイコン）＋ タイトル（13/w600・
 /// 1行省略）＋ 右端に尺（mm:ss、mono caption / textMuted）。行高は 48 以上。
-/// vthumb の面色 (primary50)・アイコン色 (primary600) は3状態で共通で、中央の
-/// グリフだけが視聴状態で切り替わる（DESIGN.html の `.vthumb` 仕様どおり）。
+/// vthumb の面色・アイコン色は未視聴／再生中は primary系で共通、視聴済みだけ
+/// 学習済みを示す correct系（緑）に切り替わる。
 class VideoRow extends StatelessWidget {
   const VideoRow({
     super.key,
@@ -99,6 +99,7 @@ class VideoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final watched = status == VideoWatchStatus.watched;
     return InkWell(
       onTap: onTap,
       child: ConstrainedBox(
@@ -112,13 +113,13 @@ class VideoRow extends StatelessWidget {
                 height: 21,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: c.primary50,
+                  color: watched ? c.correctSurface : c.primary50,
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Icon(
                   _vthumbIcon(status),
                   size: 14,
-                  color: c.primary600,
+                  color: watched ? c.correct : c.primary600,
                 ),
               ),
               const SizedBox(width: 10),

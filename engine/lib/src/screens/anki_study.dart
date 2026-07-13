@@ -20,20 +20,27 @@ import '../widgets/quiz/quiz_top_bar.dart';
 /// ルート `/anki/:id` 用のローダー。デッキを [ankiProvider] で読み込み、
 /// カードを配列順のまま [AnkiStudyScreen] へ渡す。
 ///
+/// [onlyUnknown] が true なら「覚えていないカードを見る」導線として、デッキ内の
+/// 未習得カード（[unknownAnkiSessionCards]）だけに絞って渡す（順序は維持）。
+///
 /// 旧スタブ（`tabs/anki.dart` の一覧 ListView）を置き換える。
 class AnkiStudyRoute extends ConsumerWidget {
-  const AnkiStudyRoute({super.key, required this.id});
+  const AnkiStudyRoute({super.key, required this.id, this.onlyUnknown = false});
 
   final String id;
+  final bool onlyUnknown;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final deck = ref.watch(ankiProvider(id));
+    final results = ref.watch(ankiResultsProvider);
     return deck.when(
       data: (d) => AnkiStudyScreen(
-        cards: [for (final card in d.cards) (deckId: d.id, card: card)],
-        title: d.title,
+        cards: onlyUnknown
+            ? unknownAnkiSessionCards([d], results)
+            : [for (final card in d.cards) (deckId: d.id, card: card)],
+        title: onlyUnknown ? '覚えていないカードを見る' : d.title,
         deckLabel: d.title,
       ),
       loading: () => Scaffold(
@@ -203,7 +210,13 @@ class _AnkiStudyScreenState extends ConsumerState<AnkiStudyScreen>
   }
 
   Widget _buildStudy(AppColors c) {
-    final card = _cards[_index].card;
+    final sc = _cards[_index];
+    final card = sc.card;
+    // 2回目以降のアクセス（＝過去にこのカードを自己評価済み）なら、前回の
+    // 「覚えた」/「まだ」をバッジで示す。未評価（初回）なら何も出さない。
+    final previous = ref.watch(
+      ankiResultsProvider,
+    )[ankiCardKey(sc.deckId, sc.card)];
     return ContentMaxWidth(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -212,6 +225,10 @@ class _AnkiStudyScreenState extends ConsumerState<AnkiStudyScreen>
         child: Column(
           children: [
             const SizedBox(height: 14),
+            if (previous != null) ...[
+              _PreviousResultBadge(known: previous),
+              const SizedBox(height: 8),
+            ],
             Expanded(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
@@ -507,6 +524,53 @@ class _CardFace extends StatelessWidget {
             ),
           Positioned.fill(child: child),
         ],
+      ),
+    );
+  }
+}
+
+/// 前回の自己評価バッジ（「前回: 覚えた」/「前回: まだ」）。
+///
+/// 2回目以降にこのカードへアクセスしたとき（[AnkiResults] に前回の評価が
+/// 記録済みのとき）だけ、フリップカードの上に添える。自己評価ボタン
+/// （[_SelfEvalButton]）と同じ correct/review トークンを使い、色だけに頼らず
+/// アイコン＋文言で二重符号化する（ルール2）。
+class _PreviousResultBadge extends StatelessWidget {
+  const _PreviousResultBadge({required this.known});
+
+  final bool known;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final surface = known ? c.correctSurface : c.reviewSurface;
+    final text = known ? c.correctText : c.reviewText;
+    final icon = known ? Icons.check_rounded : Icons.replay_rounded;
+    final label = known ? '前回: 覚えた' : '前回: まだ';
+    return Align(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: surface,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 12, color: text),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: text,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

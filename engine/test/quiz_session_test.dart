@@ -51,6 +51,62 @@ void main() {
     expect(find.byType(CompletionRing), findsOneWidget);
     expect(find.text('パーフェクト！'), findsOneWidget); // 1/1 = 満点
     expect(find.text('一覧に戻る'), findsOneWidget);
+
+    // もう一度 → 最初の設問に戻り、CTA は未選択で無効化されている。
+    await tester.tap(find.text('もう一度'));
+    await tester.pumpAndSettle();
+    expect(find.byType(CompletionRing), findsNothing);
+    expect(find.text('回答する'), findsOneWidget);
+    final ctaRestarted = tester.widget<FilledButton>(
+      find.ancestor(
+        of: find.text('回答する'),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(ctaRestarted.onPressed, isNull);
+  });
+
+  testWidgets('完了画面の一覧に戻るは動画視聴ページも含めて pop する', (tester) async {
+    final quiz = LessonQuiz.multipleChoice(
+      question: 'これは問題です',
+      options: const ['正しい', 'ちがう'],
+      correctOptionIndex: 0,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: buildEngineTheme(AppColors.light()),
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: Center(
+              child: FilledButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) =>
+                        QuizSessionScreen(quizzes: [quiz], title: 'テスト'),
+                  ),
+                ),
+                child: const Text('動画視聴ページ（模擬）'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('動画視聴ページ（模擬）'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('正しい'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('回答する'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('結果を見る'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('一覧に戻る'));
+    await tester.pumpAndSettle();
+    expect(find.text('動画視聴ページ（模擬）'), findsOneWidget);
+    expect(find.byType(CompletionRing), findsNothing);
   });
 
   testWidgets('不正解を選ぶと不正解バナーが出る', (tester) async {
