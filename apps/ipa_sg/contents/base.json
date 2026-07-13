@@ -23,7 +23,15 @@
       ]
     }
   ],
-  "exercises": [],
+  "exercises": [
+    {
+      "id": "past-exams",
+      "title": "IPA公式 公開問題",
+      "exercises": [
+        { "id": "R8", "title": "令和8年度 問題集" }
+      ]
+    }
+  ],
   "anki": [
     {
       "id": "g1",

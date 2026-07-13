@@ -61,35 +61,37 @@ void main() {
       expect(lastManagement < firstTechnology, isTrue);
     });
 
-    test('R4相当（35/19/46）: 端数は最後のチャンクに吸収', () {
+    test('R4相当（35/19/46）: 末尾の端数は均等2分割', () {
       final chunks = buildExerciseChunks(
         _exercise('R4', strategy: 35, management: 19, technology: 46),
       );
 
-      expect(chunks.length, 7 + 3 + 9);
+      // strategy 35→7, management 19→[5,5,5,4]=4, technology 46→[5×8,3,3]=10。
+      expect(chunks.length, 7 + 4 + 10);
 
       final management = chunks
           .where((c) => c.categoryId == 'management')
           .toList();
-      expect(management.length, 3);
-      // 最後のマネジメントチャンクは 9問（5+余り4）。
-      expect(management.last.questions.length, 9);
-      expect(management.last.startQ, 11);
+      expect(management.map((c) => c.questions.length), [5, 5, 5, 4]);
+      // 最後のマネジメントチャンクは 4問（端数9を5+4に分割した後半）。
+      expect(management.last.startQ, 16);
       expect(management.last.endQ, 19);
-      expect(management.last.label, 'マネジメント系 11〜19問');
+      expect(management.last.label, 'マネジメント系 16〜19問');
 
       final technology = chunks
           .where((c) => c.categoryId == 'technology')
           .toList();
-      expect(technology.length, 9);
-      // 最後のテクノロジチャンクは 6問（5+余り1）。
-      expect(technology.last.questions.length, 6);
-      expect(technology.last.startQ, 41);
+      expect(technology.length, 10);
+      // 末尾の端数6を 3+3 に分割。
+      expect(technology[8].questions.length, 3);
+      expect(technology[8].label, 'テクノロジ系 41〜43問');
+      expect(technology.last.questions.length, 3);
+      expect(technology.last.startQ, 44);
       expect(technology.last.endQ, 46);
-      expect(technology.last.label, 'テクノロジ系 41〜46問');
+      expect(technology.last.label, 'テクノロジ系 44〜46問');
     });
 
-    test('5問以下の分野は単一チャンク、6〜9問も単一チャンク（吸収）', () {
+    test('5問以下の分野は単一チャンク、6〜9問は均等2分割', () {
       final small = buildExerciseChunks(
         _exercise('X', strategy: 3, management: 6, technology: 0),
       );
@@ -102,12 +104,41 @@ void main() {
       expect(strategy.single.questions.length, 3);
       expect(strategy.single.label, 'ストラテジ系 1〜3問');
 
-      expect(management.length, 1);
-      expect(management.single.questions.length, 6);
-      expect(management.single.label, 'マネジメント系 1〜6問');
+      // 6問は 3+3 の2チャンクに分割。
+      expect(management.length, 2);
+      expect(management.map((c) => c.questions.length), [3, 3]);
+      expect(management.first.label, 'マネジメント系 1〜3問');
+      expect(management.last.label, 'マネジメント系 4〜6問');
+      expect(management.last.chunkKey, 'X:management:1');
 
       // 問題が0問の分野は出てこない。
       expect(small.any((c) => c.categoryId == 'technology'), isFalse);
+    });
+
+    test('chunkSizes: 末尾6〜9問は均等2分割（多い方を先）', () {
+      // 5以下・5の倍数はそのまま。
+      expect(chunkSizes(1), [1]);
+      expect(chunkSizes(5), [5]);
+      expect(chunkSizes(10), [5, 5]);
+      expect(chunkSizes(15), [5, 5, 5]);
+      // 末尾の端数を分割。
+      expect(chunkSizes(6), [3, 3]);
+      expect(chunkSizes(7), [4, 3]);
+      expect(chunkSizes(8), [4, 4]);
+      expect(chunkSizes(9), [5, 4]);
+      expect(chunkSizes(11), [5, 3, 3]);
+      expect(chunkSizes(12), [5, 4, 3]);
+      expect(chunkSizes(13), [5, 4, 4]);
+      expect(chunkSizes(14), [5, 5, 4]);
+      expect(chunkSizes(16), [5, 5, 3, 3]);
+      // どのチャンクも3〜5問に収まる。
+      for (var n = 1; n <= 60; n++) {
+        final sizes = chunkSizes(n);
+        expect(sizes.reduce((a, b) => a + b), n, reason: 'n=$n 合計不一致');
+        if (n >= 6) {
+          expect(sizes.every((s) => s >= 3 && s <= 5), isTrue, reason: 'n=$n');
+        }
+      }
     });
 
     test('ラベル・範囲・chunkKey', () {

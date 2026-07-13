@@ -61,10 +61,27 @@ class ExerciseChunk {
   String get chunkKey => '$exerciseId:$categoryId:$chunkIndex';
 }
 
+/// 分野の問数を「5問チャンク」の大きさ列へ分割する。
+///
+/// 基本は5問ずつ。ただし末尾が6〜9問の端数になる場合は、その末尾チャンクを
+/// 2つに均等分割する（多い方を先: 6→3+3, 7→4+3, 8→4+4, 9→5+4）。これにより
+/// どのチャンクも3〜5問に収まる。5問以下の分野は単一チャンク。
+List<int> chunkSizes(int n) {
+  if (n <= 5) return <int>[n];
+  final rem = n % 5;
+  if (rem == 0) return List<int>.filled(n ~/ 5, 5);
+  final tail = 5 + rem; // 6〜9
+  return <int>[
+    ...List<int>.filled(n ~/ 5 - 1, 5),
+    (tail + 1) ~/ 2, // ceil（多い方を先）
+    tail ~/ 2, // floor
+  ];
+}
+
 /// 問題集を分野順・5問チャンクに分割する。
 ///
-/// 各分野の問数が5で割り切れない場合、余りは**最後のチャンクに吸収**する
-/// （最終チャンクは6〜9問）。問数が5以下の分野は単一チャンクにまとめる。
+/// 各分野の問数が5で割り切れない場合、末尾の端数（6〜9問）は2つのチャンクに
+/// 均等分割する（[chunkSizes] を参照）。問数が5以下の分野は単一チャンク。
 List<ExerciseChunk> buildExerciseChunks(Exercise exercise) {
   final chunks = <ExerciseChunk>[];
 
@@ -88,12 +105,10 @@ List<ExerciseChunk> buildExerciseChunks(Exercise exercise) {
     final n = questions.length;
     if (n == 0) continue;
 
-    // チャンク数：5問以下なら1つ、それ以外は「5で割った商」。余りは最終チャンクへ。
-    final numChunks = n <= 5 ? 1 : n ~/ 5;
-
-    for (var c = 0; c < numChunks; c++) {
-      final start = c * 5;
-      final end = (c == numChunks - 1) ? n : (c + 1) * 5;
+    final sizes = chunkSizes(n);
+    var start = 0;
+    for (var c = 0; c < sizes.length; c++) {
+      final end = start + sizes[c];
       chunks.add(
         ExerciseChunk(
           exerciseId: exercise.id,
@@ -108,6 +123,7 @@ List<ExerciseChunk> buildExerciseChunks(Exercise exercise) {
           questions: questions.sublist(start, end),
         ),
       );
+      start = end;
     }
   }
 

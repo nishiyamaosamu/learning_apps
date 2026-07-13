@@ -15,7 +15,7 @@ export 'src/design/app_theme.dart';
 export 'src/screens/anki_study.dart' show AnkiStudyScreen, AnkiStudyRoute;
 export 'src/screens/home_screen.dart';
 export 'src/screens/tabs/widgets/exercise_chunks.dart'
-    show ExerciseChunk, buildExerciseChunks;
+    show ExerciseChunk, buildExerciseChunks, chunkSizes;
 export 'src/settings/anki_results.dart';
 export 'src/settings/audio_settings.dart';
 export 'src/settings/exercise_results.dart';
