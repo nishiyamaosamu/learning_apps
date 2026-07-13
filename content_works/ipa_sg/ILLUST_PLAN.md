@@ -130,7 +130,7 @@
 | tech-masking ✅ | 一部が黒塗り／モザイクの個人データ表 | L40, L50, L92（匿名加工） |
 | tech-forensic ✅ | 証拠品袋に入ったHDD | L40, L94 |
 
-## 5. 管理・組織の部品【優先度A／第3章・第8章・第9章】✅ ほぼ作成済み（mgmt-escalation のみ未作成）
+## 5. 管理・組織の部品【優先度A／第3章・第8章・第9章】✅ 作成済み
 
 | 部品 | 内容 | 主な用途 |
 |---|---|---|
@@ -143,12 +143,12 @@
 | mgmt-education ✅ | 教壇と受講者（研修） | L34, L95 |
 | mgmt-contract ✅ | 契約書＋2人の握手 | L34, L53, L89 |
 | mgmt-committee ✅ | 会議テーブルを囲む人々 | L27, L30 |
-| mgmt-escalation | 上へ報告する階段矢印 ※未作成 | L68, L93 |
+| mgmt-escalation ✅ | 上へ報告する階段矢印 | L68, L93 |
 | mgmt-servicedesk ✅ | ヘッドセットの窓口担当 | L68 |
 | mgmt-bcp ✅ | 折れたビルから復旧する矢印／非常口 | L26, L74 |
 | mgmt-cert-badge ✅ | ISMS認証マーク風の盾バッジ | L28, L29 |
 
-## 6. IT基礎の部品【優先度A／第5章・第7章】✅ ほぼ作成済み（net-ap のみ未作成）
+## 6. IT基礎の部品【優先度A／第5章・第7章】✅ 作成済み
 
 ネットワーク図を組むための「機材セット」。L60〜L65や前提知識ページ（L8〜L11・L38・L42・L43の冒頭）で繰り返し使う。
 
@@ -156,7 +156,7 @@
 |---|---|---|
 | net-router ✅ | ルータ（矢印の交差する箱） | L61 |
 | net-switch ✅ | スイッチ（ポートの並ぶ箱） | L61 |
-| net-ap | 無線LANアクセスポイント（電波マーク付き）※未作成 | L65 |
+| net-ap ✅ | 無線LANアクセスポイント（電波マーク付き） | L65 |
 | net-dns ✅ | 電話帳を持つサーバ（名前→番号） | L11, L43, L61 |
 | net-mailserver ✅ | 封筒マーク付きサーバ | L43, L44, L62 |
 | net-proxy ✅ | 中継役のサーバ（受け渡し） | L45, L63 |
@@ -167,7 +167,7 @@
 | net-dual ✅ | 2台並びのサーバ（冗長化） | L57, L69 |
 | icon-ip-address ✅ | 番地札（住所プレート） | L60（IPアドレス） |
 
-## 7. 科目B・ケース演習の部品【優先度A／第9章】✅ ほぼ作成済み（prop-thermometer のみ未確定）
+## 7. 科目B・ケース演習の部品【優先度A／第9章】✅ 作成済み
 
 第9章19レッスン（L78〜L96）は「A社のケース」を毎回描く。舞台セットとして共通化する。
 
@@ -180,7 +180,7 @@
 | scene-desk-work ✅ | リーダーがPCと台帳に向かう作業机 | L79, L80, L87, L88 |
 | scene-incident ✅ | 赤い警告の出たPCと駆けつける人 | L93, L94 |
 | prop-ledger ✅ | 情報資産台帳（表組みの帳簿） | L79, L80 |
-| prop-thermometer | リスク値のメーター（低↔高）※目盛り依存で生成が崩れやすく未確定（再生成／簡素化／見送りを判断） | L80, L81, L90, L91 |
+| prop-thermometer ✅ | リスク値のメーター（緑・黄・赤の3色帯のみ。目盛り・数字・針は入れない簡素化版で確定） | L80, L81, L90, L91 |
 | prop-timeline ✅ | 時間軸の帯（障害→復旧、RPO/RTO用） | L85 |
 | prop-calendar ✅ | カレンダー（取得サイクル・スケジュール） | L59, L84 |
 
@@ -205,9 +205,9 @@
 
 | 部品 | 優先度 | 内容 | 主な用途 |
 |---|---|---|---|
-| mgmt-fraud-triangle | A | 三角形の3頂点に「機会・動機・正当化」のラベル（mgmt-pyramid・mgmt-risk-matrixと同系の図解部品） | L6（主担当）, L34, L95 |
-| net-cookie | A | クッキー菓子＋ID札（Webの「目印」の比喩） | L9【前提：cookieとセッション】, L63（R5問10の題材） |
-| icon-gov | A | 官公庁の建物（議事堂風・旗付き。会社のicon-buildingとは別物＝国・規制側） | L31（機関の地図）, L48, L49 |
+| mgmt-fraud-triangle ✅ | A | 三角形の3頂点に「機会・動機・正当化」のラベル（mgmt-pyramid・mgmt-risk-matrixと同系の図解部品） | L6（主担当）, L34, L95 |
+| net-cookie ✅ | A | クッキー菓子＋ID札（Webの「目印」の比喩） | L9【前提：cookieとセッション】, L63（R5問10の題材） |
+| icon-gov ✅ | A | 官公庁の建物（議事堂風・旗付き。会社のicon-buildingとは別物＝国・規制側） | L31（機関の地図）, L48, L49 |
 | attack-backdoor | B | PCの背面に付いた裏口ドア（半開き） | L5（バックドア・ルートキット・踏み台） |
 | attack-raas | B | 値札タグ付きのマルウェア商品箱（攻撃のビジネス化） | L13（RaaS・リークサイト） |
 | net-vm | B | 1台のサーバ筐体の中に小さなPCが複数入っている（仮想化） | L55（VM・VDI） |
@@ -230,7 +230,5 @@
 
 ### 残作業（2026-07-13時点）
 
-- 未作成2点: **mgmt-escalation**（L68, L93で使用）・**net-ap**（L65で使用）
-- **prop-thermometer** は生成が安定せず方針未確定（再生成／記号を簡素化／見送り）
 - **attack-eavesdrop** はユーザー判断で見送り確定（リスト上は❌のまま残す）
-- **§9（96本版の改訂による追加10点）はすべて未作成**。優先度Aの3点（mgmt-fraud-triangle・net-cookie・icon-gov）を先に、Bは該当レッスンの制作前に都度作成
+- **§9（96本版の改訂による追加10点）**: 優先度Aの3点（mgmt-fraud-triangle・net-cookie・icon-gov）は作成済み。Bの7点（attack-backdoor・attack-raas・net-vm・net-celltower・net-iot・law-fakenews・biz-robot）は該当レッスンの制作前に都度作成する方針で未着手
