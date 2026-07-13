@@ -12,7 +12,10 @@
               "id": "1-1",
               "title": "情報セキュリティの基礎",
               "lessons": [
-                { "id": "1", "title": "情報セキュリティとは" }
+                {
+                  "id": "1",
+                  "title": "情報セキュリティとは"
+                }
               ]
             }
           ]
@@ -21,5 +24,83 @@
     }
   ],
   "exercises": [],
-  "anki": []
+  "anki": [
+    {
+      "id": "g1",
+      "title": "脅威と攻撃",
+      "anki": [
+        { "id": "1-1", "title": "情報セキュリティの基本特性", "cardCount": 10 },
+        { "id": "1-2", "title": "マルウェアの種類", "cardCount": 11 },
+        { "id": "1-3", "title": "人・パスワードを狙う攻撃", "cardCount": 10 },
+        { "id": "1-4", "title": "Web・通信への攻撃", "cardCount": 14 },
+        { "id": "1-5", "title": "攻撃の流れと新しい脅威", "cardCount": 11 }
+      ]
+    },
+    {
+      "id": "g2",
+      "title": "暗号と認証",
+      "anki": [
+        { "id": "2-1", "title": "暗号技術", "cardCount": 9 },
+        { "id": "2-2", "title": "認証のしくみ", "cardCount": 10 },
+        { "id": "2-3", "title": "署名・証明書とPKI", "cardCount": 10 }
+      ]
+    },
+    {
+      "id": "g3",
+      "title": "情報セキュリティ管理",
+      "anki": [
+        { "id": "3-1", "title": "リスクアセスメント（JIS Q 31000）", "cardCount": 12 },
+        { "id": "3-2", "title": "リスクの種類と対応", "cardCount": 12 },
+        { "id": "3-3", "title": "ISMSと諸規程", "cardCount": 9 },
+        { "id": "3-4", "title": "セキュリティ組織・機関", "cardCount": 12 },
+        { "id": "3-5", "title": "基準・ガイドライン", "cardCount": 10 }
+      ]
+    },
+    {
+      "id": "g4",
+      "title": "セキュリティ対策",
+      "anki": [
+        { "id": "4-1", "title": "セキュリティ評価と人的対策", "cardCount": 9 },
+        { "id": "4-2", "title": "マルウェア対策とアクセス制御", "cardCount": 12 },
+        { "id": "4-3", "title": "セキュリティ製品・サービス", "cardCount": 14 },
+        { "id": "4-4", "title": "データ保護と物理的対策", "cardCount": 10 }
+      ]
+    },
+    {
+      "id": "g5",
+      "title": "セキュリティ実装技術",
+      "anki": [
+        { "id": "5-1", "title": "セキュアプロトコルとネットワーク防御", "cardCount": 10 },
+        { "id": "5-2", "title": "メールのセキュリティ", "cardCount": 8 }
+      ]
+    },
+    {
+      "id": "g6",
+      "title": "法務",
+      "anki": [
+        { "id": "6-1", "title": "セキュリティ関連法規", "cardCount": 13 },
+        { "id": "6-2", "title": "個人情報保護", "cardCount": 15 },
+        { "id": "6-3", "title": "労働・取引とその他の法律", "cardCount": 10 }
+      ]
+    },
+    {
+      "id": "g7",
+      "title": "テクノロジ",
+      "anki": [
+        { "id": "7-1", "title": "システム構成とクラウド", "cardCount": 13 },
+        { "id": "7-2", "title": "信頼性・バックアップとデータベース", "cardCount": 14 },
+        { "id": "7-3", "title": "ネットワークとWeb", "cardCount": 12 }
+      ]
+    },
+    {
+      "id": "g8",
+      "title": "マネジメント",
+      "anki": [
+        { "id": "8-1", "title": "プロジェクト・サービスマネジメント", "cardCount": 13 },
+        { "id": "8-2", "title": "監査と内部統制", "cardCount": 13 },
+        { "id": "8-3", "title": "システム戦略と経営", "cardCount": 12 },
+        { "id": "8-4", "title": "業務分析・データ利活用・会計", "cardCount": 14 }
+      ]
+    }
+  ]
 }

@@ -313,8 +313,13 @@ class Exercise with _$Exercise {
 /// 暗記カードの1枚。
 @freezed
 class AnkiCard with _$AnkiCard {
-  const factory AnkiCard({required String front, required String back}) =
-      _AnkiCard;
+  const factory AnkiCard({
+    required String front,
+    required String back,
+    // 用語（front）側にだけ出す補足。backに書くと答えがバレる
+    // 「Uninterruptible Power Supplyの略」のような情報を置く。
+    String? frontInfo,
+  }) = _AnkiCard;
 
   factory AnkiCard.fromJson(Map<String, dynamic> json) =>
       _$AnkiCardFromJson(json);

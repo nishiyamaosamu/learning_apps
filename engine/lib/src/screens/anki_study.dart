@@ -379,6 +379,22 @@ class _AnkiStudyScreenState extends ConsumerState<AnkiStudyScreen>
               color: c.textPrimary,
             ),
           ),
+          if (card.frontInfo != null) ...[
+            const SizedBox(height: 8),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 240),
+              child: Text(
+                card.frontInfo!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  height: 1.6,
+                  color: c.textSecondary,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

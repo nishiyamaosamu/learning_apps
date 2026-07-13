@@ -4716,7 +4716,10 @@ AnkiCard _$AnkiCardFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$AnkiCard {
   String get front => throw _privateConstructorUsedError;
-  String get back => throw _privateConstructorUsedError;
+  String get back =>
+      throw _privateConstructorUsedError; // 用語（front）側にだけ出す補足。backに書くと答えがバレる
+  // 「Uninterruptible Power Supplyの略」のような情報を置く。
+  String? get frontInfo => throw _privateConstructorUsedError;
 
   /// Serializes this AnkiCard to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -4733,7 +4736,7 @@ abstract class $AnkiCardCopyWith<$Res> {
   factory $AnkiCardCopyWith(AnkiCard value, $Res Function(AnkiCard) then) =
       _$AnkiCardCopyWithImpl<$Res, AnkiCard>;
   @useResult
-  $Res call({String front, String back});
+  $Res call({String front, String back, String? frontInfo});
 }
 
 /// @nodoc
@@ -4750,7 +4753,11 @@ class _$AnkiCardCopyWithImpl<$Res, $Val extends AnkiCard>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? front = null, Object? back = null}) {
+  $Res call({
+    Object? front = null,
+    Object? back = null,
+    Object? frontInfo = freezed,
+  }) {
     return _then(
       _value.copyWith(
             front: null == front
@@ -4761,6 +4768,10 @@ class _$AnkiCardCopyWithImpl<$Res, $Val extends AnkiCard>
                 ? _value.back
                 : back // ignore: cast_nullable_to_non_nullable
                       as String,
+            frontInfo: freezed == frontInfo
+                ? _value.frontInfo
+                : frontInfo // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -4776,7 +4787,7 @@ abstract class _$$AnkiCardImplCopyWith<$Res>
   ) = __$$AnkiCardImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String front, String back});
+  $Res call({String front, String back, String? frontInfo});
 }
 
 /// @nodoc
@@ -4792,7 +4803,11 @@ class __$$AnkiCardImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? front = null, Object? back = null}) {
+  $Res call({
+    Object? front = null,
+    Object? back = null,
+    Object? frontInfo = freezed,
+  }) {
     return _then(
       _$AnkiCardImpl(
         front: null == front
@@ -4803,6 +4818,10 @@ class __$$AnkiCardImplCopyWithImpl<$Res>
             ? _value.back
             : back // ignore: cast_nullable_to_non_nullable
                   as String,
+        frontInfo: freezed == frontInfo
+            ? _value.frontInfo
+            : frontInfo // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -4811,7 +4830,11 @@ class __$$AnkiCardImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$AnkiCardImpl implements _AnkiCard {
-  const _$AnkiCardImpl({required this.front, required this.back});
+  const _$AnkiCardImpl({
+    required this.front,
+    required this.back,
+    this.frontInfo,
+  });
 
   factory _$AnkiCardImpl.fromJson(Map<String, dynamic> json) =>
       _$$AnkiCardImplFromJson(json);
@@ -4820,10 +4843,14 @@ class _$AnkiCardImpl implements _AnkiCard {
   final String front;
   @override
   final String back;
+  // 用語（front）側にだけ出す補足。backに書くと答えがバレる
+  // 「Uninterruptible Power Supplyの略」のような情報を置く。
+  @override
+  final String? frontInfo;
 
   @override
   String toString() {
-    return 'AnkiCard(front: $front, back: $back)';
+    return 'AnkiCard(front: $front, back: $back, frontInfo: $frontInfo)';
   }
 
   @override
@@ -4832,12 +4859,14 @@ class _$AnkiCardImpl implements _AnkiCard {
         (other.runtimeType == runtimeType &&
             other is _$AnkiCardImpl &&
             (identical(other.front, front) || other.front == front) &&
-            (identical(other.back, back) || other.back == back));
+            (identical(other.back, back) || other.back == back) &&
+            (identical(other.frontInfo, frontInfo) ||
+                other.frontInfo == frontInfo));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, front, back);
+  int get hashCode => Object.hash(runtimeType, front, back, frontInfo);
 
   /// Create a copy of AnkiCard
   /// with the given fields replaced by the non-null parameter values.
@@ -4857,6 +4886,7 @@ abstract class _AnkiCard implements AnkiCard {
   const factory _AnkiCard({
     required final String front,
     required final String back,
+    final String? frontInfo,
   }) = _$AnkiCardImpl;
 
   factory _AnkiCard.fromJson(Map<String, dynamic> json) =
@@ -4865,7 +4895,10 @@ abstract class _AnkiCard implements AnkiCard {
   @override
   String get front;
   @override
-  String get back;
+  String get back; // 用語（front）側にだけ出す補足。backに書くと答えがバレる
+  // 「Uninterruptible Power Supplyの略」のような情報を置く。
+  @override
+  String? get frontInfo;
 
   /// Create a copy of AnkiCard
   /// with the given fields replaced by the non-null parameter values.

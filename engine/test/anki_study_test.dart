@@ -45,6 +45,29 @@ void main() {
     expect(find.text('用語A'), findsOneWidget);
   });
 
+  testWidgets('frontInfo は表では出ず、裏で用語と一緒に表示される', (tester) async {
+    const cards = <AnkiSessionCard>[
+      (
+        deckId: '1',
+        card: AnkiCard(front: 'UPS', back: '無停電電源装置。', frontInfo: '正式名称の略'),
+      ),
+    ];
+    await tester.pumpWidget(
+      _app(const AnkiStudyScreen(cards: cards, title: 'テストデッキ')),
+    );
+    await tester.pumpAndSettle();
+
+    // 表：backのみ。frontInfoは出ない。
+    expect(find.text('無停電電源装置。'), findsOneWidget);
+    expect(find.text('正式名称の略'), findsNothing);
+
+    // 裏：用語とfrontInfoが出る。
+    await tester.tap(find.text('無停電電源装置。'));
+    await tester.pumpAndSettle();
+    expect(find.text('UPS'), findsOneWidget);
+    expect(find.text('正式名称の略'), findsOneWidget);
+  });
+
   testWidgets('裏で「覚えた」→次のカードへ進む', (tester) async {
     await tester.pumpWidget(
       _app(

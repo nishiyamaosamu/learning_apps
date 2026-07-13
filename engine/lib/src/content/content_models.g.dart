@@ -388,10 +388,15 @@ _$AnkiCardImpl _$$AnkiCardImplFromJson(Map<String, dynamic> json) =>
     _$AnkiCardImpl(
       front: json['front'] as String,
       back: json['back'] as String,
+      frontInfo: json['frontInfo'] as String?,
     );
 
 Map<String, dynamic> _$$AnkiCardImplToJson(_$AnkiCardImpl instance) =>
-    <String, dynamic>{'front': instance.front, 'back': instance.back};
+    <String, dynamic>{
+      'front': instance.front,
+      'back': instance.back,
+      'frontInfo': instance.frontInfo,
+    };
 
 _$AnkiDeckImpl _$$AnkiDeckImplFromJson(Map<String, dynamic> json) =>
     _$AnkiDeckImpl(
