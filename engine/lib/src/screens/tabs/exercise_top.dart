@@ -34,7 +34,7 @@ class ExerciseTop extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('問題集')),
       body: index.when(
-        data: (idx) => _ExerciseTopBody(exercises: idx.exercises),
+        data: (idx) => _ExerciseTopBody(groups: idx.exercises),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('読み込みに失敗しました\n$e')),
       ),
@@ -43,13 +43,19 @@ class ExerciseTop extends ConsumerWidget {
 }
 
 class _ExerciseTopBody extends ConsumerWidget {
-  const _ExerciseTopBody({required this.exercises});
+  const _ExerciseTopBody({required this.groups});
 
-  final List<ContentSummary> exercises;
+  final List<ExerciseGroup> groups;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (exercises.isEmpty) {
+    // 1問題集以上を持つグループだけを対象にする。
+    final groupsWithExercises = [
+      for (final g in groups)
+        if (g.exercises.isNotEmpty) g,
+    ];
+
+    if (groupsWithExercises.isEmpty) {
       return const EmptyState(
         icon: Icons.quiz_rounded,
         label: 'まだ問題集がありません',
@@ -84,25 +90,29 @@ class _ExerciseTopBody extends ConsumerWidget {
             const SizedBox(height: 12),
             _ReviewCta(questions: reviewQuestions),
           ],
-          const SizedBox(height: 12),
-          const VideoSectionHeader(title: '問題集'),
-          const SizedBox(height: 12),
-          EntityListCard(
-            children: [
-              for (final item in exercises)
-                QicoRow(
-                  icon: Icons.quiz_rounded,
-                  title: item.title,
-                  trailing: Icon(
-                    Icons.chevron_right,
-                    size: 18,
-                    color: context.colors.textMuted,
+          for (final group in groupsWithExercises) ...[
+            const SizedBox(height: 12),
+            VideoSectionHeader(title: group.title),
+            const SizedBox(height: 12),
+            EntityListCard(
+              children: [
+                for (final item in group.exercises)
+                  QicoRow(
+                    icon: Icons.quiz_rounded,
+                    title: item.title,
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      size: 18,
+                      color: context.colors.textMuted,
+                    ),
+                    onTap: () => context.push(
+                      '/exercises/${item.id}',
+                      extra: item.title,
+                    ),
                   ),
-                  onTap: () =>
-                      context.push('/exercises/${item.id}', extra: item.title),
-                ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ],
       ),
     );

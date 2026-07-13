@@ -22,7 +22,13 @@ final _exercises = [
 ];
 
 const _index = ContentIndex(
-  exercises: [ContentSummary(id: 'R8', title: '令和8年度 問題集')],
+  exercises: [
+    ExerciseGroup(
+      id: 'past-exams',
+      title: '問題集',
+      exercises: [ContentSummary(id: 'R8', title: '令和8年度 問題集')],
+    ),
+  ],
 );
 
 Widget _host() => ProviderScope(

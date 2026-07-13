@@ -495,7 +495,7 @@ class _ExerciseProviderElement
   String get id => (origin as ExerciseProvider).id;
 }
 
-String _$allExercisesHash() => r'fb0c7e23f1665236225a1cd3959081ceb6041f9c';
+String _$allExercisesHash() => r'e5e02a8c19082fb1f0ba32647c196a96fad3c9f4';
 
 /// base.json の全問題集を読み込んで結合する（問題集タブの全体サマリー集計用）。
 ///
@@ -643,7 +643,7 @@ class _AnkiProviderElement extends AutoDisposeFutureProviderElement<AnkiDeck>
   String get id => (origin as AnkiProvider).id;
 }
 
-String _$allAnkiDecksHash() => r'2ab0f0c01e4afaaf40702177611caeabbe0a4ca8';
+String _$allAnkiDecksHash() => r'fa620f92bbe816e314e21954bdd0c412270b413d';
 
 /// base.json の全暗記デッキを読み込んで結合する（「全カードから10問」用）。
 ///

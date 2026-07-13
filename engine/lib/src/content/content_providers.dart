@@ -77,8 +77,9 @@ Future<Exercise> exercise(ExerciseRef ref, String id) {
 Future<List<Exercise>> allExercises(AllExercisesRef ref) async {
   final index = await ref.watch(contentIndexProvider.future);
   return Future.wait([
-    for (final summary in index.exercises)
-      ref.watch(exerciseProvider(summary.id).future),
+    for (final group in index.exercises)
+      for (final summary in group.exercises)
+        ref.watch(exerciseProvider(summary.id).future),
   ]);
 }
 
@@ -96,7 +97,8 @@ Future<AnkiDeck> anki(AnkiRef ref, String id) {
 Future<List<AnkiDeck>> allAnkiDecks(AllAnkiDecksRef ref) async {
   final index = await ref.watch(contentIndexProvider.future);
   return Future.wait([
-    for (final summary in index.anki)
-      ref.watch(ankiProvider(summary.id).future),
+    for (final group in index.anki)
+      for (final summary in group.anki)
+        ref.watch(ankiProvider(summary.id).future),
   ]);
 }

@@ -159,13 +159,25 @@
     }
   ],
   "exercises": [
-    { "id": "R8", "title": "令和8年度 問題集" },
-    { "id": "R7", "title": "令和7年度 問題集" },
-    { "id": "R6", "title": "令和6年度 問題集" },
-    { "id": "R5", "title": "令和5年度 問題集" },
-    { "id": "R4", "title": "令和4年度 問題集" }
+    {
+      "id": "past-exams",
+      "title": "問題集",
+      "exercises": [
+        { "id": "R8", "title": "令和8年度 問題集" },
+        { "id": "R7", "title": "令和7年度 問題集" },
+        { "id": "R6", "title": "令和6年度 問題集" },
+        { "id": "R5", "title": "令和5年度 問題集" },
+        { "id": "R4", "title": "令和4年度 問題集" }
+      ]
+    }
   ],
   "anki": [
-    { "id": "1", "title": "基本母音カード", "cardCount": 3 }
+    {
+      "id": "basics",
+      "title": "デッキ",
+      "anki": [
+        { "id": "1", "title": "基本母音カード", "cardCount": 3 }
+      ]
+    }
   ]
 }

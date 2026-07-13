@@ -50,7 +50,13 @@ const _videoIndex = ContentIndex(
 );
 
 const _exerciseIndex = ContentIndex(
-  exercises: [ContentSummary(id: 'R8', title: '令和8年度 問題集')],
+  exercises: [
+    ExerciseGroup(
+      id: 'past-exams',
+      title: '問題集',
+      exercises: [ContentSummary(id: 'R8', title: '令和8年度 問題集')],
+    ),
+  ],
 );
 
 final _exercises = [
@@ -74,7 +80,13 @@ final _exercises = [
 ];
 
 const _ankiIndex = ContentIndex(
-  anki: [ContentSummary(id: '1', title: '企業活動のことば', cardCount: 1)],
+  anki: [
+    AnkiGroup(
+      id: 'basics',
+      title: 'デッキ',
+      anki: [ContentSummary(id: '1', title: '企業活動のことば', cardCount: 1)],
+    ),
+  ],
 );
 const _ankiDeck = AnkiDeck(
   id: '1',

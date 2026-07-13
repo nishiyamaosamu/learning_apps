@@ -82,14 +82,14 @@ _$ContentIndexImpl _$$ContentIndexImplFromJson(Map<String, dynamic> json) =>
           const <LessonDomain>[],
       exercises:
           (json['exercises'] as List<dynamic>?)
-              ?.map((e) => ContentSummary.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => ExerciseGroup.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <ContentSummary>[],
+          const <ExerciseGroup>[],
       anki:
           (json['anki'] as List<dynamic>?)
-              ?.map((e) => ContentSummary.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => AnkiGroup.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <ContentSummary>[],
+          const <AnkiGroup>[],
       videos:
           (json['videos'] as List<dynamic>?)
               ?.map((e) => VideoChapter.fromJson(e as Map<String, dynamic>))
@@ -103,6 +103,42 @@ Map<String, dynamic> _$$ContentIndexImplToJson(_$ContentIndexImpl instance) =>
       'exercises': instance.exercises,
       'anki': instance.anki,
       'videos': instance.videos,
+    };
+
+_$ExerciseGroupImpl _$$ExerciseGroupImplFromJson(Map<String, dynamic> json) =>
+    _$ExerciseGroupImpl(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      exercises:
+          (json['exercises'] as List<dynamic>?)
+              ?.map((e) => ContentSummary.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <ContentSummary>[],
+    );
+
+Map<String, dynamic> _$$ExerciseGroupImplToJson(_$ExerciseGroupImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'exercises': instance.exercises,
+    };
+
+_$AnkiGroupImpl _$$AnkiGroupImplFromJson(Map<String, dynamic> json) =>
+    _$AnkiGroupImpl(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      anki:
+          (json['anki'] as List<dynamic>?)
+              ?.map((e) => ContentSummary.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <ContentSummary>[],
+    );
+
+Map<String, dynamic> _$$AnkiGroupImplToJson(_$AnkiGroupImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'anki': instance.anki,
     };
 
 _$VideoChapterImpl _$$VideoChapterImplFromJson(Map<String, dynamic> json) =>

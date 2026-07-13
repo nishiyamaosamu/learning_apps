@@ -868,8 +868,8 @@ ContentIndex _$ContentIndexFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ContentIndex {
   List<LessonDomain> get lessons => throw _privateConstructorUsedError;
-  List<ContentSummary> get exercises => throw _privateConstructorUsedError;
-  List<ContentSummary> get anki =>
+  List<ExerciseGroup> get exercises => throw _privateConstructorUsedError;
+  List<AnkiGroup> get anki =>
       throw _privateConstructorUsedError; // 動画講座（ホームタブ）の章一覧。base.json に `videos` キーが無くても
   // 空リストとしてパースが通る（@Default）。
   List<VideoChapter> get videos => throw _privateConstructorUsedError;
@@ -893,8 +893,8 @@ abstract class $ContentIndexCopyWith<$Res> {
   @useResult
   $Res call({
     List<LessonDomain> lessons,
-    List<ContentSummary> exercises,
-    List<ContentSummary> anki,
+    List<ExerciseGroup> exercises,
+    List<AnkiGroup> anki,
     List<VideoChapter> videos,
   });
 }
@@ -928,11 +928,11 @@ class _$ContentIndexCopyWithImpl<$Res, $Val extends ContentIndex>
             exercises: null == exercises
                 ? _value.exercises
                 : exercises // ignore: cast_nullable_to_non_nullable
-                      as List<ContentSummary>,
+                      as List<ExerciseGroup>,
             anki: null == anki
                 ? _value.anki
                 : anki // ignore: cast_nullable_to_non_nullable
-                      as List<ContentSummary>,
+                      as List<AnkiGroup>,
             videos: null == videos
                 ? _value.videos
                 : videos // ignore: cast_nullable_to_non_nullable
@@ -954,8 +954,8 @@ abstract class _$$ContentIndexImplCopyWith<$Res>
   @useResult
   $Res call({
     List<LessonDomain> lessons,
-    List<ContentSummary> exercises,
-    List<ContentSummary> anki,
+    List<ExerciseGroup> exercises,
+    List<AnkiGroup> anki,
     List<VideoChapter> videos,
   });
 }
@@ -988,11 +988,11 @@ class __$$ContentIndexImplCopyWithImpl<$Res>
         exercises: null == exercises
             ? _value._exercises
             : exercises // ignore: cast_nullable_to_non_nullable
-                  as List<ContentSummary>,
+                  as List<ExerciseGroup>,
         anki: null == anki
             ? _value._anki
             : anki // ignore: cast_nullable_to_non_nullable
-                  as List<ContentSummary>,
+                  as List<AnkiGroup>,
         videos: null == videos
             ? _value._videos
             : videos // ignore: cast_nullable_to_non_nullable
@@ -1007,8 +1007,8 @@ class __$$ContentIndexImplCopyWithImpl<$Res>
 class _$ContentIndexImpl implements _ContentIndex {
   const _$ContentIndexImpl({
     final List<LessonDomain> lessons = const <LessonDomain>[],
-    final List<ContentSummary> exercises = const <ContentSummary>[],
-    final List<ContentSummary> anki = const <ContentSummary>[],
+    final List<ExerciseGroup> exercises = const <ExerciseGroup>[],
+    final List<AnkiGroup> anki = const <AnkiGroup>[],
     final List<VideoChapter> videos = const <VideoChapter>[],
   }) : _lessons = lessons,
        _exercises = exercises,
@@ -1027,19 +1027,19 @@ class _$ContentIndexImpl implements _ContentIndex {
     return EqualUnmodifiableListView(_lessons);
   }
 
-  final List<ContentSummary> _exercises;
+  final List<ExerciseGroup> _exercises;
   @override
   @JsonKey()
-  List<ContentSummary> get exercises {
+  List<ExerciseGroup> get exercises {
     if (_exercises is EqualUnmodifiableListView) return _exercises;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_exercises);
   }
 
-  final List<ContentSummary> _anki;
+  final List<AnkiGroup> _anki;
   @override
   @JsonKey()
-  List<ContentSummary> get anki {
+  List<AnkiGroup> get anki {
     if (_anki is EqualUnmodifiableListView) return _anki;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_anki);
@@ -1104,8 +1104,8 @@ class _$ContentIndexImpl implements _ContentIndex {
 abstract class _ContentIndex implements ContentIndex {
   const factory _ContentIndex({
     final List<LessonDomain> lessons,
-    final List<ContentSummary> exercises,
-    final List<ContentSummary> anki,
+    final List<ExerciseGroup> exercises,
+    final List<AnkiGroup> anki,
     final List<VideoChapter> videos,
   }) = _$ContentIndexImpl;
 
@@ -1115,9 +1115,9 @@ abstract class _ContentIndex implements ContentIndex {
   @override
   List<LessonDomain> get lessons;
   @override
-  List<ContentSummary> get exercises;
+  List<ExerciseGroup> get exercises;
   @override
-  List<ContentSummary> get anki; // 動画講座（ホームタブ）の章一覧。base.json に `videos` キーが無くても
+  List<AnkiGroup> get anki; // 動画講座（ホームタブ）の章一覧。base.json に `videos` キーが無くても
   // 空リストとしてパースが通る（@Default）。
   @override
   List<VideoChapter> get videos;
@@ -1127,6 +1127,411 @@ abstract class _ContentIndex implements ContentIndex {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ContentIndexImplCopyWith<_$ContentIndexImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+ExerciseGroup _$ExerciseGroupFromJson(Map<String, dynamic> json) {
+  return _ExerciseGroup.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ExerciseGroup {
+  String get id => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
+  List<ContentSummary> get exercises => throw _privateConstructorUsedError;
+
+  /// Serializes this ExerciseGroup to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ExerciseGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ExerciseGroupCopyWith<ExerciseGroup> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ExerciseGroupCopyWith<$Res> {
+  factory $ExerciseGroupCopyWith(
+    ExerciseGroup value,
+    $Res Function(ExerciseGroup) then,
+  ) = _$ExerciseGroupCopyWithImpl<$Res, ExerciseGroup>;
+  @useResult
+  $Res call({String id, String title, List<ContentSummary> exercises});
+}
+
+/// @nodoc
+class _$ExerciseGroupCopyWithImpl<$Res, $Val extends ExerciseGroup>
+    implements $ExerciseGroupCopyWith<$Res> {
+  _$ExerciseGroupCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ExerciseGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? exercises = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            exercises: null == exercises
+                ? _value.exercises
+                : exercises // ignore: cast_nullable_to_non_nullable
+                      as List<ContentSummary>,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ExerciseGroupImplCopyWith<$Res>
+    implements $ExerciseGroupCopyWith<$Res> {
+  factory _$$ExerciseGroupImplCopyWith(
+    _$ExerciseGroupImpl value,
+    $Res Function(_$ExerciseGroupImpl) then,
+  ) = __$$ExerciseGroupImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String id, String title, List<ContentSummary> exercises});
+}
+
+/// @nodoc
+class __$$ExerciseGroupImplCopyWithImpl<$Res>
+    extends _$ExerciseGroupCopyWithImpl<$Res, _$ExerciseGroupImpl>
+    implements _$$ExerciseGroupImplCopyWith<$Res> {
+  __$$ExerciseGroupImplCopyWithImpl(
+    _$ExerciseGroupImpl _value,
+    $Res Function(_$ExerciseGroupImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ExerciseGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? exercises = null,
+  }) {
+    return _then(
+      _$ExerciseGroupImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        exercises: null == exercises
+            ? _value._exercises
+            : exercises // ignore: cast_nullable_to_non_nullable
+                  as List<ContentSummary>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ExerciseGroupImpl implements _ExerciseGroup {
+  const _$ExerciseGroupImpl({
+    required this.id,
+    required this.title,
+    final List<ContentSummary> exercises = const <ContentSummary>[],
+  }) : _exercises = exercises;
+
+  factory _$ExerciseGroupImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ExerciseGroupImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String title;
+  final List<ContentSummary> _exercises;
+  @override
+  @JsonKey()
+  List<ContentSummary> get exercises {
+    if (_exercises is EqualUnmodifiableListView) return _exercises;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_exercises);
+  }
+
+  @override
+  String toString() {
+    return 'ExerciseGroup(id: $id, title: $title, exercises: $exercises)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ExerciseGroupImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(
+              other._exercises,
+              _exercises,
+            ));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    title,
+    const DeepCollectionEquality().hash(_exercises),
+  );
+
+  /// Create a copy of ExerciseGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ExerciseGroupImplCopyWith<_$ExerciseGroupImpl> get copyWith =>
+      __$$ExerciseGroupImplCopyWithImpl<_$ExerciseGroupImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ExerciseGroupImplToJson(this);
+  }
+}
+
+abstract class _ExerciseGroup implements ExerciseGroup {
+  const factory _ExerciseGroup({
+    required final String id,
+    required final String title,
+    final List<ContentSummary> exercises,
+  }) = _$ExerciseGroupImpl;
+
+  factory _ExerciseGroup.fromJson(Map<String, dynamic> json) =
+      _$ExerciseGroupImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get title;
+  @override
+  List<ContentSummary> get exercises;
+
+  /// Create a copy of ExerciseGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ExerciseGroupImplCopyWith<_$ExerciseGroupImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+AnkiGroup _$AnkiGroupFromJson(Map<String, dynamic> json) {
+  return _AnkiGroup.fromJson(json);
+}
+
+/// @nodoc
+mixin _$AnkiGroup {
+  String get id => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
+  List<ContentSummary> get anki => throw _privateConstructorUsedError;
+
+  /// Serializes this AnkiGroup to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of AnkiGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $AnkiGroupCopyWith<AnkiGroup> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AnkiGroupCopyWith<$Res> {
+  factory $AnkiGroupCopyWith(AnkiGroup value, $Res Function(AnkiGroup) then) =
+      _$AnkiGroupCopyWithImpl<$Res, AnkiGroup>;
+  @useResult
+  $Res call({String id, String title, List<ContentSummary> anki});
+}
+
+/// @nodoc
+class _$AnkiGroupCopyWithImpl<$Res, $Val extends AnkiGroup>
+    implements $AnkiGroupCopyWith<$Res> {
+  _$AnkiGroupCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AnkiGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? title = null, Object? anki = null}) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            anki: null == anki
+                ? _value.anki
+                : anki // ignore: cast_nullable_to_non_nullable
+                      as List<ContentSummary>,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$AnkiGroupImplCopyWith<$Res>
+    implements $AnkiGroupCopyWith<$Res> {
+  factory _$$AnkiGroupImplCopyWith(
+    _$AnkiGroupImpl value,
+    $Res Function(_$AnkiGroupImpl) then,
+  ) = __$$AnkiGroupImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String id, String title, List<ContentSummary> anki});
+}
+
+/// @nodoc
+class __$$AnkiGroupImplCopyWithImpl<$Res>
+    extends _$AnkiGroupCopyWithImpl<$Res, _$AnkiGroupImpl>
+    implements _$$AnkiGroupImplCopyWith<$Res> {
+  __$$AnkiGroupImplCopyWithImpl(
+    _$AnkiGroupImpl _value,
+    $Res Function(_$AnkiGroupImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of AnkiGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? id = null, Object? title = null, Object? anki = null}) {
+    return _then(
+      _$AnkiGroupImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        anki: null == anki
+            ? _value._anki
+            : anki // ignore: cast_nullable_to_non_nullable
+                  as List<ContentSummary>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AnkiGroupImpl implements _AnkiGroup {
+  const _$AnkiGroupImpl({
+    required this.id,
+    required this.title,
+    final List<ContentSummary> anki = const <ContentSummary>[],
+  }) : _anki = anki;
+
+  factory _$AnkiGroupImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AnkiGroupImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String title;
+  final List<ContentSummary> _anki;
+  @override
+  @JsonKey()
+  List<ContentSummary> get anki {
+    if (_anki is EqualUnmodifiableListView) return _anki;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_anki);
+  }
+
+  @override
+  String toString() {
+    return 'AnkiGroup(id: $id, title: $title, anki: $anki)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AnkiGroupImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(other._anki, _anki));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    title,
+    const DeepCollectionEquality().hash(_anki),
+  );
+
+  /// Create a copy of AnkiGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AnkiGroupImplCopyWith<_$AnkiGroupImpl> get copyWith =>
+      __$$AnkiGroupImplCopyWithImpl<_$AnkiGroupImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AnkiGroupImplToJson(this);
+  }
+}
+
+abstract class _AnkiGroup implements AnkiGroup {
+  const factory _AnkiGroup({
+    required final String id,
+    required final String title,
+    final List<ContentSummary> anki,
+  }) = _$AnkiGroupImpl;
+
+  factory _AnkiGroup.fromJson(Map<String, dynamic> json) =
+      _$AnkiGroupImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get title;
+  @override
+  List<ContentSummary> get anki;
+
+  /// Create a copy of AnkiGroup
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AnkiGroupImplCopyWith<_$AnkiGroupImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

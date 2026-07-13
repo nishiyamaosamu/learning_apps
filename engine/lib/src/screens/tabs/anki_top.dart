@@ -42,7 +42,7 @@ class AnkiTop extends ConsumerWidget {
         ),
       ),
       body: index.when(
-        data: (idx) => _AnkiTopBody(decks: idx.anki),
+        data: (idx) => _AnkiTopBody(groups: idx.anki),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('読み込みに失敗しました\n$e')),
       ),
@@ -51,13 +51,20 @@ class AnkiTop extends ConsumerWidget {
 }
 
 class _AnkiTopBody extends ConsumerWidget {
-  const _AnkiTopBody({required this.decks});
+  const _AnkiTopBody({required this.groups});
 
-  final List<ContentSummary> decks;
+  final List<AnkiGroup> groups;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+
+    // 1デッキ以上を持つグループだけを対象にする。
+    final groupsWithDecks = [
+      for (final g in groups)
+        if (g.anki.isNotEmpty) g,
+    ];
+    final decks = [for (final g in groupsWithDecks) ...g.anki];
 
     if (decks.isEmpty) {
       return const EmptyState(
@@ -74,6 +81,18 @@ class _AnkiTopBody extends ConsumerWidget {
     final allDecks = ref.watch(allAnkiDecksProvider);
     final results = ref.watch(ankiResultsProvider);
     final loadedDecks = allDecks.valueOrNull ?? const <AnkiDeck>[];
+    final deckById = {for (final d in loadedDecks) d.id: d};
+
+    // グループ単位の「覚えた / 総語数」。ロード前の該当デッキは 0 語として扱い、
+    // 総数だけ base.json のサマリ（cardCount）にフォールバックする。
+    int knownCountIn(AnkiGroup group) => group.anki.fold<int>(0, (sum, s) {
+      final deck = deckById[s.id];
+      return sum + (deck == null ? 0 : knownCountOf(deck, results));
+    });
+    int totalCountIn(AnkiGroup group) => group.anki.fold<int>(0, (sum, s) {
+      final deck = deckById[s.id];
+      return sum + (deck?.cards.length ?? s.cardCount ?? 0);
+    });
 
     final allCards = allAnkiSessionCards(loadedDecks);
     final unknownCards = unknownAnkiSessionCards(loadedDecks, results);
@@ -123,28 +142,33 @@ class _AnkiTopBody extends ConsumerWidget {
               label: const Text('全カードから10問'),
             ),
           ),
-          const SizedBox(height: 16),
-          // 章ヘッダー相当。右端は覚えた語数「覚えた / 総語数」（DESIGN.html「32 / 58」）。
-          VideoSectionHeader(title: 'デッキ', trailing: '$knownCount / $totalCards'),
-          const SizedBox(height: 12),
-          EntityListCard(
-            children: [
-              for (final deck in decks)
-                QicoRow(
-                  icon: Icons.style_rounded,
-                  title: deck.title,
-                  trailing: deck.cardCount == null
-                      ? null
-                      : Text(
-                          '${deck.cardCount}語',
-                          style: AppTypography.mono(
-                            AppTypography.caption,
-                          ).copyWith(color: c.textMuted),
-                        ),
-                  onTap: () => context.push('/anki/${deck.id}'),
-                ),
-            ],
-          ),
+          for (final group in groupsWithDecks) ...[
+            const SizedBox(height: 16),
+            // 章ヘッダー相当。右端は覚えた語数「覚えた / 総語数」（DESIGN.html「32 / 58」）。
+            VideoSectionHeader(
+              title: group.title,
+              trailing: '${knownCountIn(group)} / ${totalCountIn(group)}',
+            ),
+            const SizedBox(height: 12),
+            EntityListCard(
+              children: [
+                for (final deck in group.anki)
+                  QicoRow(
+                    icon: Icons.style_rounded,
+                    title: deck.title,
+                    trailing: deck.cardCount == null
+                        ? null
+                        : Text(
+                            '${deck.cardCount}語',
+                            style: AppTypography.mono(
+                              AppTypography.caption,
+                            ).copyWith(color: c.textMuted),
+                          ),
+                    onTap: () => context.push('/anki/${deck.id}'),
+                  ),
+              ],
+            ),
+          ],
         ],
       ),
     );

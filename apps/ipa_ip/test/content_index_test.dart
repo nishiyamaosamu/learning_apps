@@ -65,9 +65,9 @@ void main() {
       jsonDecode(raw) as Map<String, dynamic>,
     );
 
-    // デッキは1件。
+    // グループは1件・デッキは1件。
     expect(index.anki, hasLength(1));
-    final summary = index.anki.single;
+    final summary = index.anki.single.anki.single;
 
     // 実ファイル（contents/anki/{id}.json）が存在し、cardCount が実カード数と一致。
     final deckRaw = File('contents/anki/${summary.id}.json').readAsStringSync();

@@ -62,8 +62,8 @@ class LessonMiddleCategory with _$LessonMiddleCategory {
 class ContentIndex with _$ContentIndex {
   const factory ContentIndex({
     @Default(<LessonDomain>[]) List<LessonDomain> lessons,
-    @Default(<ContentSummary>[]) List<ContentSummary> exercises,
-    @Default(<ContentSummary>[]) List<ContentSummary> anki,
+    @Default(<ExerciseGroup>[]) List<ExerciseGroup> exercises,
+    @Default(<AnkiGroup>[]) List<AnkiGroup> anki,
     // 動画講座（ホームタブ）の章一覧。base.json に `videos` キーが無くても
     // 空リストとしてパースが通る（@Default）。
     @Default(<VideoChapter>[]) List<VideoChapter> videos,
@@ -71,6 +71,34 @@ class ContentIndex with _$ContentIndex {
 
   factory ContentIndex.fromJson(Map<String, dynamic> json) =>
       _$ContentIndexFromJson(json);
+}
+
+/// 問題集タブの見出し（グループ）。base.json の `exercises` 配列に含まれ、
+/// 配列順で表示する。[VideoChapter] と同じ「1階層グルーピング」の流儀。
+@freezed
+class ExerciseGroup with _$ExerciseGroup {
+  const factory ExerciseGroup({
+    required String id,
+    required String title,
+    @Default(<ContentSummary>[]) List<ContentSummary> exercises,
+  }) = _ExerciseGroup;
+
+  factory ExerciseGroup.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseGroupFromJson(json);
+}
+
+/// 暗記カードタブの見出し（グループ）。base.json の `anki` 配列に含まれ、
+/// 配列順で表示する。
+@freezed
+class AnkiGroup with _$AnkiGroup {
+  const factory AnkiGroup({
+    required String id,
+    required String title,
+    @Default(<ContentSummary>[]) List<ContentSummary> anki,
+  }) = _AnkiGroup;
+
+  factory AnkiGroup.fromJson(Map<String, dynamic> json) =>
+      _$AnkiGroupFromJson(json);
 }
 
 /// 動画講座の「章」。base.json の `videos` 配列に含まれ、配列順で表示する。

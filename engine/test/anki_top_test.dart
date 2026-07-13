@@ -21,8 +21,14 @@ const _deck2 = AnkiDeck(
 
 const _index = ContentIndex(
   anki: [
-    ContentSummary(id: '1', title: '企業活動のことば', cardCount: 2),
-    ContentSummary(id: '2', title: '経営戦略のことば', cardCount: 1),
+    AnkiGroup(
+      id: 'basics',
+      title: 'デッキ',
+      anki: [
+        ContentSummary(id: '1', title: '企業活動のことば', cardCount: 2),
+        ContentSummary(id: '2', title: '経営戦略のことば', cardCount: 1),
+      ],
+    ),
   ],
 );
 
