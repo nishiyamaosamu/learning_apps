@@ -2,7 +2,7 @@
   "id": "7-2",
   "title": "信頼性・バックアップとデータベース",
   "cards": [
-    { "front": "RASIS", "back": "信頼性・可用性・保守性・完全性（保全性）・安全性という、システムの品質評価に用いる5つの観点の頭文字を合わせた用語。総合的な信頼性指標として出題される。" },
+    { "front": "RASIS", "back": "信頼性・可用性・保守性・保全性（完全性）・安全性という、システムの品質評価に用いる5つの観点の頭文字を合わせた用語。総合的な信頼性指標として出題される。", "frontInfo": "Reliability・Availability・Serviceability・Integrity・Securityの頭文字" },
     { "front": "MTBF", "back": "故障から次の故障までの平均動作時間。値が大きいほど信頼性が高いことを示す。", "frontInfo": "Mean Time Between Failuresの略" },
     { "front": "MTTR", "back": "故障発生から修理完了までの平均時間。値が小さいほど保守性が高いことを示す。", "frontInfo": "Mean Time To Repairの略" },
     { "front": "稼働率", "back": "MTBF÷（MTBF＋MTTR）で表される、システムが正常に稼働している時間の割合を示す指標。値が1に近いほど可用性が高いことを表す。" },
