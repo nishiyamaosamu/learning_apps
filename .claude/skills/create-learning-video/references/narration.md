@@ -74,7 +74,7 @@ narration/<app>/<id>.jobs.json 本体も同じ文に直しておく（原稿と�
 ### 共通: loader を1回作る
 
 ```tsx
-import { narrationLoader } from "../parts/narration";
+import { narrationLoader } from "../../parts/narration";
 import durations from "./<id>.audio.json";   // audio-durations.mjs が作る（先に音声工程を済ませる）
 
 const N = narrationLoader(durations, "audio/<app>/<id>");
@@ -142,7 +142,7 @@ N("s10-3.mp3", "正解は、イの経営資源です。", { gapBeforeSec: 1.8 })
 `revealAtSec` は正解セグメントの開始秒 — `segStart(QSEG, i)` で取る（手で足し算しない）:
 
 ```tsx
-import { narrationLoader, segStart } from "../parts/narration";
+import { narrationLoader, segStart } from "../../parts/narration";
 
 const QSEG = [
   N("s10-1.mp3", "ここで問題です。…"),

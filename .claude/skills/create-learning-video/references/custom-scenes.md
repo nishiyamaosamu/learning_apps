@@ -6,11 +6,11 @@
 ## 共通の骨格
 
 ```tsx
-import { colors, videoType, fontMono, SCALE, markerStyle, markerPinkStyle } from "../design/tokens";
-import { SlideShell } from "../parts/SlideShell";
-import { useAppear, usePop, useProgress } from "../parts/animate";
-import { segStart } from "../parts/narration";
-import { Ms } from "../parts/Ms";
+import { colors, videoType, fontMono, SCALE, markerStyle, markerPinkStyle } from "../../design/tokens";
+import { SlideShell } from "../../parts/SlideShell";
+import { useAppear, usePop, useProgress } from "../../parts/animate";
+import { segStart } from "../../parts/narration";
+import { Ms } from "../../parts/Ms";
 
 const MyScene: React.FC = () => {
   // フックはコンポーネント先頭で。要素ごとに遅延をずらして順に出す
@@ -134,7 +134,7 @@ const QuizIntroScene: React.FC = () => <SectionTitle title="クイズで確認" 
 線を「描いていく」演出は `parts/draw.tsx` を使う。SVG の dash-offset を手計算しない。
 
 ```tsx
-import { DrawPath, ArrowMarker } from "../parts/draw";
+import { DrawPath, ArrowMarker } from "../../parts/draw";
 
 <svg viewBox="0 0 220 150" style={{ flex: 1, minHeight: 0 }}>
   <ArrowMarker id="arr" color={colors.primary300} />

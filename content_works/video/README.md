@@ -5,6 +5,10 @@
 色・角丸などのトークンは [src/design/tokens.ts](src/design/tokens.ts)（DESIGN.html と 1:1 の写し）から必ず引く。
 ハードコード色は禁止（アプリ側と同じルール）。
 
+**制作の進捗は [QUEUE.md](QUEUE.md)（進捗台帳）が唯一の正**。何本目まで作ったか・次に何を作るかは
+会話の記憶ではなくここで管理する。1本 = 1エージェントで作り、着手時と完了時に台帳を更新する
+（手順は `.claude/skills/create-learning-video/SKILL.md` 工程0）。
+
 ## 動画を作る手順（VideoSpec 方式）
 
 動画1本 = `src/videos/<app>/<id>.tsx` の **VideoSpec**。`<app>` はアプリ名ディレクトリ（`ipa_ip` / `ipa_sg`）、
@@ -18,7 +22,7 @@
 cd content_works/video
 
 # 1. src/videos/<app>/<id>.tsx に VideoSpec を書く（src/videos/demo/demo.tsx が記述例）
-# 2. src/videos/index.ts の videos 配列に追加
+node scripts/sync-index.mjs         # 2. index.ts を再生成して登録（index.ts は手で編集しない）
 node scripts/lint-videos.mjs        # 3. デザインガードレール lint
 npx tsc                             # 4. 型チェック
 node scripts/stills.mjs <id>        # 5. 全シーンの静止画を stills/<id>/ に出力 → 全部目視確認
@@ -38,10 +42,12 @@ npm run dev     # Remotion Studio（プレビューしながら調整したい�
 
 ```
 video/
+├── QUEUE.md               # 制作キュー（進捗台帳）— 状態・動画ID・成果物・尺
 ├── draft/<app>/           # レンダリング済み動画の置き場（git対象外）
 ├── narration/<app>/       # ナレーション原稿（<id>.md）と TTS ジョブ（<id>.jobs.json）
 ├── stills/                # scripts/stills.mjs の出力（シーン確認用・git対象外）
 ├── scripts/stills.mjs     # 全シーンを1枚ずつ静止画化する確認ツール
+├── scripts/sync-index.mjs # src/videos/index.ts の自動生成（+ id・ファイル名の規約チェック）
 ├── public/                # 画像・音声アセット（staticFile() で参照）
 │   ├── audio/<app>/<id>/  # ナレーション音声mp3（git対象外・jobs.json からTTSで再生成する）
 │   │                      #   audio/common/ だけは全動画共通の固定素材なのでgit追跡する
@@ -61,7 +67,7 @@ video/
 │   │   ├── renderScene.tsx# SceneSpec → シーン部品（アイコンサイズ・点灯タイミングを保証）
 │   │   ├── demo/          # 手本・確認用デモ（パターン一覧・ナレーション最小手本・ワイプ確認）
 │   │   ├── <app>/         # 本番動画の VideoSpec（<id>.tsx と <id>.audio.json）
-│   │   └── index.ts       # 動画の登録リスト（ここに追加すると Studio / render に現れる）
+│   │   └── index.ts       # 動画の登録リスト（scripts/sync-index.mjs が生成・手で編集しない）
 │   ├── scenes/            # DESIGN.html のスライドパターン 1:1
 │   │   ├── TitleCard.tsx  # タイトルカード（bgDark + primary円 + accentPink斜め帯）
 │   │   ├── BulletSlide.tsx# ① 箇条書き+イラスト（基本形）

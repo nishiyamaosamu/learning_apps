@@ -22,6 +22,7 @@ leaning_apps/
 │   ├── scripts/       # コンテンツ制作補助スクリプト（Python: TTS・背景透過など）
 │   ├── video/         # 学習動画の制作環境（Remotion）。詳細は content_works/video/README.md
 │   │                  #   アプリ別成果物は <app>/ サブディレクトリ、動画IDは ip-/sg- 接頭辞
+│   │                  #   制作の進捗は video/QUEUE.md（進捗台帳）が唯一の正
 │   └── <app>/         # アプリ別の原材料・計画（LESSON_PLAN.md・シラバス・問題データなど）
 └── docs/
     └── LESSON.md      # レッスンコンテンツ（JSON）の構造仕様
