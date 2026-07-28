@@ -596,7 +596,7 @@ h2.sec::before {
 }
 .v-title .foot-line { position: relative; display: block; width: 26px; height: 4px; border-radius: 2px; background: var(--primary500); }
 /* 本編スライド：下部にテロップ帯常設。残りは本文に最大限使う */
-.v-slide { background: var(--bg); padding: 4.5% 6% 4%; display: flex; flex-direction: column; }
+.v-slide { background: var(--bg); padding: 4.5% 6% 2.4%; display: flex; flex-direction: column; }
 .v-slide .head { display: flex; align-items: center; gap: 9px; }
 .v-slide .head i { display: block; width: 6px; height: 1.4em; border-radius: 3px; background: var(--primary600); flex: none; }
 .v-slide .head .ms { font-size: 20px; color: var(--primary600); flex: none; }
@@ -612,10 +612,12 @@ h2.sec::before {
   flex: 1; min-width: 0; align-self: stretch; object-fit: contain;
   mix-blend-mode: multiply; /* 素材の白地を bg に溶かす */
 }
+/* 字幕は1行のことが多いが、2行に増えても本文領域が揺れないよう高さ38px（2行分＋上下13px相当）で固定。
+   本文を圧迫しないよう帯・余白はここまで詰めてある */
 .v-telop {
-  flex: none; margin-top: 2%; background: var(--surface);
+  flex: none; margin-top: 1.2%; height: 38px; background: var(--surface);
   border: 1px solid var(--border); border-radius: 10px;
-  padding: 5px 16px;
+  padding: 0 16px; line-height: 1.25;
   display: flex; align-items: center; justify-content: center; gap: 7px;
   font-size: 12.5px; font-weight: 700; color: var(--textPrimary);
   box-shadow: 0 3px 10px rgba(30, 41, 59, .08);
@@ -741,7 +743,7 @@ h2.sec::before {
 .sum-kw span { font-size: 9px; color: var(--textSecondary); line-height: 1.45; }
 
 /* 動画クイズ */
-.v-quiz { background: var(--primary50); padding: 4.5% 6%; display: flex; flex-direction: column; gap: 3.5%; }
+.v-quiz { background: var(--primary50); padding: 4.5% 6% 3%; display: flex; flex-direction: column; gap: 3.5%; }
 .v-quiz .qhead { display: flex; align-items: center; gap: 10px; }
 .v-quiz .qhead .qmark {
   width: 34px; height: 34px; border-radius: 10px; flex: none;

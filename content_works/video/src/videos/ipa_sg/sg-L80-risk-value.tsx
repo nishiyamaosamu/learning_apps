@@ -752,8 +752,8 @@ export const SgL80RiskValue: VideoSpec = {
       pattern: "quiz",
       question: "健康診断情報のリスク値は？",
       choices: [
-        { key: "A", text: "8（2×2×2）", correct: true },
-        { key: "B", text: "6（2＋2＋2）" },
+        { key: "A", text: "6（2＋2＋2）" },
+        { key: "B", text: "8（2×2×2）", correct: true },
       ],
       narration: SEG_Q1,
       revealAtSec: segStart(SEG_Q1, 2),
@@ -772,8 +772,8 @@ export const SgL80RiskValue: VideoSpec = {
       pattern: "quiz",
       question: "リスク値4の技術、対応は？",
       choices: [
-        { key: "A", text: "不要（受容できる）", correct: true },
-        { key: "B", text: "必要（対策を行う）" },
+        { key: "A", text: "必要（対策を行う）" },
+        { key: "B", text: "不要（受容できる）", correct: true },
       ],
       narration: SEG_Q3,
       revealAtSec: segStart(SEG_Q3, 2),

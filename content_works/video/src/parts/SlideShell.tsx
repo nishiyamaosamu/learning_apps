@@ -43,7 +43,7 @@ export const SlideShell: React.FC<SlideShellProps> = ({
         backgroundColor: colors.bg,
         color: colors.textPrimary,
         fontFamily,
-        padding: "4.5% 6% 4%", // .v-slide（%はモックと同一）
+        padding: "4.5% 6% 2.4%", // .v-slide（%はモックと同一）
         display: "flex",
         flexDirection: "column",
       }}
@@ -73,12 +73,14 @@ export const SlideShell: React.FC<SlideShellProps> = ({
       {children}
 
       {/* .v-telop: 角丸の浮きカード。
-          高さは2行分で固定 — 字幕が1行/2行と変わっても本文領域の高さが揺れないようにする */}
+          高さは2行分で固定 — 字幕が1行/2行と変わっても本文領域の高さが揺れないようにする。
+          帯・余白は本文を圧迫しないぎりぎりまで詰めてある（2行 = 125px + 上下13px）ので、
+          ここを広げるときは本文が帯に被らないか stills で確認すること */}
       <div
         style={{
           flex: "none",
-          marginTop: "2%",
-          height: 44 * SCALE,
+          marginTop: "1.2%",
+          height: 38 * SCALE,
           backgroundColor: colors.surface,
           border: `${1 * SCALE}px solid ${colors.border}`,
           borderRadius: 10 * SCALE,
@@ -88,7 +90,7 @@ export const SlideShell: React.FC<SlideShellProps> = ({
           justifyContent: "center",
           textAlign: "center",
           fontSize: videoType.telop,
-          lineHeight: 1.35,
+          lineHeight: 1.25,
           fontWeight: 700,
           boxShadow: `0 ${3 * SCALE}px ${10 * SCALE}px rgba(30, 41, 59, 0.08)`,
           ...telopAppear,

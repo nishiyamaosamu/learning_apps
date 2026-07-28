@@ -681,8 +681,8 @@ export const SgL79AssetRegister: VideoSpec = {
       pattern: "quiz",
       question: "受注データで重視する特性は？",
       choices: [
-        { key: "A", text: "可用性（止まると困る）", correct: true },
-        { key: "B", text: "機密性（漏れると困る）" },
+        { key: "A", text: "機密性（漏れると困る）" },
+        { key: "B", text: "可用性（止まると困る）", correct: true },
       ],
       narration: SEG_Q2,
       revealAtSec: segStart(SEG_Q2, 2),

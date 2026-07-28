@@ -130,7 +130,8 @@ export const QuizSlide: React.FC<QuizSlideProps> = ({
         backgroundColor: colors.primary50,
         color: colors.textPrimary,
         fontFamily,
-        padding: "4.5% 6%",
+        // 下は字幕（foot）の分だけ詰める — SlideShell のテロップ帯と字幕の高さを揃えるため
+        padding: "4.5% 6% 3%",
         display: "flex",
         flexDirection: "column",
         gap: "3.5%",

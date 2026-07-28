@@ -303,8 +303,8 @@ export const SgL3HumanDeception: VideoSpec = {
       pattern: "quiz",
       question: "だましの手口の名前は？",
       choices: [
-        { key: "A", text: "ソーシャルエンジニアリング", correct: true },
-        { key: "B", text: "総当たり攻撃" },
+        { key: "A", text: "総当たり攻撃" },
+        { key: "B", text: "ソーシャルエンジニアリング", correct: true },
       ],
       narration: SEG_Q1,
       revealAtSec: segStart(SEG_Q1, 2),

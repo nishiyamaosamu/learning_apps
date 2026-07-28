@@ -40,12 +40,49 @@ const RULES = [
   },
 ];
 
+/**
+ * quiz の choices ブロックを拾い、正解（correct: true）が何番目かを返す。
+ * 戻り値: [{ line, index, count }]（line は choices: [ の行番号・1始まり）
+ */
+function quizAnswerPositions(src) {
+  const found = [];
+  const re = /choices\s*:\s*\[/g;
+  let m;
+  while ((m = re.exec(src)) !== null) {
+    let depth = 0;
+    let end = -1;
+    for (let i = m.index + m[0].length - 1; i < src.length; i++) {
+      const ch = src[i];
+      if (ch === "[") depth++;
+      else if (ch === "]") {
+        depth--;
+        if (depth === 0) {
+          end = i;
+          break;
+        }
+      }
+    }
+    if (end < 0) continue;
+    const body = src.slice(m.index + m[0].length, end);
+    const items = body.match(/\{[^{}]*\}/g) ?? [];
+    const index = items.findIndex((it) => /correct\s*:\s*true/.test(it));
+    if (items.length === 0 || index < 0) continue;
+    found.push({
+      line: src.slice(0, m.index).split("\n").length,
+      index,
+      count: items.length,
+    });
+  }
+  return found;
+}
+
 let violations = 0;
 const targets = readdirSync(dir, { recursive: true })
   .map(String)
   .filter((f) => !INFRA.has(f) && (f.endsWith(".ts") || f.endsWith(".tsx")));
 for (const f of targets) {
-  const lines = readFileSync(join(dir, f), "utf8").split("\n");
+  const src = readFileSync(join(dir, f), "utf8");
+  const lines = src.split("\n");
   lines.forEach((line, i) => {
     if (/^\s*(\/\/|\*)/.test(line)) return; // コメント行は除外
     for (const rule of RULES) {
@@ -55,6 +92,17 @@ for (const f of targets) {
       }
     }
   });
+
+  // 正解の位置が全問同じ（＝実質「いつもA」）になっていないか
+  const quizzes = quizAnswerPositions(src);
+  if (quizzes.length >= 2 && new Set(quizzes.map((q) => q.index)).size === 1) {
+    const key = ["A", "B", "C", "D"][quizzes[0].index] ?? `${quizzes[0].index + 1}番目`;
+    console.error(
+      `src/videos/${f}:${quizzes[0].line}: quiz の正解が全問「${key}」— 正解位置は問ごとに散らす（references/patterns.md「quiz」）\n` +
+        `    ${quizzes.length}問すべて ${key} が correct: true。選択肢の text を入れ替えて A/B を両方使う`,
+    );
+    violations++;
+  }
 }
 
 if (violations > 0) {

@@ -329,8 +329,8 @@ export const SgL78SubjectBMethod: VideoSpec = {
       pattern: "quiz",
       question: "あなたが判断する立場は？",
       choices: [
-        { key: "A", text: "情報セキュリティリーダー", correct: true },
-        { key: "B", text: "外部の攻撃者" },
+        { key: "A", text: "外部の攻撃者" },
+        { key: "B", text: "情報セキュリティリーダー", correct: true },
       ],
       narration: SEG_Q1,
       revealAtSec: segStart(SEG_Q1, 2),
@@ -339,8 +339,8 @@ export const SgL78SubjectBMethod: VideoSpec = {
       pattern: "quiz",
       question: "ケースを読むとき最初にするのは？",
       choices: [
-        { key: "A", text: "設問を先に読む", correct: true },
-        { key: "B", text: "本文を最後まで暗記する" },
+        { key: "A", text: "本文を最後まで暗記する" },
+        { key: "B", text: "設問を先に読む", correct: true },
       ],
       narration: SEG_Q2,
       revealAtSec: segStart(SEG_Q2, 2),
