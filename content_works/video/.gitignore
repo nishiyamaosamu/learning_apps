@@ -11,3 +11,8 @@ stills/
 
 # 完成動画（再レンダリングで復元可能・大容量のためgit対象外）
 draft/
+
+# ナレーション音声（narration/*.jobs.json からTTSで再生成可能・大容量のためgit対象外）
+# ただし audio/common/ は全動画共通の固定素材（再生成すると抑揚が変わる）なので追跡する
+public/audio/*
+!public/audio/common/

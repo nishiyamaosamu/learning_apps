@@ -43,7 +43,8 @@ video/
 ├── stills/                # scripts/stills.mjs の出力（シーン確認用・git対象外）
 ├── scripts/stills.mjs     # 全シーンを1枚ずつ静止画化する確認ツール
 ├── public/                # 画像・音声アセット（staticFile() で参照）
-│   ├── audio/<app>/<id>/  # ナレーション音声mp3（audio/common/ は全動画共通素材）
+│   ├── audio/<app>/<id>/  # ナレーション音声mp3（git対象外・jobs.json からTTSで再生成する）
+│   │                      #   audio/common/ だけは全動画共通の固定素材なのでgit追跡する
 │   └── images/<app>/      # 手描きイラスト部品ライブラリの原本（アプリ別・フラット。draft/ は確認待ち）
 ├── src/
 │   ├── design/tokens.ts   # 集中ブルー トークン（DESIGN.html の写し・原本は Flutter AppColors）
