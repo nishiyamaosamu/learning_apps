@@ -107,15 +107,34 @@ create-learning-video スキルを Skill ツールで呼び、工程0から工�
 - SG-L5 ランサムウェアとボットネット → draft/ipa_sg/sg-L5-v1.mp4（4分52秒）
 - SG-L6 攻撃者と不正のメカニズム → draft/ipa_sg/sg-L6-v1.mp4（4分31秒）
 
-見て良ければ QUEUE.md を ✅ done に、直しが要るなら ↩️ rework にしてメモに指摘を書いてください
-（「rework にしといて、まとめが弱い」と言ってもらえれば私が書きます）。
+見て良ければ「L5 review ok」と言ってください（アプリへ公開して ✅ done にします）。
+直しが要るなら ↩️ rework にしてメモに指摘を書きます（「rework にしといて、まとめが弱い」でOK）。
 残り: ⬜ todo 85本 / 👀 review 3本
 ```
+
+### 6. 「review ok」と言われたら、アプリへ公開する
+
+レビューが通った回は draft に置いたままにせず、アプリの完成品置き場
+（`apps/<app>/contents/videos/`）へ公開する。**手でコピーしない**。1コマンドで
+mp4のコピー・`base.json` への登録（尺は ffprobe の実測）・台帳を ✅ done にするまで揃う:
+
+```bash
+cd content_works/video
+node scripts/publish.mjs sg-L1          # 複数まとめてもよい（sg-L1 sg-L2）
+```
+
+- アプリ側の動画ID = **L番号**（`L1` → `contents/videos/L1.mp4`）。視聴進捗のキーなので後から変えない
+- 章（`VideoChapter`）は QUEUE.md の `### 第N章 …` 見出しから採る。見出しが無いアプリ（ipa_ip）は
+  `--chapter <id>:<タイトル>` で明示する
+- 視聴後の確認クイズ（`VideoItem.quizzes`）は**入れない**（クイズは動画の中にある。二度出さない）
+- 公開したmp4はgit対象外（`apps/*/contents/videos/*.mp4`）。追うのは `base.json` の登録だけ
+- 初回のアプリだけ `apps/<app>/pubspec.yaml` の `flutter.assets` に `- contents/videos/` を足す
 
 ## やらないこと
 
 - **自分で動画を作らない**（原稿を書く・tsxを触る・stillsを開く、はすべてサブエージェント側の仕事）
-- **`done` を付けない**。完成の判断は人がする。あなたが付けてよいのは人が口頭で承認したときだけ
+- **`done` を付けない**。完成の判断は人がする。人が口頭で承認したときは、手で `done` と書くのではなく
+  `scripts/publish.mjs` を走らせる（公開とセットで初めて `done`）
 - 台帳の表以外の場所に長文を書かない（詳細は `narration/<app>/<id>.md` にある）
 - サブエージェントの報告を鵜呑みにしない。尺が359秒を超えている・成果物ファイル名が
   台帳と食い違うなど、**報告の中で矛盾している点があれば人に伝える**

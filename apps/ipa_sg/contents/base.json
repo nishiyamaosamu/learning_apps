@@ -1,4 +1,18 @@
 {
+  "videos": [
+    {
+      "id": "1",
+      "title": "第1章 脅威と攻撃を知る",
+      "videos": [
+        {
+          "id": "L1",
+          "title": "L1 情報セキュリティとは",
+          "durationSec": 227,
+          "asset": "videos/L1.mp4"
+        }
+      ]
+    }
+  ],
   "lessons": [
     {
       "id": "kamoku_a",

@@ -31,5 +31,9 @@ __pycache__/
 .venv/
 content_works/scripts/output.mp3
 
+# 完成動画（content_works/video/draft からの公開コピー・再レンダリングで復元可能・大容量）
+# 公開は content_works/video/scripts/publish.mjs が行い、base.json の登録だけをgitで追う
+apps/*/contents/videos/*.mp4
+
 # Claude
 .claude/skills/*-workspace

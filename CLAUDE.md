@@ -24,6 +24,7 @@ leaning_apps/
 │   │                  #   アプリ別成果物は <app>/ サブディレクトリ、動画IDは ip-/sg- 接頭辞
 │   │                  #   制作の進捗は video/QUEUE.md（進捗台帳）が唯一の正
 │   │                  #   発注は video-queue スキル、1本の制作は create-learning-video スキル
+│   │                  #   レビューokの回は video/scripts/publish.mjs で apps/<app>/contents/videos/ へ公開
 │   └── <app>/         # アプリ別の原材料・計画（LESSON_PLAN.md・シラバス・問題データなど）
 │       └── orders/    # 動画1本ぶんの発注書（範囲を先に確定させた指示書。<L番号>.md）
 └── docs/

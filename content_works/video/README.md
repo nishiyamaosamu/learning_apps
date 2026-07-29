@@ -35,6 +35,21 @@ npm run dev     # Remotion Studio（プレビューしながら調整したい�
 - 完成した動画（ドラフト）は **`draft/<app>/`** に格納する
 - シーンの種類とデータ形式は `src/videos/types.ts`（全パターンの型定義）を参照
 
+### 人のレビューが通ったら公開する
+
+`draft/` は確認用の置き場。レビューが通った回（QUEUE.md が 👀 review）は、アプリの完成品置き場
+`apps/<app>/contents/videos/` へ公開する。mp4のコピー・`base.json` への登録（尺は ffprobe の実測）・
+台帳を ✅ done にするところまで1コマンドで揃うので、**手でコピーしない**。
+
+```bash
+node scripts/publish.mjs sg-L1          # 複数まとめてもよい（sg-L1 sg-L2）
+node scripts/publish.mjs sg-L1 --force  # すでに done の回をやり直す（作り直した版に差し替え）
+```
+
+アプリ側の動画ID = **L番号**（`L1` → `contents/videos/L1.mp4`・`/videos/L1`）。視聴進捗のキーなので
+後から変えない。公開したmp4はgit対象外（再レンダリングで復元できる）で、gitが追うのは
+`base.json` の登録だけ。
+
 ## 構成
 
 アプリ別の成果物（動画定義・ナレーション・音声・ドラフト）はすべて `<app>/` サブディレクトリ
@@ -48,6 +63,7 @@ video/
 ├── stills/                # scripts/stills.mjs の出力（シーン確認用・git対象外）
 ├── scripts/stills.mjs     # 全シーンを1枚ずつ静止画化する確認ツール
 ├── scripts/sync-index.mjs # src/videos/index.ts の自動生成（+ id・ファイル名の規約チェック）
+├── scripts/publish.mjs    # レビュー済みの回を apps/<app>/contents/videos/ へ公開（+ base.json 登録・台帳を done に）
 ├── public/                # 画像・音声アセット（staticFile() で参照）
 │   ├── audio/<app>/<id>/  # ナレーション音声mp3（git対象外・jobs.json からTTSで再生成する）
 │   │                      #   audio/common/ だけは全動画共通の固定素材なのでgit追跡する
