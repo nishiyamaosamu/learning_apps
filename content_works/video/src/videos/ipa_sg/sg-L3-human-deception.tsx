@@ -126,21 +126,34 @@ const SocialEngineeringScene: React.FC = () => {
   return (
     <SlideShell narration={SEG_P2}>
       <div style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "center", gap: "5%" }}>
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 * SCALE }}>
-          <span style={{ fontSize: 20 * SCALE, fontWeight: 800, lineHeight: 1.45, ...termAppear }}>
+        <div style={{ flex: 1.3, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 * SCALE }}>
+          <span style={{ fontSize: 19 * SCALE, fontWeight: 800, lineHeight: 1.45, ...termAppear }}>
             人の心理に<span style={markerStyle}>つけこむ罠</span>
           </span>
-          <span style={{ fontSize: 12.5 * SCALE, fontWeight: 700, ...subAppear }}>
-            <span style={{ color: colors.textSecondary }}>ソーシャルエンジニアリング｜</span>
-            <HighlightSpan text="盗み見" atSec={segStart(SEG_P2, 3)} />
-            <span style={{ color: colors.textSecondary }}>・</span>
-            <HighlightSpan text="なりすまし電話" atSec={segStart(SEG_P2, 4)} />
+          {/* 用語名と手口は別の行に分ける（1行にまとめると左カラム幅を超えて語の途中で折り返す） */}
+          <span
+            style={{
+              fontSize: 12.5 * SCALE,
+              fontWeight: 700,
+              lineHeight: 1.5,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2 * SCALE,
+              ...subAppear,
+            }}
+          >
+            <span style={{ color: colors.textSecondary }}>ソーシャルエンジニアリング</span>
+            <span>
+              <HighlightSpan text="盗み見" atSec={segStart(SEG_P2, 3)} />
+              <span style={{ color: colors.textSecondary }}>・</span>
+              <HighlightSpan text="なりすまし電話" atSec={segStart(SEG_P2, 4)} />
+            </span>
           </span>
         </div>
         <Img
           src={staticFile("images/ipa_sg/attack-social.png")}
           style={{
-            flex: 1.15,
+            flex: 1,
             minWidth: 0,
             alignSelf: "stretch",
             objectFit: "contain",
@@ -166,18 +179,31 @@ const InsiderScene: React.FC = () => {
   return (
     <SlideShell narration={SEG_P6}>
       <div style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "center", gap: "5%" }}>
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 * SCALE }}>
-          <span style={{ fontSize: 20 * SCALE, fontWeight: 800, lineHeight: 1.45, ...termAppear }}>
+        <div style={{ flex: 1.3, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 * SCALE }}>
+          <span style={{ fontSize: 19 * SCALE, fontWeight: 800, lineHeight: 1.45, ...termAppear }}>
             組織の<span style={markerStyle}>内側にひそむ</span>脅威
           </span>
-          <span style={{ fontSize: 12.5 * SCALE, fontWeight: 700, color: colors.textSecondary, ...subAppear }}>
-            内部不正｜権限の悪用による情報持ち出し
+          {/* 用語名と説明は別の行に分ける（1行にまとめると左カラム幅を超えて語の途中で折り返す） */}
+          <span
+            style={{
+              fontSize: 12.5 * SCALE,
+              fontWeight: 700,
+              lineHeight: 1.5,
+              color: colors.textSecondary,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2 * SCALE,
+              ...subAppear,
+            }}
+          >
+            <span>内部不正</span>
+            <span>権限の悪用による情報持ち出し</span>
           </span>
         </div>
         <Img
           src={staticFile("images/ipa_sg/person-insider-sneak.png")}
           style={{
-            flex: 1.15,
+            flex: 1,
             minWidth: 0,
             alignSelf: "stretch",
             objectFit: "contain",

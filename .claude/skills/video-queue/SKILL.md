@@ -20,7 +20,9 @@ description: 学習動画（content_works/video）の制作キューを回す発
 ### 1. 台帳を読んで、出す本を決める
 
 `content_works/video/QUEUE.md` を読む。受注の優先順位は台帳の運用ルールどおり
-**`rework` → `wip` → `todo`**（直しと中断の引き継ぎが、新規制作より先）。
+**↩️ `rework` → 🔨 `wip` → ⬜ `todo`**（直しと中断の引き継ぎが、新規制作より先）。
+台帳の状態セルは**絵文字つきで書く**（⬜ `todo` / 🔨 `wip` / 👀 `review` / ↩️ `rework` /
+✅ `done` / ⏸️ `hold`）。行を書き換えるときに絵文字を落とさない。
 
 本数の指定がなければ **3本**を目安にする。指示があればそれに従う。
 
@@ -70,7 +72,7 @@ content_works/video/QUEUE.md の <L番号>（<タイトル>）を担当して、
 create-learning-video スキルを Skill ツールで呼び、工程0から工程8まで通してください。
 
 - 発注書: content_works/<app>/orders/<L番号>.md
-- 台帳（QUEUE.md）の更新はあなたの仕事です（着手で wip、レンダリング完了で review）
+- 台帳（QUEUE.md）の更新はあなたの仕事です（着手で 🔨 wip、レンダリング完了で 👀 review。絵文字つきで書く）
 - 完了報告は工程8のフォーマットだけ返してください。原稿・コード・静止画の中身は貼らないこと
 ```
 
@@ -105,9 +107,9 @@ create-learning-video スキルを Skill ツールで呼び、工程0から工�
 - SG-L5 ランサムウェアとボットネット → draft/ipa_sg/sg-L5-v1.mp4（4分52秒）
 - SG-L6 攻撃者と不正のメカニズム → draft/ipa_sg/sg-L6-v1.mp4（4分31秒）
 
-見て良ければ QUEUE.md を done に、直しが要るなら rework にしてメモに指摘を書いてください
+見て良ければ QUEUE.md を ✅ done に、直しが要るなら ↩️ rework にしてメモに指摘を書いてください
 （「rework にしといて、まとめが弱い」と言ってもらえれば私が書きます）。
-残り: todo 85本 / review 3本
+残り: ⬜ todo 85本 / 👀 review 3本
 ```
 
 ## やらないこと
