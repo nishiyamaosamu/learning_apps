@@ -42,14 +42,31 @@ export const DrawPath: React.FC<{
       pathLength={1}
       strokeDasharray={1}
       strokeDashoffset={1 - p}
-      markerEnd={markerEnd}
+      /**
+       * 描画前は完全に消す。strokeLinecap="round" は長さ0のダッシュにも丸い端点を描くため、
+       * p=0 の間も始点に「点」が残ってしまう（sg-L10 の第三者中継で、矢印より先に
+       * 赤い点が出ていると指摘）。opacity は marker にも効くのでここで一括して消す。
+       */
+      opacity={p > 0 ? 1 : 0}
+      /**
+       * 矢じり（marker）は strokeDashoffset の影響を受けず、線がまだ伸びていない間も
+       * 終端に描かれてしまう。何も無い場所に三角形だけがずっと浮いて見えるので
+       * （sg-L8 のディレクトリトラバーサルで指摘）、線が終端へ届くまでは付けない。
+       */
+      markerEnd={p >= 0.98 ? markerEnd : undefined}
     />
   );
 };
 
 /**
  * 矢じりの定義。<svg> 直下に1回置き、DrawPath の markerEnd="url(#id)" で参照する。
- * size は viewBox 座標系での矢じりの長さ。
+ *
+ * **矢じりの縦横は `size × DrawPath の strokeWidth`（viewBox 単位）になる**
+ * （marker の既定 markerUnits="strokeWidth" のため）。既定なら 6 × strokeWidth。
+ * この幅ぶんの余白が線の両側に viewBox 内に無いと、はみ出した角が root の <svg> に
+ * クリップされて**矢じりの角が四角く欠ける**（sg-L10 の第三者中継・sg-L11 の中間者攻撃で
+ * 「矢印が欠けている」と指摘）。細長い矢印用の svg を作るときは、
+ * 線のy ± (size × strokeWidth) / 2 が viewBox に収まるように viewBox の高さを取る。
  */
 export const ArrowMarker: React.FC<{ id: string; color: string; size?: number }> = ({
   id,

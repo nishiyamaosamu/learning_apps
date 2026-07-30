@@ -146,7 +146,8 @@ export type GraphScene = {
 export type TermScene = {
   pattern: "term";
   durationSec?: number;
-  chip?: string; // 既定: 今日のキーワード
+  /** その語が属する分類（例「メールの脅威」「マルウェアの一種」）。重要度は主張しない。省略でチップなし */
+  chip?: string;
   icon: string;
   term: string; // 用語1つだけ（10文字目安）
   sub: string;

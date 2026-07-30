@@ -14,6 +14,7 @@ export const bepFixedVariableCost: VideoSpec = {
     },
     {
       pattern: "term",
+      chip: "経営分析の指標",
       icon: "calculate",
       term: "損益分岐点",
       sub: "利益がちょうどゼロになる売上高のこと",

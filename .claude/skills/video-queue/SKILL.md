@@ -115,12 +115,14 @@ create-learning-video スキルを Skill ツールで呼び、工程0から工�
 ### 6. 「review ok」と言われたら、アプリへ公開する
 
 レビューが通った回は draft に置いたままにせず、アプリの完成品置き場
-（`apps/<app>/contents/videos/`）へ公開する。**手でコピーしない**。1コマンドで
-mp4のコピー・`base.json` への登録（尺は ffprobe の実測）・台帳を ✅ done にするまで揃う:
+（`apps/<app>/contents/videos/`）へ**移す**。**手でコピーしない**。1コマンドで
+mp4のコピー・`base.json` への登録（尺は ffprobe の実測）・台帳を ✅ done にする・
+draft から消すまで揃う:
 
 ```bash
 cd content_works/video
 node scripts/publish.mjs sg-L1          # 複数まとめてもよい（sg-L1 sg-L2）
+node scripts/publish.mjs --prune        # 昔に公開した回の draft が残っていたら掃除
 ```
 
 - アプリ側の動画ID = **L番号**（`L1` → `contents/videos/L1.mp4`）。視聴進捗のキーなので後から変えない
@@ -128,6 +130,9 @@ node scripts/publish.mjs sg-L1          # 複数まとめてもよい（sg-L1 sg
   `--chapter <id>:<タイトル>` で明示する
 - 視聴後の確認クイズ（`VideoItem.quizzes`）は**入れない**（クイズは動画の中にある。二度出さない）
 - 公開したmp4はgit対象外（`apps/*/contents/videos/*.mp4`）。追うのは `base.json` の登録だけ
+- 公開すると **その回の draft は消える**（公開した版も旧版 `-v1`… も）。`draft/` はレビュー待ちだけを
+  置く場所なので、`ls draft/<app>/` に残っているものが「人がまだ見ていないもの」と一致する。
+  台帳の ✅ done 行の「成果物(draft)」欄は、どの版を公開したかの記録（ファイルはもう無い）
 - 初回のアプリだけ `apps/<app>/pubspec.yaml` の `flutter.assets` に `- contents/videos/` を足す
 
 ## やらないこと

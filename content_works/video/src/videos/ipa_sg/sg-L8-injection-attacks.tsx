@@ -495,13 +495,15 @@ const TraversalScene: React.FC = () => {
           </span>
         </div>
         <div style={{ flex: "none", alignSelf: "stretch", width: 9 * SCALE, display: "flex" }}>
-          {/* さかのぼる経路: 下（公開フォルダ）から上（サーバの奥）へ登る矢印 */}
+          {/* さかのぼる経路: 下（公開フォルダ）から上（サーバの奥）へ登る矢印。
+              s07-4「さかのぼった先の…読まれてしまいます」で線を引き、
+              到達したところで /etc/passwd が開く（矢印が着いてから結果が出る順） */}
           <svg viewBox="0 0 40 150" style={{ width: "100%", height: "100%" }}>
             <ArrowMarker id="trav-arrow" color={colors.primary500} />
             <DrawPath
               d="M20 138 L20 14"
-              delaySec={segStart(SEG_P7, 2)}
-              durSec={1.0}
+              delaySec={segStart(SEG_P7, 3)}
+              durSec={0.9}
               stroke={colors.primary500}
               strokeWidth={3}
               markerEnd="url(#trav-arrow)"
@@ -522,7 +524,7 @@ const TraversalScene: React.FC = () => {
             note="非公開"
             indent={0}
             danger
-            atSec={segStart(SEG_P7, 3)}
+            atSec={segStart(SEG_P7, 3) + 0.85}
           />
           <DirRow path="/var/www/" note="サーバの中" indent={1} danger={false} atSec={segStart(SEG_P7, 1)} />
           <DirRow

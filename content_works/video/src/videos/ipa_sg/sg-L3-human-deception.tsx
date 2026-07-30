@@ -1,7 +1,8 @@
 import { Img, interpolateColors, staticFile } from "remotion";
-import { colors, markerStyle, SCALE } from "../../design/tokens";
+import { colors, fontMono, markerStyle, SCALE, videoType } from "../../design/tokens";
 import { SlideShell } from "../../parts/SlideShell";
 import { SectionTitle } from "../../parts/SectionTitle";
+import { Ms } from "../../parts/Ms";
 import { useAppear, useProgress } from "../../parts/animate";
 import { narrationLoader, segStart } from "../../parts/narration";
 import { QUIZ_INTRO_SEG, OUTRO_SEG } from "../../parts/common-narration";
@@ -167,6 +168,190 @@ const SocialEngineeringScene: React.FC = () => {
 };
 
 // ---------------------------------------------------------------------------
+// P5: 迷惑メール（受信メールのモック + 危ない箇所の注記）
+// 「迷惑メール」は既知の言葉なので用語ドンで額縁に入れず、1通のメールを見せて
+// どこが危ないか（差出人・リンク・添付）を語りに合わせて指していく形にする。
+// s06-2 で危険な2要素がピンクに点灯 → s06-3 で差出人の注記 → s06-4 で帰結。
+// ---------------------------------------------------------------------------
+
+/** 差出人・件名の行頭に置く小さなラベル（メールクライアント風） */
+const MailLabel: React.FC<{ text: string }> = ({ text }) => (
+  <span
+    style={{
+      flex: "none",
+      fontSize: 9 * SCALE,
+      fontWeight: 800,
+      color: colors.primary800,
+      backgroundColor: colors.primary50,
+      borderRadius: 6 * SCALE,
+      padding: `${1.5 * SCALE}px ${6 * SCALE}px`,
+    }}
+  >
+    {text}
+  </span>
+);
+
+/** 危ない箇所（リンク・添付）。atSec でピンクに点灯する */
+const DangerBox: React.FC<{ icon: string; label: string; value: string; atSec: number }> = ({
+  icon,
+  label,
+  value,
+  atSec,
+}) => {
+  const on = useProgress(atSec, 0.4);
+  const bg = interpolateColors(on, [0, 1], [colors.bg, colors.accentPinkSurface]);
+  const bd = interpolateColors(on, [0, 1], [colors.border, colors.accentPink]);
+  const fg = interpolateColors(on, [0, 1], [colors.textSecondary, colors.accentPinkText]);
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        display: "flex",
+        alignItems: "center",
+        gap: 7 * SCALE,
+        padding: `${8 * SCALE}px ${10 * SCALE}px`,
+        borderRadius: 10 * SCALE,
+        backgroundColor: bg,
+        border: `${1.5 * SCALE}px solid ${bd}`,
+      }}
+    >
+      <span style={{ flex: "none", display: "flex", color: fg }}>
+        <Ms name={icon} size={16 * SCALE} />
+      </span>
+      <div style={{ display: "flex", flexDirection: "column", gap: 1 * SCALE, minWidth: 0 }}>
+        <span style={{ fontSize: 9.5 * SCALE, fontWeight: 800, color: fg }}>{label}</span>
+        <span style={{ fontFamily: fontMono, fontSize: 10 * SCALE, fontWeight: 700 }}>{value}</span>
+      </div>
+    </div>
+  );
+};
+
+const SpamMailScene: React.FC = () => {
+  const cardAppear = useAppear(0.3);
+  const noteAppear = useAppear(segStart(SEG_P5, 2));
+  const resultAppear = useAppear(segStart(SEG_P5, 3));
+  const dangerAtSec = segStart(SEG_P5, 1);
+
+  return (
+    <SlideShell
+      heading="迷惑メール"
+      icon={<Ms name="mail" size={videoType.slideHeadIcon} />}
+      narration={SEG_P5}
+    >
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          marginTop: "2%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 8 * SCALE,
+        }}
+      >
+        {/* 1通のメール */}
+        <div
+          style={{
+            width: "86%",
+            alignSelf: "center",
+            backgroundColor: colors.surface,
+            border: `${1 * SCALE}px solid ${colors.border}`,
+            borderRadius: 12 * SCALE,
+            padding: `${10 * SCALE}px ${14 * SCALE}px`,
+            display: "flex",
+            flexDirection: "column",
+            gap: 6 * SCALE,
+            ...cardAppear,
+          }}
+        >
+          {/* 差出人の注記（s06-3「宅配業者や公的機関をかたる」）は差出人と同じ行に置く
+              — 別行にすると帰結の行が字幕帯に潜り込む（1行ぶんの高さが足りない） */}
+          <div style={{ display: "flex", alignItems: "center", gap: 7 * SCALE }}>
+            <MailLabel text="差出人" />
+            <span style={{ fontFamily: fontMono, fontSize: 10.5 * SCALE, fontWeight: 700 }}>
+              △△運輸 info@xx-unyu.jp
+            </span>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 4 * SCALE,
+                marginLeft: 4 * SCALE,
+                color: colors.accentPinkText,
+                ...noteAppear,
+              }}
+            >
+              <Ms name="warning" size={12 * SCALE} />
+              <span style={{ fontSize: 10 * SCALE, fontWeight: 800 }}>宅配業者をかたる</span>
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 7 * SCALE }}>
+            <MailLabel text="件名" />
+            <span style={{ fontSize: 13 * SCALE, fontWeight: 800 }}>お荷物のお届けについて</span>
+          </div>
+          <div style={{ height: 1 * SCALE, backgroundColor: colors.border }} />
+          <div style={{ display: "flex", gap: 8 * SCALE }}>
+            <DangerBox
+              icon="language"
+              label="怪しいリンク"
+              value="http://xx-unyu.jp"
+              atSec={dangerAtSec}
+            />
+            <DangerBox
+              icon="description"
+              label="添付ファイル"
+              value="お荷物伝票.zip"
+              atSec={dangerAtSec}
+            />
+          </div>
+        </div>
+
+        {/* 開いた先の帰結（s06-4） */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6 * SCALE,
+            ...resultAppear,
+          }}
+        >
+          <span style={{ fontSize: 10.5 * SCALE, fontWeight: 700, color: colors.textSecondary }}>
+            開くと
+          </span>
+          {[
+            { icon: "public", text: "偽サイトへ誘導" },
+            { icon: "bug_report", text: "ウイルスに感染" },
+          ].map((x) => (
+            <span
+              key={x.text}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 5 * SCALE,
+                padding: `${6 * SCALE}px ${12 * SCALE}px`,
+                borderRadius: 999,
+                backgroundColor: colors.surface,
+                border: `${1 * SCALE}px solid ${colors.border}`,
+                fontSize: 11 * SCALE,
+                fontWeight: 800,
+              }}
+            >
+              <span style={{ display: "flex", color: colors.primary600 }}>
+                <Ms name={x.icon} size={14 * SCALE} />
+              </span>
+              {x.text}
+            </span>
+          ))}
+        </div>
+      </div>
+    </SlideShell>
+  );
+};
+
+// ---------------------------------------------------------------------------
 // P6: 内部不正（左テキスト + 右イラスト）— ここで章が内部の人的脅威へ切り替わる（wipe-light）
 // ---------------------------------------------------------------------------
 
@@ -280,11 +465,11 @@ export const SgL3HumanDeception: VideoSpec = {
       narration: SEG_P4,
     },
     {
-      pattern: "term",
-      icon: "mail",
-      term: "迷惑メール",
-      sub: "怪しいリンクや添付でウイルス感染や情報漏えいを狙う",
+      pattern: "custom",
+      name: "spam-mail",
+      durationSec: 6,
       narration: SEG_P5,
+      component: SpamMailScene,
     },
     {
       pattern: "custom",

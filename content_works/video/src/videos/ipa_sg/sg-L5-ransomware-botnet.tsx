@@ -131,33 +131,80 @@ const HighlightSpan: React.FC<{ text: string; atSec: number }> = ({ text, atSec 
 };
 
 // ---------------------------------------------------------------------------
+// キーワード見出し（新出用語をページの視覚的な主役にする）
+// 分類チップ → 用語（大・マーカー） → 一言の定義。用語ドン（TermSlide）と同じ組み方を
+// 左寄せにしただけで、箱・枠・影は足さない（強調は文字の大きさとマーカーだけで作る）。
+// ---------------------------------------------------------------------------
+
+const KeywordLead: React.FC<{
+  chip: string;
+  term: string;
+  termSize: number;
+  desc: React.ReactNode;
+  atSec: number;
+}> = ({ chip, term, termSize, desc, atSec }) => (
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-start",
+      gap: 5 * SCALE,
+      ...useAppear(atSec),
+    }}
+  >
+    <span
+      style={{
+        fontSize: 9.5 * SCALE,
+        fontWeight: 800,
+        color: colors.primary800,
+        backgroundColor: colors.primary100,
+        borderRadius: 999,
+        padding: `${1.5 * SCALE}px ${9 * SCALE}px`,
+      }}
+    >
+      {chip}
+    </span>
+    <b style={{ fontSize: termSize, fontWeight: 800, lineHeight: 1.2 }}>
+      <span style={markerStyle}>{term}</span>
+    </b>
+    <span style={{ fontSize: 12 * SCALE, fontWeight: 700, lineHeight: 1.5 }}>{desc}</span>
+  </div>
+);
+
+// ---------------------------------------------------------------------------
 // P3: ランサムウェア（左テキスト + 右イラスト）
 // ---------------------------------------------------------------------------
 
 const RansomScene: React.FC = () => {
-  const termAppear = useAppear(0.3);
-  const subAppear = useAppear(segStart(SEG_RANSOM, 1));
+  const noteAppear = useAppear(segStart(SEG_RANSOM, 2));
   const illustAppear = useAppear(0.5);
   return (
     <SlideShell narration={SEG_RANSOM}>
       <div style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "center", gap: "5%" }}>
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 * SCALE }}>
-          <span style={{ fontSize: 20 * SCALE, fontWeight: 800, lineHeight: 1.45, ...termAppear }}>
-            データを
-            <span style={markerStyle}>人質</span>にとり
-            <br />
-            身代金を要求する
-          </span>
-          <span style={{ fontSize: 12.5 * SCALE, fontWeight: 700, lineHeight: 1.6, ...subAppear }}>
-            <span style={{ color: colors.textSecondary }}>ランサムウェア</span>
-            <br />
+        <div
+          style={{ flex: 1.25, minWidth: 0, display: "flex", flexDirection: "column", gap: 10 * SCALE }}
+        >
+          <KeywordLead
+            chip="お金を取られる型"
+            term="ランサムウェア"
+            termSize={27 * SCALE}
+            desc={
+              <>
+                データを人質にとり
+                <br />
+                身代金を要求するマルウェア
+              </>
+            }
+            atSec={0.3}
+          />
+          <span style={{ fontSize: 12.5 * SCALE, fontWeight: 800, lineHeight: 1.6, ...noteAppear }}>
             <HighlightSpan text="元に戻す鍵と引き換えに" atSec={segStart(SEG_RANSOM, 2)} />
           </span>
         </div>
         <Img
           src={staticFile("images/ipa_sg/malware-ransom.png")}
           style={{
-            flex: 1.05,
+            flex: 0.95,
             minWidth: 0,
             alignSelf: "stretch",
             objectFit: "contain",
@@ -299,7 +346,7 @@ const VB_W = 350;
 const VB_H = 150;
 const CC = { x: 175, y: 30 };
 const BOTS = [40, 107, 175, 243, 310];
-const BOT_Y = 112;
+const BOT_Y = 108;
 
 const pct = (v: number, total: number) => `${(v / total) * 100}%`;
 
@@ -411,7 +458,7 @@ const BotnetScene: React.FC = () => {
               position: "absolute",
               left: 0,
               right: 0,
-              top: pct(134, VB_H),
+              top: pct(127, VB_H),
               display: "flex",
               alignItems: "baseline",
               justifyContent: "center",
@@ -419,11 +466,11 @@ const BotnetScene: React.FC = () => {
               ...netLabel,
             }}
           >
-            <b style={{ fontSize: 12 * SCALE, fontWeight: 800 }}>
+            <b style={{ fontSize: 15 * SCALE, fontWeight: 800 }}>
               <span style={markerStyle}>ボットネット</span>
             </b>
             <span style={{ color: colors.textSecondary, fontSize: 10.5 * SCALE, fontWeight: 700 }}>
-              乗っ取られた端末（ボット）の群れ
+              乗っ取られた端末（<b style={{ color: colors.primary600 }}>ボット</b>）の群れ
             </span>
           </div>
         </div>
@@ -452,8 +499,8 @@ const BotnetScene: React.FC = () => {
 // ---------------------------------------------------------------------------
 
 const SteppingStoneScene: React.FC = () => {
-  const termAppear = useAppear(0.3);
-  const subAppear = useAppear(segStart(SEG_STEP, 1));
+  const punchAppear = useAppear(0.3);
+  const noteAppear = useAppear(segStart(SEG_STEP, 2));
   const illustAppear = useAppear(0.5);
   return (
     <SlideShell narration={SEG_STEP}>
@@ -461,7 +508,7 @@ const SteppingStoneScene: React.FC = () => {
         <Img
           src={staticFile("images/ipa_sg/malware-bot.png")}
           style={{
-            flex: 1,
+            flex: 0.9,
             minWidth: 0,
             alignSelf: "stretch",
             objectFit: "contain",
@@ -469,15 +516,26 @@ const SteppingStoneScene: React.FC = () => {
             ...illustAppear,
           }}
         />
-        <div style={{ flex: 1.15, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 * SCALE }}>
-          <span style={{ fontSize: 22 * SCALE, fontWeight: 800, lineHeight: 1.45, ...termAppear }}>
-            被害者が、
-            <br />
-            <span style={markerPinkStyle}>加害者</span>になる
+        <div
+          style={{ flex: 1.3, minWidth: 0, display: "flex", flexDirection: "column", gap: 9 * SCALE }}
+        >
+          <span style={{ fontSize: 17 * SCALE, fontWeight: 800, lineHeight: 1.4, ...punchAppear }}>
+            被害者が、<span style={markerPinkStyle}>加害者</span>になる
           </span>
-          <span style={{ fontSize: 12.5 * SCALE, fontWeight: 700, lineHeight: 1.6, ...subAppear }}>
-            <span style={{ color: colors.textSecondary }}>踏み台</span>
-            <br />
+          <KeywordLead
+            chip="乗っ取られた端末の悪用"
+            term="踏み台"
+            termSize={32 * SCALE}
+            desc={
+              <>
+                他社への攻撃の中継地点として
+                <br />
+                使われてしまうこと
+              </>
+            }
+            atSec={segStart(SEG_STEP, 1)}
+          />
+          <span style={{ fontSize: 12.5 * SCALE, fontWeight: 800, lineHeight: 1.6, ...noteAppear }}>
             <HighlightSpan text="自社が攻撃元として名前が出る" atSec={segStart(SEG_STEP, 2)} />
           </span>
         </div>
@@ -703,6 +761,7 @@ export const SgL5RansomwareBotnet: VideoSpec = {
     },
     {
       pattern: "term",
+      chip: "マルウェアの一種",
       icon: "memory",
       term: "ファイルレス",
       sub: "ファイルレスマルウェア — ファイルを置かずメモリ上で動く",

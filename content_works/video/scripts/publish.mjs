@@ -3,25 +3,40 @@
  * 人のレビューが通った動画（QUEUE.md が 👀 review）を、draft から
  * アプリの完成品置き場（apps/<app>/contents/videos/）へ公開する。
  *
- *   node scripts/publish.mjs sg-L1          # 1本
- *   node scripts/publish.mjs sg-L1 sg-L2    # まとめて
- *   node scripts/publish.mjs sg-L4 --force  # すでに ✅ done の行をやり直す
+ *   node scripts/publish.mjs sg-L1              # 1本
+ *   node scripts/publish.mjs sg-L1 sg-L2        # まとめて
+ *   node scripts/publish.mjs sg-L4 --force      # すでに ✅ done の行をやり直す
+ *   node scripts/publish.mjs sg-L1 --keep-draft # draft を消さずに残す（例外）
+ *   node scripts/publish.mjs --prune            # 公開済み（✅ done）の draft を一括で掃除
  *
  * 引数は `<接頭辞>-L<番号>`（`sg-L1`）か QUEUE.md の動画ID そのまま
  * （`sg-L1-what-is-infosec`）。何度実行しても結果は同じ（冪等）。
  *
- * この1コマンドで次の3つが揃う。手でどれかを忘れると一覧に出ない／再生できない。
+ * この1コマンドで次の4つが揃う。手でどれかを忘れると一覧に出ない／再生できない。
  *   1. draft/<app>/<成果物>.mp4 → apps/<app>/contents/videos/<L番号>.mp4 にコピー
- *      （draft は残す。gitignore 対象で再レンダリングもできるが、消す理由がない）
  *   2. apps/<app>/contents/base.json の `videos` に章ごと登録（尺は ffprobe の実測）
  *   3. QUEUE.md の行を ✅ done にし、尺（mm:ss）を埋める
+ *   4. その回の draft/<app>/*.mp4 を削除（公開した版と、置き換わった旧版 `-v<n>` の両方）
+ *      — draft は「まだ人が見ていないもの」の置き場。公開が済んだ回を残すと、
+ *        次にレビューするものが埋もれるし、1本20MBが積み上がる。
+ *      消すのは公開先に同じサイズのmp4があると確認できたときだけ（gitignore で復元できないため）。
+ *      QUEUE.md の「成果物(draft)」欄はどの版を公開したかの記録として残る（ファイルはもう無い）。
  *
  * アプリ側の動画ID = L番号（`L1`）。視聴進捗のキーなので後から変えない。
  * 章（VideoChapter）は QUEUE.md の `### 第N章 タイトル` 見出しから採る。
  * 見出しが無いアプリ（ipa_ip）は --chapter <id>:<タイトル> で明示する。
  */
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -35,6 +50,8 @@ const queuePath = join(videoRoot, "QUEUE.md");
 
 const argv = process.argv.slice(2);
 const force = argv.includes("--force");
+const keepDraft = argv.includes("--keep-draft");
+const pruneOnly = argv.includes("--prune");
 const chapterArgIndex = argv.indexOf("--chapter");
 let chapterOverride = null;
 if (chapterArgIndex !== -1) {
@@ -45,8 +62,11 @@ if (chapterArgIndex !== -1) {
 }
 const chapterValueIndex = chapterArgIndex === -1 ? -1 : chapterArgIndex + 1;
 const targets = argv.filter((a, i) => !a.startsWith("--") && i !== chapterValueIndex);
-if (targets.length === 0) {
-  console.error("usage: node scripts/publish.mjs <sg-L1 | 動画ID> [...] [--force] [--chapter <id>:<title>]");
+if (targets.length === 0 && !pruneOnly) {
+  console.error(
+    "usage: node scripts/publish.mjs <sg-L1 | 動画ID> [...] [--force] [--keep-draft] [--chapter <id>:<title>]\n" +
+      "       node scripts/publish.mjs --prune   # 公開済み（✅ done）の draft を掃除するだけ",
+  );
   process.exit(1);
 }
 
@@ -188,7 +208,74 @@ function mmss(sec) {
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
 }
 
+function publishedPath(app, lesson) {
+  return join(repoRoot, "apps", app, "contents", "videos", `L${lesson}.mp4`);
+}
+
+/**
+ * 公開が済んだ回の draft を消す。対象は「公開した版」と「置き換わった旧版」
+ * （`<base>-v<n>.mp4` の連番。承認された版があるので、それ以前の版は用済み）。
+ *
+ * draft は gitignore で復元が効かないので、**公開先に同じサイズのmp4がある**ことを
+ * 確認できたときだけ消す。確認が取れなければ何もせず理由を返す（掃除は失敗させない）。
+ *
+ * @returns {{removed:string[], skipped:string|null}}
+ */
+function pruneDrafts({ app, lesson, artifact }) {
+  const dir = join(videoRoot, "draft", app);
+  const dest = publishedPath(app, lesson);
+  if (!existsSync(dest)) return { removed: [], skipped: `公開先に ${dest} が無い` };
+  if (!existsSync(dir)) return { removed: [], skipped: null };
+
+  const draftPath = join(dir, artifact);
+  if (existsSync(draftPath) && statSync(draftPath).size !== statSync(dest).size) {
+    return {
+      removed: [],
+      skipped: `${artifact} と公開済みの L${lesson}.mp4 でサイズが違う（別の版が公開されている？）`,
+    };
+  }
+
+  // 旧版は `<base>-v<n>.mp4` の連番のときだけ辿る（旧命名は成果物そのものだけ消す）
+  const versioned = artifact.match(/^(.+)-v(\d+)\.mp4$/);
+  const files = new Set([artifact]);
+  if (versioned) {
+    const pattern = new RegExp(`^${versioned[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}-v\\d+\\.mp4$`);
+    for (const f of readdirSync(dir)) if (pattern.test(f)) files.add(f);
+  }
+
+  const removed = [];
+  for (const f of files) {
+    const p = join(dir, f);
+    if (!existsSync(p)) continue;
+    rmSync(p);
+    removed.push(f);
+  }
+  return { removed, skipped: null };
+}
+
+function reportPrune(label, { removed, skipped }) {
+  if (skipped) console.warn(`  ! draft を残した（${label}）: ${skipped}`);
+  else if (removed.length > 0) console.log(`  draft を削除: ${removed.join(" ")}`);
+}
+
 let queueText = readFileSync(queuePath, "utf8");
+
+// --prune: 台帳が ✅ done の回で draft に残っているものをまとめて掃除する
+// （消す運用にする前に公開した回の後始末。公開そのものは何もしない）
+if (pruneOnly) {
+  let hit = 0;
+  for (const row of parseQueue(queueText)) {
+    const [, , state, , artifact] = row.cells.map((c) => c.trim());
+    if (!state.includes("done") || !artifact) continue;
+    const result = pruneDrafts({ app: row.app, lesson: row.lesson, artifact });
+    if (result.removed.length === 0 && !result.skipped) continue;
+    hit++;
+    console.log(`${row.app} L${row.lesson}`);
+    reportPrune(`${row.app} L${row.lesson}`, result);
+  }
+  if (hit === 0) console.log("掃除するものは無い（✅ done の draft はすべて削除済み）");
+  process.exit(0);
+}
 
 for (const target of targets) {
   const rows = parseQueue(queueText);
@@ -237,6 +324,10 @@ for (const target of targets) {
   writeFileSync(queuePath, queueText);
 
   console.log(`✓ ${row.app} ${id} ${title}  ${artifact} → contents/videos/${id}.mp4  (${mmss(sec)})`);
+
+  // 公開が済んだので draft から消す（--keep-draft で残せる）
+  if (keepDraft) console.log("  draft は残した（--keep-draft）");
+  else reportPrune(`${row.app} ${id}`, pruneDrafts({ app: row.app, lesson: row.lesson, artifact }));
 }
 
 console.log(

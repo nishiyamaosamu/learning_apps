@@ -170,6 +170,7 @@ export const demo: VideoSpec = {
     },
     {
       pattern: "term",
+      chip: "名前解決のしくみ",
       icon: "dns",
       term: "DNS",
       sub: "Domain Name System — ドメイン名とIPアドレスを対応づけるしくみ",

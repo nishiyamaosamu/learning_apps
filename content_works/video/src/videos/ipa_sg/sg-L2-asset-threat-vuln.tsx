@@ -1047,6 +1047,7 @@ export const SgL2AssetThreatVuln: VideoSpec = {
     },
     {
       pattern: "term",
+      chip: "組織の脆弱性",
       icon: "visibility_off",
       term: "シャドーIT",
       sub: "会社が把握していないまま使われている機器やサービス",

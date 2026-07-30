@@ -5,6 +5,7 @@ import type { NarrationSegment } from "../videos/types";
 import { easeOut, useAppear, usePop } from "../parts/animate";
 
 export type TermSlideProps = {
+  /** その語が属する分類（例「メールの脅威」）。重要度は主張しない。省略でチップなし */
   chip?: string;
   icon: React.ReactNode;
   term: string;
@@ -15,10 +16,10 @@ export type TermSlideProps = {
 
 /**
  * 本編スライド⑦ 用語ドン — DESIGN.html .term-wrap
- * 見出しタブは置かず中央寄せ。チップ → アイコン → 用語（トラッキングを広げながら着地）→ 補足。
+ * 見出しタブは置かず中央寄せ。分類ラベル → アイコン → 用語（トラッキングを広げながら着地）→ 補足。
  */
 export const TermSlide: React.FC<TermSlideProps> = ({
-  chip = "今日のキーワード",
+  chip,
   icon,
   term,
   sub,
@@ -58,19 +59,21 @@ export const TermSlide: React.FC<TermSlideProps> = ({
           minHeight: 0,
         }}
       >
-        <span
-          style={{
-            fontSize: 10 * SCALE,
-            fontWeight: 800,
-            color: colors.primary800,
-            backgroundColor: colors.primary100,
-            borderRadius: 999,
-            padding: `${2 * SCALE}px ${14 * SCALE}px`,
-            ...chipAppear,
-          }}
-        >
-          {chip}
-        </span>
+        {chip ? (
+          <span
+            style={{
+              fontSize: 10 * SCALE,
+              fontWeight: 800,
+              color: colors.primary800,
+              backgroundColor: colors.primary100,
+              borderRadius: 999,
+              padding: `${2 * SCALE}px ${14 * SCALE}px`,
+              ...chipAppear,
+            }}
+          >
+            {chip}
+          </span>
+        ) : null}
         <span
           style={{
             width: 46 * SCALE,

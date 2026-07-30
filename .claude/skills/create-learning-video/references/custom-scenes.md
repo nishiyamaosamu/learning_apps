@@ -40,6 +40,27 @@ const MyScene: React.FC = () => {
 `useProgress` でカウントアップ、上に小さな説明、下にテロップ。
 1ページに数字は1つ。2つ並べたくなったら「対比」なので vs か左右分割へ。
 
+**数字ドンを選べるのは「その数字がページの主題」のときだけ。** ナレーションが数字の前に
+仕組みの説明を1〜2文はさむページ（＝数字は結論の一部）では、巨大数字が画面中央を占めたまま
+他の話が入ってこなくなる。判定は「このページを0.5秒見せたら、覚えてほしいのは数字か？」。
+違うなら比較カードや図解にする。
+
+**カウントアップは数字要素そのものを `useAppear` で出す。** `useProgress` だけを掛けると
+進捗が0の間も要素は描画され続けるので、**「0.0兆通り」が数十秒間デカく居座る**
+（sg-L7 s04 で実際に指摘された）。カウントアップの開始まで数字を出したくないなら、
+`useProgress`（値）と `useAppear`（表示）の両方を、対応するナレーションの `segStart` に掛ける。
+
+**規模・桁数の差を見せたいときは、数字ドン1つより「2枚のカードの左右比較」が入る。**
+片方だけ強調（`primary50` 背景 + `primary500` 枠）し、間に差分のチップ（「+4桁」など）と矢印を置く。
+数字は各カード 30×SCALE 程度で、単位・「約」は 12〜13×SCALE に落とす。カードは
+`flex: 1` にしておくと、後から出る側の場所が最初から空いているので画面が跳ねない。
+語りの順（先に小さい方 → 後で大きい方 → 最後に倍率の一言）に `useAppear(segStart(SEG, i))` で出す。
+実例: `src/videos/ipa_sg/sg-L7-password-attacks.tsx` の `DigitCard` / `BruteForceScene`。
+
+なお**ページの最初のセグメントの間だけ本文が空になる**構成は避ける（見出しだけの画面が5秒続く）。
+そのページの前提になる要素（候補の並び・図の枠など）を `useAppear(0.3)` で先に出し、
+それを説明する文だけを該当 `segStart` に合わせると、先行感なく間が埋まる。
+
 ### 左右分割（説明 + ビジュアル）
 bullets より文が少なく、絵を大きく見せたいとき。
 
@@ -56,6 +77,70 @@ bullets より文が少なく、絵を大きく見せたいとき。
 </div>
 ```
 （`Img`/`staticFile` は remotion から import。画像は public/images/<app>/ に実在するものだけ）
+
+### キーワード見出し（新出用語をページの主役にする）
+
+**聞き慣れない新出用語は、概念文より目立たせる。** 概念を大きな文字で書いて用語を小さな
+グレーの添え字にすると、いちばん覚えてほしい語がページでいちばん目立たない要素になる
+（sg-L5 の「ランサムウェア」「踏み台」で実際に指摘が出た）。試験対策なので、**語と意味が
+セットで記憶に残ること**が目的 — 概念文は用語に従属させる。
+
+用語ドン（`term` パターン）は1動画1〜2回までなので、それ以外のページでは
+**用語ドンと同じ組み方（分類チップ → 用語 → 定義）を左寄せにしただけ**のものを置く。
+強調は**文字の大きさとマーカーだけ**で作り、**箱・枠・影・アクセントバーを足さない**
+（カードで囲った版を作ったら「装飾が過剰」と差し戻された。集中ブルーは余白で見せる設計で、
+囲みは意味のある単位＝並列カード・対比・引用にだけ使う）:
+
+```tsx
+const KeywordLead: React.FC<{ chip: string; term: string; termSize: number;
+  desc: React.ReactNode; atSec: number }> = ({ chip, term, termSize, desc, atSec }) => (
+  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start",
+    gap: 5 * SCALE, ...useAppear(atSec) }}>
+    <span style={{ fontSize: 9.5 * SCALE, fontWeight: 800, color: colors.primary800,
+      backgroundColor: colors.primary100, borderRadius: 999,
+      padding: `${1.5 * SCALE}px ${9 * SCALE}px` }}>{chip}</span>
+    <b style={{ fontSize: termSize, fontWeight: 800, lineHeight: 1.2 }}>
+      <span style={markerStyle}>{term}</span>   {/* b は flex 子でブロック化するので span で包む */}
+    </b>
+    <span style={{ fontSize: 12 * SCALE, fontWeight: 700, lineHeight: 1.5 }}>{desc}</span>
+  </div>
+);
+```
+
+- **chip は分類ラベル**（その語が何の一種か。例「お金を取られる型」「乗っ取られた端末の悪用」）。
+  重要度を主張する語（「最重要」など）は入れない — `term` パターンと同じ決まり
+- `termSize` は語の長さで決める。左右分割の片側なら**7文字で 27×SCALE / 3文字で 32×SCALE**あたりが上限
+  （左テキスト側は `flex: 1.25`、イラスト側は `flex: 0.9〜0.95` にすると入る）
+- **マーカーは1ページに1〜2本まで**。用語には `markerStyle`（青）を引き、危険を指す語だけ
+  `markerPinkStyle` に分ける。12×SCALE 程度の小さい文字にマーカーを引くと、
+  帯が細すぎて汚れにしか見えないので引かない
+- 出現は「その語がナレーションで初めて呼ばれるセグメント」に合わせる（`segStart(SEG, i)`）。
+  ページの主題そのものなら 0.3 で先に出してよい
+- 実例: `src/videos/ipa_sg/sg-L5-ransomware-botnet.tsx` の `KeywordLead`
+  （s03 ランサムウェア＝見出しが上・s06 踏み台＝概念文が上と位置を変え、
+  隣り合うページで同じ絵にならないようにしている）
+
+図解ページ（ハブ＆スポークなど）で用語がラベルにしか出ないときも、**そのラベルだけは
+本文より1〜2段大きく**し（12×SCALE 程度では小さい。15×SCALE 前後）マーカーを引く。
+
+### 実物のモック + 危ない箇所の注記（既知の語を「見せる」）
+
+迷惑メール・偽サイト・怪しい画面など、**受講者が実際に目にする物**が題材のページは、
+用語を大写しにする（term）より1つの実物を再現して危ない箇所を指すほうが入る。
+完動例は `src/videos/ipa_sg/sg-L3-human-deception.tsx` の `SpamMailScene`（受信メール1通）。
+
+- 骨格: `SlideShell heading="<語>"` + 中央にカード（surface + border + radius 12×SCALE）。
+  カード内は「ラベル + 値」の行を積み、危ない要素だけ別ボックスに切り出す
+- 点灯は `useProgress(segStart(SEG, i), 0.4)` + `interpolateColors` で
+  地 `bg→accentPinkSurface` / 枠 `border→accentPink` / 文字 `textSecondary→accentPinkText`
+  （危険の注目はピンク。correct/incorrect は正誤リビール専用なので使わない）
+- 要素は**最初から全部レイアウトに置き**、`useAppear` の opacity で出す（高さが動かず、
+  途中フレームでカードが伸び縮みしない）
+
+**高さの余裕は約 755px しかない**（1080 − 上下padding − 見出し − 字幕帯）。カードに行を1つ
+足すだけで最下段が字幕帯に潜り込む（L3 s06 で実際に起きた）。注記は行を増やさず対象の行に
+インラインで置き、ボックスの padding は 8×SCALE 前後に抑える。組んだら必ず stills で
+**最下段と字幕帯のすき間**を確認する。
 
 ### ダーク幕間（チャプター区切り・問いかけ）
 章の切り替えや「ここで質問です」の一拍に。SlideShell を使わない唯一の例外。
@@ -148,6 +233,45 @@ import { DrawPath, ArrowMarker } from "../../parts/draw";
 
 ノード（アイコン+ラベル）は SVG の外に div で重ねるより、**SVG 内は線だけ・ノードは
 absolute 配置の div** にすると文字が綺麗に出る。ノードの座標と線の端点座標を%で揃えること。
+
+**描画前の線は完全に消えている** — `DrawPath` 側で担保済みなので、シーン側で opacity を
+足す必要はない。SVG は dash-offset で線を隠しても、**線の周辺物は隠してくれない**のが罠で、
+対策前は2つのゴミが出ていた（どちらも `parts/draw.tsx` を修正済み）:
+
+| 見えていたもの | 原因 | 指摘 |
+|---|---|---|
+| 終端に三角形だけが浮く | marker は strokeDashoffset の影響を受けない | sg-L8 ディレクトリトラバーサル |
+| 始点に色付きの点が残る | `strokeLinecap="round"` は長さ0のダッシュにも丸い端点を描く | sg-L10 第三者中継 |
+
+**自前で `<marker>` `<polygon>` `<circle>` を書いたり、`<path>` に直接 dash アニメを当てるときは
+同じ穴を自分で塞ぐこと**（`opacity={p > 0 ? 1 : 0}` と、矢じりは線が届いてから付ける）。
+静止画は**シーン末尾**しか写らないのでこの種のゴミは stills では見つからない。
+図解ページを作ったら、**描画が始まる前のフレームを1枚 `npx remotion still <id> <out.png> --frame=<n>`
+で必ず見る**（フレーム番号は `scripts/stills.mjs` が出す各シーンの秒数を積み上げて×30fps）。
+
+**矢じりの縦幅ぶんの余白を viewBox に取る。** 矢じりは `size × DrawPath の strokeWidth`
+（viewBox 単位。既定 size=6）の正方形として描かれ、**はみ出した角は root の `<svg>` に
+クリップされて四角く欠ける**（sg-L10 の扇状3本・sg-L11 の中間者攻撃で「矢印が欠けている」と
+指摘）。細長い矢印ストリップを作るときは `線のy ± (size × strokeWidth) / 2` が viewBox の
+内側に入る高さを取る:
+
+```tsx
+// NG: viewBox の高さ12に対して矢じりは 6×2.5 = 15単位 → 上下が欠ける
+<svg viewBox="0 0 100 12"><DrawPath d="M2 6 L86 6" strokeWidth={2.5} markerEnd={...} /></svg>
+// OK: 高さ16なら 8 ± 7.5 = 0.5..15.5 が収まる
+<svg viewBox="0 0 100 16"><DrawPath d="M2 8 L86 8" strokeWidth={2.5} markerEnd={...} /></svg>
+```
+
+viewBox の高さを変えると px/単位 が変わる（要素の見た目の大きさも変わる）ので、
+高さを増やしたら線・終点のy座標も同じ比率で置き直す。**矢じりの欠けは縮小した静止画では
+判別できない**ので、`--scale=1` で出して該当箇所を拡大して見る（`sips -c <h> <w>
+--cropOffset <y> <x>` で切り出し → `sips -z` で拡大）。
+
+**矢印は「向き」ではなく「到達」を語らせる。** 矢印の先に出る要素（さかのぼった先のファイル、
+届いた先の被害）は、線が引き終わる頃に `useAppear(delaySec + durSec)` で出す。先に置いてあると
+矢印が単なる飾りになり、逆に矢印だけ先に着いて数秒間なにも無い所を指すのも間が悪い。
+実例: `src/videos/ipa_sg/sg-L8-injection-attacks.tsx` の `TraversalScene`
+（s07-4 で線を引き、その 0.85 秒後に `/etc/passwd` が開く）。
 
 ### 方向つきスライドイン（useFlyIn）
 上下左右から要素を寄せ集める演出は `useFlyIn(delay, { dx, dy })`。

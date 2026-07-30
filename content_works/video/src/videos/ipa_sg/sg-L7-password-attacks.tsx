@@ -227,14 +227,95 @@ const DictionaryScene: React.FC = () => {
 };
 
 // ---------------------------------------------------------------------------
-// P4: 総当たり攻撃 — 数字ドン（8桁の組み合わせ数）。
-// 4桁との比較を上に小さく置き、桁数で桁違いになることを1画面で見せる
+// P4: 総当たり攻撃 — 4桁 vs 8桁の左右比較。
+// 数字ドン1つだと、読み上げの前半（機械的に試す話）の間ずっと巨大な数字が
+// 画面中央を占めてしまい他の話が入らないため、桁数ごとのカードを語りに合わせて
+// 順に出す構図にしてある（2026-07-30 のレビュー指摘）
 // ---------------------------------------------------------------------------
 
+const DigitCard: React.FC<{
+  digits: number;
+  value: string;
+  unit: string;
+  emphasize: boolean;
+  atSec: number;
+}> = ({ digits, value, unit, emphasize, atSec }) => {
+  const card = useAppear(atSec, { dy: 14 });
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        backgroundColor: emphasize ? colors.primary50 : colors.surface,
+        border: `${2 * SCALE}px solid ${emphasize ? colors.primary500 : colors.border}`,
+        borderRadius: 14 * SCALE,
+        padding: `${11 * SCALE}px ${8 * SCALE}px`,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 6 * SCALE,
+        ...card,
+      }}
+    >
+      <span style={{ fontSize: 12 * SCALE, fontWeight: 800, color: colors.textSecondary }}>
+        英数字 {digits}桁
+      </span>
+      {/* 桁数そのものを●の数で見せる（数字を読む前に「長さの違い」が目に入る） */}
+      <span style={{ display: "flex", gap: 2.5 * SCALE }}>
+        {Array.from({ length: digits }).map((_, i) => (
+          <span
+            key={i}
+            style={{
+              width: 7 * SCALE,
+              height: 7 * SCALE,
+              borderRadius: 999,
+              backgroundColor: emphasize ? colors.primary600 : colors.primary300,
+            }}
+          />
+        ))}
+      </span>
+      <span style={{ display: "flex", alignItems: "baseline", gap: 1.5 * SCALE }}>
+        <span
+          style={{
+            fontSize: 12 * SCALE,
+            fontWeight: 800,
+            color: emphasize ? colors.primary600 : colors.textPrimary,
+          }}
+        >
+          約
+        </span>
+        <span
+          style={{
+            fontSize: 30 * SCALE,
+            fontWeight: 800,
+            lineHeight: 1,
+            color: emphasize ? colors.primary600 : colors.textPrimary,
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {value}
+        </span>
+        <span
+          style={{
+            fontSize: 13 * SCALE,
+            fontWeight: 800,
+            color: emphasize ? colors.primary600 : colors.textPrimary,
+          }}
+        >
+          {unit}
+        </span>
+      </span>
+    </div>
+  );
+};
+
 const BruteForceScene: React.FC = () => {
-  const smallStat = useAppear(segStart(SEG_P4, 2));
-  const caption = useAppear(segStart(SEG_P4, 3));
-  const count = useProgress(segStart(SEG_P4, 3) + 0.3, 1.4);
+  // 候補の並びは先に出し、それが何なのかを説明する文は s04-2 の読み上げに合わせて足す
+  // （全部を s04-2 に寄せると、s04-1 の5秒間だけ本文が空になる）
+  const candidates = useAppear(0.3);
+  const trial = useAppear(segStart(SEG_P4, 1));
+  const arrow = usePop(segStart(SEG_P4, 3));
   const note = useAppear(segStart(SEG_P4, 4));
 
   return (
@@ -251,32 +332,58 @@ const BruteForceScene: React.FC = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: 3 * SCALE,
+          gap: 8 * SCALE,
         }}
       >
-        <span style={{ fontSize: 11 * SCALE, fontWeight: 700, color: colors.textMuted, ...smallStat }}>
-          英数字 4桁 なら 約168万通り
+        {/* 「片端から機械的に試す」を候補の並びで示す */}
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 5 * SCALE,
+            fontSize: 11 * SCALE,
+            fontWeight: 700,
+            color: colors.textSecondary,
+          }}
+        >
+          <span style={{ display: "flex", gap: 5 * SCALE, fontFamily: fontMono, ...candidates }}>
+            {["aaaa", "aaab", "aaac", "…"].map((v) => (
+              <span key={v}>{v}</span>
+            ))}
+          </span>
+          <span style={trial}>を片端から機械的に試す</span>
         </span>
-        <span style={{ fontSize: 12 * SCALE, fontWeight: 700, color: colors.textSecondary, ...caption }}>
-          英数字 8桁 の組み合わせ
-        </span>
-        <span style={{ display: "flex", alignItems: "baseline", gap: 2 * SCALE }}>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "stretch",
+            justifyContent: "center",
+            gap: 5 * SCALE,
+            width: "84%",
+          }}
+        >
+          <DigitCard digits={4} value="168" unit="万通り" emphasize={false} atSec={segStart(SEG_P4, 2)} />
           <span
             style={{
-              fontSize: 52 * SCALE,
-              fontWeight: 800,
-              lineHeight: 1,
+              alignSelf: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 1 * SCALE,
               color: colors.primary600,
-              fontVariantNumeric: "tabular-nums",
+              ...arrow,
             }}
           >
-            {(2.8 * count).toFixed(1)}
+            <span style={{ fontSize: 10 * SCALE, fontWeight: 800 }}>+4桁</span>
+            <span style={{ fontSize: 18 * SCALE, fontWeight: 800, lineHeight: 1 }}>→</span>
           </span>
-          <span style={{ fontSize: 20 * SCALE, fontWeight: 800, color: colors.primary600 }}>兆通り</span>
-        </span>
+          <DigitCard digits={8} value="2.8" unit="兆通り" emphasize atSec={segStart(SEG_P4, 3)} />
+        </div>
+
         {/* 字幕（s04-5）と同じ文を画面に書かない。ここは倍率という別の切り口で桁数の効きを補強する */}
         <span style={{ fontSize: 12.5 * SCALE, fontWeight: 700, ...note }}>
-          4桁の<span style={markerStyle}>およそ168万倍</span>
+          桁が4つ増えるだけで<span style={markerStyle}>およそ168万倍</span>
         </span>
       </div>
     </SlideShell>

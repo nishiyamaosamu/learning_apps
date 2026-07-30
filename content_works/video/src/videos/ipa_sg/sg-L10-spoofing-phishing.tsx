@@ -1062,12 +1062,15 @@ const OpenRelayScene: React.FC = () => {
             >
               大量の迷惑メール
             </span>
-            <svg viewBox="0 0 100 40" style={{ width: "100%", height: 26 * SCALE }}>
+            {/* 高さ48・上下の終点を y=8/40 にしているのは、矢じりの縦幅
+                （size 6 × strokeWidth 2.5 = 15）が viewBox の外に出て角が欠けるのを防ぐため
+                （parts/draw.tsx の ArrowMarker のコメント参照） */}
+            <svg viewBox="0 0 100 48" style={{ width: "100%", height: 26 * SCALE }}>
               <ArrowMarker id="relay-out" color={colors.accentPink} />
               {[
-                "M2 20 C 40 20, 50 4, 88 4",
-                "M2 20 L88 20",
-                "M2 20 C 40 20, 50 36, 88 36",
+                "M2 24 C 40 24, 50 8, 88 8",
+                "M2 24 L88 24",
+                "M2 24 C 40 24, 50 40, 88 40",
               ].map((d, i) => (
                 <DrawPath
                   key={d}

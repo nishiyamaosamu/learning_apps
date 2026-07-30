@@ -78,6 +78,8 @@ const SEG_CPTED = [
   N("s07-5.mp3", "そして監視の目を届かせ、記録が残るようにします。"),
 ];
 
+// 「内部犯」は TTS が「ないぶほん」と誤読するため、音声側（jobs.json）だけ「ないぶはん」と
+// 仮名書きにしてある。字幕（下の text）は漢字のまま — 音声と原稿の食い違いは意図的。
 const SEG_ACTORS = [
   N("s08-1.mp3", "ここからは、実際に攻撃してくる人たちを見ていきます。"),
   N("s08-2.mp3", "スクリプトキディは、公開された攻撃ツールを使うだけの初心者です。"),
@@ -785,6 +787,7 @@ export const SgL6FraudTriangle: VideoSpec = {
     },
     {
       pattern: "term",
+      chip: "攻撃者の市場",
       icon: "travel_explore",
       term: "ダークウェブ",
       sub: "Dark Web — 盗まれた情報や攻撃ツールが売買される匿名の領域",

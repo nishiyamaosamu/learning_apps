@@ -695,6 +695,7 @@ h2.sec::before {
 
 /* --- スライドパターン: 用語ドン --- */
 .term-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; text-align: center; min-height: 0; }
+/* 用語ドンでは分類ラベル、まとめでは見出しチップとして使う */
 .term-chip { font-size: 10px; font-weight: 800; color: var(--primary800); background: var(--primary100); border-radius: 999px; padding: 2px 14px; }
 .term-ic {
   width: 46px; height: 46px; border-radius: 14px;
@@ -2168,7 +2169,7 @@ footer { margin-top: 88px; padding-top: 20px; border-top: 1px solid var(--border
       <div class="vmock">
         <div class="frame v-slide">
           <div class="term-wrap">
-            <span class="term-chip">今日のキーワード</span>
+            <span class="term-chip">名前解決のしくみ</span>
             <span class="ms term-ic" aria-hidden="true">dns</span>
             <span class="term-big">DNS</span>
             <span class="term-sub">Domain Name System — ドメイン名とIPアドレスを対応づけるしくみ</span>
@@ -2177,8 +2178,8 @@ footer { margin-top: 88px; padding-top: 20px; border-top: 1px solid var(--border
         </div>
         <div class="cap">
           <b>本編スライド⑦ 用語ドン</b>
-          <p>新しい用語を最初に1つだけ大きく見せる導入用。見出しタブは置かず中央寄せ。シラバスの膨大な「用語例」をレッスンに刻むときの起点になる。</p>
-          <div class="toks"><span class="tok">primary100 キーワードチップ</span><span class="tok">textPrimary 大見出し</span></div>
+          <p>語を1つだけ大きく見せて名前と意味を渡すページ。見出しタブは置かず中央寄せ。シラバスの膨大な「用語例」をレッスンに刻むときの起点になる。<b>チップは「分類ラベル」——その語が何の一種かを書く欄で、重要度は主張しない</b>（例: 迷惑メール→「メールの脅威」、ファイルレス→「マルウェアの一種」）。分類が自然に言えないときは省略してよい（アイコン＋見出し＋定義だけの辞書型になる）。<span class="marker-pink">「今日のキーワード」はここでは使わない</span>——あの言い回しはタイトルカードのゴーストチップ（予告）→ まとめ②キーワード回収 の呼応に予約されており、本編で先に使うと締めの回収が濁る。置いてよいのは<b>新出の専門用語だけ</b>（ファイルレス・ダークウェブなど）。迷惑メール・パスワードのような一般に知られた語は、語を額縁に入れる形そのものが「新しく難しい言葉だ」と主張してしまうので載せず、その語の中身を見せるページ（実物のモック・図）にする。</p>
+          <div class="toks"><span class="tok">primary100 分類ラベル</span><span class="tok">textPrimary 大見出し</span></div>
         </div>
       </div>
 
@@ -2270,7 +2271,7 @@ footer { margin-top: 88px; padding-top: 20px; border-top: 1px solid var(--border
   </section>
 
   <footer>
-    トークンの原本: AppColors / AppTypography（Flutter）／ mialab Design System と同期 ・ 集中ブルー v1.2 — 2026-07（v1.1: タイポ・スペーシング・モーション追加、accentをトークン昇格、アンバー用途をルール4で限定、コントラスト修正、暗記カード学習・クイズ完了・穴埋め・空状態のモック追加 ／ v1.2: 動画まとめページ2パターン追加（標準=ポイント復唱、用語中心回のみキーワード回収））
+    トークンの原本: AppColors / AppTypography（Flutter）／ mialab Design System と同期 ・ 集中ブルー v1.3 — 2026-07（v1.1: タイポ・スペーシング・モーション追加、accentをトークン昇格、アンバー用途をルール4で限定、コントラスト修正、暗記カード学習・クイズ完了・穴埋め・空状態のモック追加 ／ v1.2: 動画まとめページ2パターン追加（標準=ポイント復唱、用語中心回のみキーワード回収） ／ v1.3: 用語ドン⑦のチップを「今日のキーワード」から分類ラベルへ変更（重要度を主張しない・省略可））
   </footer>
 
 </div>

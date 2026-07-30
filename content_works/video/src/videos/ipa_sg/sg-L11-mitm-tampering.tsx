@@ -286,13 +286,17 @@ const IntroScene: React.FC = () => {
 // P3: 中間者攻撃（MITM）— 思っている通信と、実際の通信の2段比較
 // ---------------------------------------------------------------------------
 
-/** 矢印1本ぶんのコネクタ。preserveAspectRatio は既定のまま（L10 の経路図と同じ描き方） */
+/**
+ * 矢印1本ぶんのコネクタ。preserveAspectRatio は既定のまま（L10 の経路図と同じ描き方）。
+ * viewBox の高さ16は矢じりの縦幅（size 6 × strokeWidth 2.5 = 15）を収めるための余白
+ * （足りないと矢じりの角が四角く欠ける。parts/draw.tsx の ArrowMarker のコメント参照）
+ */
 const ArrowLink: React.FC<{ id: string; delaySec: number }> = ({ id, delaySec }) => (
   <div style={{ flex: 1, minWidth: 0 }}>
-    <svg viewBox="0 0 100 12" style={{ width: "100%", height: 9 * SCALE }}>
+    <svg viewBox="0 0 100 16" style={{ width: "100%", height: 9 * SCALE }}>
       <ArrowMarker id={id} color={colors.accentPink} />
       <DrawPath
-        d="M2 6 L86 6"
+        d="M2 8 L86 8"
         delaySec={delaySec}
         durSec={0.5}
         stroke={colors.accentPink}
@@ -822,10 +826,11 @@ const MitbScene: React.FC = () => {
             <Ms name="lock" size={12 * SCALE} />
             ここから暗号化
           </span>
-          <svg viewBox="0 0 100 12" style={{ width: "100%", height: 9 * SCALE }}>
+          {/* 高さ16は矢じり（size 6 × strokeWidth 2.5 = 15）を収める余白。ArrowLink と同じ */}
+          <svg viewBox="0 0 100 16" style={{ width: "100%", height: 9 * SCALE }}>
             <ArrowMarker id="mitb-line" color={colors.primary500} />
             <DrawPath
-              d="M2 6 L86 6"
+              d="M2 8 L86 8"
               delaySec={segStart(SEG_P6, 2) + 1.4}
               durSec={0.5}
               stroke={colors.primary500}

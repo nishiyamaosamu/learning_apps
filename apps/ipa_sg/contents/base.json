@@ -9,6 +9,84 @@
           "title": "L1 情報セキュリティとは",
           "durationSec": 227,
           "asset": "videos/L1.mp4"
+        },
+        {
+          "id": "L2",
+          "title": "L2 情報資産・脅威・脆弱性",
+          "durationSec": 286,
+          "asset": "videos/L2.mp4"
+        },
+        {
+          "id": "L3",
+          "title": "L3 人をだます攻撃",
+          "durationSec": 246,
+          "asset": "videos/L3.mp4"
+        },
+        {
+          "id": "L4",
+          "title": "L4 マルウェアの種類",
+          "durationSec": 204,
+          "asset": "videos/L4.mp4"
+        },
+        {
+          "id": "L5",
+          "title": "L5 ランサムウェアとボットネット",
+          "durationSec": 257,
+          "asset": "videos/L5.mp4"
+        },
+        {
+          "id": "L6",
+          "title": "L6 攻撃者と不正のメカニズム",
+          "durationSec": 294,
+          "asset": "videos/L6.mp4"
+        },
+        {
+          "id": "L7",
+          "title": "L7 パスワードを狙う攻撃",
+          "durationSec": 248,
+          "asset": "videos/L7.mp4"
+        },
+        {
+          "id": "L8",
+          "title": "L8 Webを狙う攻撃①：入力をだます",
+          "durationSec": 259,
+          "asset": "videos/L8.mp4"
+        },
+        {
+          "id": "L9",
+          "title": "L9 Webを狙う攻撃②：利用者を狙う",
+          "durationSec": 270,
+          "asset": "videos/L9.mp4"
+        },
+        {
+          "id": "L10",
+          "title": "L10 通信を狙う攻撃①：なりすましと誘導",
+          "durationSec": 252,
+          "asset": "videos/L10.mp4"
+        },
+        {
+          "id": "L11",
+          "title": "L11 通信を狙う攻撃②：盗聴と改ざん",
+          "durationSec": 257,
+          "asset": "videos/L11.mp4"
+        },
+        {
+          "id": "L12",
+          "title": "L12 DoS攻撃と標的型攻撃",
+          "durationSec": 260,
+          "asset": "videos/L12.mp4"
+        },
+        {
+          "id": "L13",
+          "title": "L13 攻撃の手順とビジネス化",
+          "durationSec": 278,
+          "asset": "videos/L13.mp4"
+        },
+        {
+          "id": "L14",
+          "title": "L14 AI時代の脅威",
+          "durationSec": 263,
+          "asset": "videos/L14.mp4"
         }
       ]
     }

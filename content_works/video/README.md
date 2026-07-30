@@ -32,23 +32,31 @@ npx remotion render <id> draft/<app>/<出力名>.mp4   # 6. フルレンダリ�
 npm run dev     # Remotion Studio（プレビューしながら調整したいとき）
 ```
 
-- 完成した動画（ドラフト）は **`draft/<app>/`** に格納する
+- レンダリングした動画（ドラフト）は **`draft/<app>/`** に格納する。ここは
+  **まだ人が見ていないものの置き場**で、公開が済んだ回は publish が消す（下記）
 - シーンの種類とデータ形式は `src/videos/types.ts`（全パターンの型定義）を参照
 
 ### 人のレビューが通ったら公開する
 
-`draft/` は確認用の置き場。レビューが通った回（QUEUE.md が 👀 review）は、アプリの完成品置き場
-`apps/<app>/contents/videos/` へ公開する。mp4のコピー・`base.json` への登録（尺は ffprobe の実測）・
-台帳を ✅ done にするところまで1コマンドで揃うので、**手でコピーしない**。
+レビューが通った回（QUEUE.md が 👀 review）は、アプリの完成品置き場
+`apps/<app>/contents/videos/` へ**移す**。mp4のコピー・`base.json` への登録（尺は ffprobe の実測）・
+台帳を ✅ done にする・draft から消す、までが1コマンドで揃うので、**手でコピーしない**。
 
 ```bash
-node scripts/publish.mjs sg-L1          # 複数まとめてもよい（sg-L1 sg-L2）
-node scripts/publish.mjs sg-L1 --force  # すでに done の回をやり直す（作り直した版に差し替え）
+node scripts/publish.mjs sg-L1              # 複数まとめてもよい（sg-L1 sg-L2）
+node scripts/publish.mjs sg-L1 --force      # すでに done の回をやり直す（作り直した版に差し替え）
+node scripts/publish.mjs sg-L1 --keep-draft # 例外的に draft を残す
+node scripts/publish.mjs --prune            # 昔に公開した回の draft が残っていたら掃除
 ```
 
 アプリ側の動画ID = **L番号**（`L1` → `contents/videos/L1.mp4`・`/videos/L1`）。視聴進捗のキーなので
 後から変えない。公開したmp4はgit対象外（再レンダリングで復元できる）で、gitが追うのは
 `base.json` の登録だけ。
+
+公開すると、その回の draft は**公開した版もそれ以前の版（`-v1`…）もまとめて削除される**
+（レビュー待ちが埋もれるのと、1本20MBの積み上がりを避けるため）。消すのは公開先に同じサイズの
+mp4があると確認できたときだけ。公開済みの動画を見直したいときは
+`apps/<app>/contents/videos/L<番号>.mp4` を開く。
 
 ## 構成
 
@@ -58,7 +66,7 @@ node scripts/publish.mjs sg-L1 --force  # すでに done の回をやり直す�
 ```
 video/
 ├── QUEUE.md               # 制作キュー（進捗台帳）— 状態・動画ID・成果物・尺
-├── draft/<app>/           # レンダリング済み動画の置き場（git対象外）
+├── draft/<app>/           # レビュー待ち動画の置き場（git対象外。公開が済んだ回は publish.mjs が消す）
 ├── narration/<app>/       # ナレーション原稿（<id>.md）と TTS ジョブ（<id>.jobs.json）
 ├── stills/                # scripts/stills.mjs の出力（シーン確認用・git対象外）
 ├── scripts/stills.mjs     # 全シーンを1枚ずつ静止画化する確認ツール
