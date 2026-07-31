@@ -89,6 +89,126 @@
           "asset": "videos/L14.mp4"
         }
       ]
+    },
+    {
+      "id": "2",
+      "title": "第2章 守る技術：暗号と認証",
+      "videos": [
+        {
+          "id": "L15",
+          "title": "L15 暗号方式",
+          "durationSec": 264,
+          "asset": "videos/L15.mp4"
+        },
+        {
+          "id": "L16",
+          "title": "L16 ハッシュ関数と鍵管理",
+          "durationSec": 275,
+          "asset": "videos/L16.mp4"
+        },
+        {
+          "id": "L17",
+          "title": "L17 デジタル署名とメッセージ認証",
+          "durationSec": 281,
+          "asset": "videos/L17.mp4"
+        },
+        {
+          "id": "L18",
+          "title": "L18 パスワードによる認証",
+          "durationSec": 257,
+          "asset": "videos/L18.mp4"
+        },
+        {
+          "id": "L19",
+          "title": "L19 多要素認証とパスワードレス",
+          "durationSec": 280,
+          "asset": "videos/L19.mp4"
+        },
+        {
+          "id": "L20",
+          "title": "L20 生体認証と本人確認",
+          "durationSec": 294,
+          "asset": "videos/L20.mp4"
+        },
+        {
+          "id": "L21",
+          "title": "L21 PKIとデジタル証明書",
+          "durationSec": 295,
+          "asset": "videos/L21.mp4"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "第3章 情報セキュリティ管理",
+      "videos": [
+        {
+          "id": "L22",
+          "title": "L22 情報セキュリティ管理の全体像",
+          "durationSec": 247,
+          "asset": "videos/L22.mp4"
+        },
+        {
+          "id": "L23",
+          "title": "L23 情報資産の分類とリスクの種類",
+          "durationSec": 272,
+          "asset": "videos/L23.mp4"
+        },
+        {
+          "id": "L24",
+          "title": "L24 リスクアセスメント",
+          "durationSec": 282,
+          "asset": "videos/L24.mp4"
+        },
+        {
+          "id": "L25",
+          "title": "L25 リスク対応",
+          "durationSec": 299,
+          "asset": "videos/L25.mp4"
+        },
+        {
+          "id": "L26",
+          "title": "L26 情報セキュリティ継続",
+          "durationSec": 284,
+          "asset": "videos/L26.mp4"
+        },
+        {
+          "id": "L27",
+          "title": "L27 情報セキュリティ諸規程",
+          "durationSec": 257,
+          "asset": "videos/L27.mp4"
+        },
+        {
+          "id": "L28",
+          "title": "L28 ISMS①：マネジメントシステム",
+          "durationSec": 287,
+          "asset": "videos/L28.mp4"
+        },
+        {
+          "id": "L29",
+          "title": "L29 ISMS②：管理策と認証制度",
+          "durationSec": 324,
+          "asset": "videos/L29.mp4"
+        },
+        {
+          "id": "L30",
+          "title": "L30 インシデントハンドリングとセキュリティ組織",
+          "durationSec": 279,
+          "asset": "videos/L30.mp4"
+        },
+        {
+          "id": "L31",
+          "title": "L31 セキュリティ機関の地図",
+          "durationSec": 251,
+          "asset": "videos/L31.mp4"
+        },
+        {
+          "id": "L32",
+          "title": "L32 基準・ガイドラインの地図",
+          "durationSec": 288,
+          "asset": "videos/L32.mp4"
+        }
+      ]
     }
   ],
   "lessons": [

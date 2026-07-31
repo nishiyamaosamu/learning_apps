@@ -19,6 +19,7 @@ import durations from "./sg-L15-encryption.audio.json";
  *   導入 → 用語の変換フロー（平文→暗号文→平文）→ 共通鍵（同じ鍵が両端に）→
  *   公開鍵（鍵ペア・左イラスト＋右カード）→ 鍵の数の数字ドン【息継ぎ】→
  *   wipe-light で2方式の対比（vs）→ ハイブリッド（2段の帯）→
+ *   ネットショップの具体シーン（何が暗号化されるのか）→
  *   クイズ幕間 → クイズ3問 → wipe でまとめ。
  */
 
@@ -81,30 +82,39 @@ const SEG_HYBRID = [
   N("s08-4.mp3", "ウェブを暗号化するTLSも、この仕組みを使っています。"),
 ];
 
+const SEG_SHOP = [
+  N("s09-1.mp3", "では、買い物の場面で、何が暗号化されるのかを見てみましょう。"),
+  N("s09-2.mp3", "カード番号を入力すると、ブラウザはその場で共通鍵を一つ作ります。"),
+  N("s09-3.mp3", "その共通鍵を、お店の公開鍵で暗号化して送ります。"),
+  N("s09-4.mp3", "お店は自分の秘密鍵でロックを外し、同じ共通鍵を取り出します。"),
+  N("s09-5.mp3", "そのあと、カード番号や住所といった注文の中身を、この共通鍵で暗号化します。"),
+  N("s09-6.mp3", "公開鍵で守るのは共通鍵だけで、中身のデータは共通鍵が守ります。"),
+];
+
 const SEG_QUIZ_INTRO = QUIZ_INTRO_SEG; // 定型セリフ。共通音声を使い回す
 
 const SEG_Q1 = [
-  N("s10-1.mp3", "ここで問題です。"),
-  N("s10-2.mp3", "暗号化と復号に同じ鍵を使う方式は、どちらでしょうか。"),
-  N("s10-3.mp3", "正解は、共通鍵暗号方式です。", { gapBeforeSec: 1.8 }),
+  N("s11-1.mp3", "ここで問題です。"),
+  N("s11-2.mp3", "暗号化と復号に同じ鍵を使う方式は、どちらでしょうか。"),
+  N("s11-3.mp3", "正解は、共通鍵暗号方式です。", { gapBeforeSec: 1.8 }),
 ];
 
 const SEG_Q2 = [
-  N("s11-1.mp3", "次の問題です。"),
-  N("s11-2.mp3", "公開鍵で暗号化された文を復号できるのは、どれでしょうか。"),
-  N("s11-3.mp3", "正解は、対応する秘密鍵です。", { gapBeforeSec: 1.8 }),
+  N("s12-1.mp3", "次の問題です。"),
+  N("s12-2.mp3", "公開鍵で暗号化された文を復号できるのは、どれでしょうか。"),
+  N("s12-3.mp3", "正解は、対応する秘密鍵です。", { gapBeforeSec: 1.8 }),
 ];
 
 const SEG_Q3 = [
-  N("s12-1.mp3", "最後の問題です。"),
-  N("s12-2.mp3", "共通鍵を公開鍵暗号方式で届けてから本文を送る方式は、何でしょうか。"),
-  N("s12-3.mp3", "正解は、ハイブリッド暗号方式です。", { gapBeforeSec: 1.8 }),
+  N("s13-1.mp3", "最後の問題です。"),
+  N("s13-2.mp3", "共通鍵を公開鍵暗号方式で届けてから本文を送る方式は、何でしょうか。"),
+  N("s13-3.mp3", "正解は、ハイブリッド暗号方式です。", { gapBeforeSec: 1.8 }),
 ];
 
 const SEG_SUM = [
-  N("s13-1.mp3", "共通鍵暗号方式は同じ鍵を使い、速いかわりに鍵の受け渡しが課題です。"),
-  N("s13-2.mp3", "公開鍵暗号方式は公開鍵で暗号化し、秘密鍵で復号します。"),
-  N("s13-3.mp3", "この二つを組み合わせたものが、ハイブリッド暗号方式です。"),
+  N("s14-1.mp3", "共通鍵暗号方式は同じ鍵を使い、速いかわりに鍵の受け渡しが課題です。"),
+  N("s14-2.mp3", "公開鍵暗号方式は公開鍵で暗号化し、秘密鍵で復号します。"),
+  N("s14-3.mp3", "この二つを組み合わせたものが、ハイブリッド暗号方式です。"),
   OUTRO_SEG, // 定型セリフ。共通音声を使い回す
 ];
 
@@ -566,6 +576,9 @@ const withComma = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 
 const KeyCountScene: React.FC = () => {
   const count = useProgress(segStart(SEG_KEYCOUNT, 1), 1.6);
+  // 数字は「値」と「表示」の両方を段落2の開始に掛ける（useProgress だけだと
+  // 進捗0の間「0本」が居座る。sg-L7 s04 の指摘と同じ罠）
+  const numberAppear = useAppear(segStart(SEG_KEYCOUNT, 1), { dy: 8 });
   const captionAppear = useAppear(0.3);
   const noteAppear = useAppear(segStart(SEG_KEYCOUNT, 2), { dy: 10 });
   return (
@@ -591,7 +604,7 @@ const KeyCountScene: React.FC = () => {
         >
           100人が共通鍵でやり取りするのに必要な鍵の数
         </span>
-        <span style={{ display: "flex", alignItems: "baseline", gap: 2 * SCALE }}>
+        <span style={{ display: "flex", alignItems: "baseline", gap: 2 * SCALE, ...numberAppear }}>
           <span
             style={{
               fontSize: 52 * SCALE,
@@ -738,6 +751,244 @@ const HybridScene: React.FC = () => {
 };
 
 // ---------------------------------------------------------------------------
+// P9: 具体シーン — ネットショップで「何が」暗号化されるのか
+//   ハイブリッドの説明（P8）は手順の話なので、この回でいちばん誤解されやすい
+//   「暗号化される中身は2つあり、それぞれ別の鍵で守られる」を場面で見せる。
+//   ブラウザ ──①共通鍵（店の公開鍵でロック）──▶ ショップ
+//            ──②注文の中身（共通鍵でロック）──▶
+// ---------------------------------------------------------------------------
+
+const EndPoint: React.FC<{ icon: string; label: string; atSec: number }> = ({
+  icon,
+  label,
+  atSec,
+}) => {
+  const block = usePop(atSec);
+  return (
+    <div
+      style={{
+        width: 44 * SCALE,
+        flex: "none",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 4 * SCALE,
+        ...block,
+      }}
+    >
+      <span
+        style={{
+          width: 40 * SCALE,
+          height: 40 * SCALE,
+          borderRadius: 14 * SCALE,
+          backgroundColor: colors.primary50,
+          color: colors.primary600,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Ms name={icon} size={23 * SCALE} />
+      </span>
+      <b style={{ fontSize: 10 * SCALE, fontWeight: 800, whiteSpace: "nowrap" }}>{label}</b>
+    </div>
+  );
+};
+
+/**
+ * 送られる1つの「荷物」= 中身 + それにかけた鍵。矢印は鍵がかかってから出す。
+ * 荷物の大きさ（width・アイコン径）を鍵と本文で変えているのは、直前の P8 が
+ * 「同じ幅の帯が2本」なので同じ視覚文法を連続させないため＋「小さい鍵／大きな中身」を
+ * 見た目でも語らせるため。矢印は右端で揃えて、どちらもショップへ向かうことを示す。
+ */
+const ParcelLane: React.FC<{
+  icon: string;
+  name: string;
+  sub?: string;
+  lockIcon: string;
+  lockText: string;
+  width: string;
+  iconSize: number;
+  atSec: number;
+  lockAtSec: number;
+}> = ({ icon, name, sub, lockIcon, lockText, width, iconSize, atSec, lockAtSec }) => {
+  const card = useAppear(atSec, { dy: 12 });
+  const lock = usePop(lockAtSec);
+  const arrow = useAppear(lockAtSec, { dy: 0 });
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6 * SCALE, width: "100%" }}>
+      <div
+        style={{
+          flex: "none",
+          width,
+          display: "flex",
+          alignItems: "center",
+          gap: 7 * SCALE,
+          padding: `${8 * SCALE}px ${12 * SCALE}px`,
+          backgroundColor: colors.surface,
+          border: `${1.5 * SCALE}px solid ${colors.border}`,
+          borderRadius: 14 * SCALE,
+          ...card,
+        }}
+      >
+        <span
+          style={{
+            width: iconSize,
+            height: iconSize,
+            borderRadius: iconSize * 0.36,
+            backgroundColor: colors.primary50,
+            color: colors.primary600,
+            flex: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Ms name={icon} size={iconSize * 0.6} />
+        </span>
+        <span style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 * SCALE }}>
+          <b style={{ fontSize: 13 * SCALE, fontWeight: 800, whiteSpace: "nowrap" }}>{name}</b>
+          {sub ? (
+            <span
+              style={{
+                fontSize: 10 * SCALE,
+                fontWeight: 700,
+                color: colors.textSecondary,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {sub}
+            </span>
+          ) : null}
+        </span>
+        <span
+          style={{
+            flex: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: 5 * SCALE,
+            padding: `${5 * SCALE}px ${9 * SCALE}px`,
+            borderRadius: 999,
+            backgroundColor: colors.primary600,
+            color: colors.textPrimaryDark,
+            fontSize: 9 * SCALE,
+            fontWeight: 800,
+            whiteSpace: "nowrap",
+            ...lock,
+          }}
+        >
+          <Ms name={lockIcon} size={13 * SCALE} />
+          {lockText}
+        </span>
+      </div>
+      <span
+        style={{
+          flex: "none",
+          marginLeft: "auto", // 荷物の幅が違っても矢印はショップ側で揃える
+          width: 24 * SCALE,
+          textAlign: "center",
+          fontSize: 22 * SCALE,
+          lineHeight: 1,
+          color: colors.primary300,
+          ...arrow,
+        }}
+      >
+        →
+      </span>
+    </div>
+  );
+};
+
+const ShopCaseScene: React.FC = () => {
+  const openNote = useAppear(segStart(SEG_SHOP, 3), { dy: 8 });
+  const conclusion = useAppear(segStart(SEG_SHOP, 5), { dy: 10 });
+  return (
+    <SlideShell
+      heading="例：ネットショップで買い物する"
+      icon={<Ms name="storefront" size={videoType.slideHeadIcon} />}
+      narration={SEG_SHOP}
+    >
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          marginTop: "2%",
+          display: "flex",
+          alignItems: "center",
+          gap: 10 * SCALE,
+        }}
+      >
+        <EndPoint icon="laptop_mac" label="あなた" atSec={0.3} />
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 6 * SCALE,
+          }}
+        >
+          <ParcelLane
+            icon="key"
+            name="共通鍵"
+            lockIcon="public"
+            lockText="店の公開鍵でロック"
+            width="72%"
+            iconSize={24 * SCALE}
+            atSec={segStart(SEG_SHOP, 1)}
+            lockAtSec={segStart(SEG_SHOP, 2)}
+          />
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              gap: 5 * SCALE,
+              fontSize: 10 * SCALE,
+              fontWeight: 700,
+              color: colors.textSecondary,
+              ...openNote,
+            }}
+          >
+            <Ms name="lock_open" size={14 * SCALE} />
+            <span>
+              店は<b style={{ fontWeight: 800, color: colors.primary800 }}>秘密鍵</b>で開けて共通鍵を取り出す
+            </span>
+          </span>
+          <ParcelLane
+            icon="description"
+            name="カード番号・住所"
+            sub="注文の中身そのもの"
+            lockIcon="key"
+            lockText="共通鍵でロック"
+            width="90%"
+            iconSize={32 * SCALE}
+            atSec={segStart(SEG_SHOP, 4)}
+            lockAtSec={segStart(SEG_SHOP, 4) + 0.6}
+          />
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6 * SCALE,
+              fontSize: 12 * SCALE,
+              fontWeight: 800,
+              ...conclusion,
+            }}
+          >
+            <Ms name="lightbulb" size={16 * SCALE} />
+            <span>
+              公開鍵で守るのは<span style={markerStyle}>共通鍵だけ</span>
+            </span>
+          </span>
+        </div>
+        <EndPoint icon="storefront" label="ショップ" atSec={0.5} />
+      </div>
+    </SlideShell>
+  );
+};
+
+// ---------------------------------------------------------------------------
 // クイズ幕間
 // ---------------------------------------------------------------------------
 
@@ -823,6 +1074,13 @@ export const SgL15Encryption: VideoSpec = {
       durationSec: 6,
       narration: SEG_HYBRID,
       component: HybridScene,
+    },
+    {
+      pattern: "custom",
+      name: "shop-case",
+      durationSec: 8,
+      narration: SEG_SHOP,
+      component: ShopCaseScene,
     },
     {
       pattern: "custom",

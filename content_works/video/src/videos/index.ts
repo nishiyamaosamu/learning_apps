@@ -28,7 +28,24 @@ import { SgL12DosTargeted } from "./ipa_sg/sg-L12-dos-targeted";
 import { SgL13KillChainRaas } from "./ipa_sg/sg-L13-kill-chain-raas";
 import { SgL14AiThreats } from "./ipa_sg/sg-L14-ai-threats";
 import { SgL15Encryption } from "./ipa_sg/sg-L15-encryption";
+import { SgL16HashKeyManagement } from "./ipa_sg/sg-L16-hash-key-management";
+import { SgL17DigitalSignature } from "./ipa_sg/sg-L17-digital-signature";
+import { SgL18PasswordAuthentication } from "./ipa_sg/sg-L18-password-authentication";
+import { SgL19MfaPasswordless } from "./ipa_sg/sg-L19-mfa-passwordless";
+import { SgL20Biometrics } from "./ipa_sg/sg-L20-biometrics";
+import { SgL21PkiCertificate } from "./ipa_sg/sg-L21-pki-certificate";
 import { SgL22SecurityManagement } from "./ipa_sg/sg-L22-security-management";
+import { SgL23AssetClassification } from "./ipa_sg/sg-L23-asset-classification";
+import { SgL24RiskAssessment } from "./ipa_sg/sg-L24-risk-assessment";
+import { SgL25RiskTreatment } from "./ipa_sg/sg-L25-risk-treatment";
+import { SgL26SecurityContinuity } from "./ipa_sg/sg-L26-security-continuity";
+import { SgL27SecurityPolicies } from "./ipa_sg/sg-L27-security-policies";
+import { SgL28IsmsManagementSystem } from "./ipa_sg/sg-L28-isms-management-system";
+import { SgL29IsmsControlsCertification } from "./ipa_sg/sg-L29-isms-controls-certification";
+import { SgL30IncidentHandling } from "./ipa_sg/sg-L30-incident-handling";
+import { SgL31SecurityOrganizations } from "./ipa_sg/sg-L31-security-organizations";
+import { SgL32StandardsGuidelines } from "./ipa_sg/sg-L32-standards-guidelines";
+import { SgL33SecurityEvaluation } from "./ipa_sg/sg-L33-security-evaluation";
 import { SgL78SubjectBMethod } from "./ipa_sg/sg-L78-subject-b-method";
 import { SgL79AssetRegister } from "./ipa_sg/sg-L79-asset-register";
 import { SgL80RiskValue } from "./ipa_sg/sg-L80-risk-value";
@@ -55,7 +72,24 @@ export const videos: VideoSpec[] = [
   SgL13KillChainRaas,
   SgL14AiThreats,
   SgL15Encryption,
+  SgL16HashKeyManagement,
+  SgL17DigitalSignature,
+  SgL18PasswordAuthentication,
+  SgL19MfaPasswordless,
+  SgL20Biometrics,
+  SgL21PkiCertificate,
   SgL22SecurityManagement,
+  SgL23AssetClassification,
+  SgL24RiskAssessment,
+  SgL25RiskTreatment,
+  SgL26SecurityContinuity,
+  SgL27SecurityPolicies,
+  SgL28IsmsManagementSystem,
+  SgL29IsmsControlsCertification,
+  SgL30IncidentHandling,
+  SgL31SecurityOrganizations,
+  SgL32StandardsGuidelines,
+  SgL33SecurityEvaluation,
   SgL78SubjectBMethod,
   SgL79AssetRegister,
   SgL80RiskValue,
