@@ -658,7 +658,7 @@ const AccountingScene: React.FC = () => {
             }}
           >
             <Img
-              src={staticFile("images/ipa_sg/prop-ledger.png")}
+              src={staticFile("images/ipa_sg/prop-accounting-papers.png")}
               style={{
                 flex: 1,
                 minHeight: 0,

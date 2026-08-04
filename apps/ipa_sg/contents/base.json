@@ -263,6 +263,96 @@
           "asset": "videos/L41.mp4"
         }
       ]
+    },
+    {
+      "id": "5",
+      "title": "第5章 セキュリティ実装技術",
+      "videos": [
+        {
+          "id": "L42",
+          "title": "L42 セキュアプロトコルの地図",
+          "durationSec": 290,
+          "asset": "videos/L42.mp4"
+        },
+        {
+          "id": "L43",
+          "title": "L43 メールのセキュリティ①：送信元ドメイン認証",
+          "durationSec": 262,
+          "asset": "videos/L43.mp4"
+        },
+        {
+          "id": "L44",
+          "title": "L44 メールのセキュリティ②：暗号化とスパム対策",
+          "durationSec": 276,
+          "asset": "videos/L44.mp4"
+        },
+        {
+          "id": "L45",
+          "title": "L45 ネットワークセキュリティの実装",
+          "durationSec": 272,
+          "asset": "videos/L45.mp4"
+        },
+        {
+          "id": "L46",
+          "title": "L46 アプリケーションセキュリティ",
+          "durationSec": 245,
+          "asset": "videos/L46.mp4"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "title": "第6章 法務",
+      "videos": [
+        {
+          "id": "L47",
+          "title": "L47 知的財産権と不正競争防止法",
+          "durationSec": 297,
+          "asset": "videos/L47.mp4"
+        },
+        {
+          "id": "L48",
+          "title": "L48 サイバーセキュリティ基本法と不正アクセス禁止法",
+          "durationSec": 293,
+          "asset": "videos/L48.mp4"
+        },
+        {
+          "id": "L49",
+          "title": "L49 個人情報保護法①：保護のルール",
+          "durationSec": 283,
+          "asset": "videos/L49.mp4"
+        },
+        {
+          "id": "L50",
+          "title": "L50 個人情報保護法②：加工情報と関連制度",
+          "durationSec": 290,
+          "asset": "videos/L50.mp4"
+        },
+        {
+          "id": "L51",
+          "title": "L51 刑法とサイバー犯罪",
+          "durationSec": 306,
+          "asset": "videos/L51.mp4"
+        },
+        {
+          "id": "L52",
+          "title": "L52 その他のセキュリティ関連法規",
+          "durationSec": 290,
+          "asset": "videos/L52.mp4"
+        },
+        {
+          "id": "L53",
+          "title": "L53 労働・取引関連法規",
+          "durationSec": 307,
+          "asset": "videos/L53.mp4"
+        },
+        {
+          "id": "L54",
+          "title": "L54 その他の法律・情報倫理・標準化",
+          "durationSec": 290,
+          "asset": "videos/L54.mp4"
+        }
+      ]
     }
   ],
   "lessons": [

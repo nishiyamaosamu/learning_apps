@@ -35,7 +35,7 @@ const N = narrationLoader(durations, "audio/ipa_sg/sg-L46-application-security")
 // ---------------------------------------------------------------------------
 
 const SEG_P2 = [
-  N("s02-1.mp3", "前回までは、Webサイトを狙うさまざまな攻撃を見てきました。"),
+  N("s02-1.mp3", "これまで、Webサイトを狙うさまざまな攻撃を見てきました。"),
   N("s02-2.mp3", "SQLインジェクションもXSSも、原因はひとつでした。"),
   N("s02-3.mp3", "利用者からの入力を、そのまま信用してしまったことです。"),
   N("s02-4.mp3", "原因が共通なら、守り方はアプリを作る側の書き方で決まります。"),
@@ -391,7 +391,7 @@ const DefenseMapScene: React.FC = () => {
               textAlign: "center",
             }}
           >
-            攻撃（L8・L9）
+            攻撃
           </span>
           <span style={{ flex: "none", width: 14 * SCALE }} />
           <span
