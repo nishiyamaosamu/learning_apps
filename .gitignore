@@ -37,3 +37,4 @@ apps/*/contents/videos/*.mp4
 
 # Claude
 .claude/skills/*-workspace
+.claude/settings.local.json

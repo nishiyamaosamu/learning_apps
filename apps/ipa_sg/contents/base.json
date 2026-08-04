@@ -209,6 +209,60 @@
           "asset": "videos/L32.mp4"
         }
       ]
+    },
+    {
+      "id": "4",
+      "title": "第4章 セキュリティ対策",
+      "videos": [
+        {
+          "id": "L33",
+          "title": "L33 セキュリティ評価",
+          "durationSec": 287,
+          "asset": "videos/L33.mp4"
+        },
+        {
+          "id": "L34",
+          "title": "L34 人的セキュリティ対策",
+          "durationSec": 295,
+          "asset": "videos/L34.mp4"
+        },
+        {
+          "id": "L35",
+          "title": "L35 マルウェア・ランサムウェア対策",
+          "durationSec": 280,
+          "asset": "videos/L35.mp4"
+        },
+        {
+          "id": "L36",
+          "title": "L36 アクセス制御とゼロトラスト",
+          "durationSec": 296,
+          "asset": "videos/L36.mp4"
+        },
+        {
+          "id": "L37",
+          "title": "L37 ログ管理と脆弱性管理",
+          "durationSec": 258,
+          "asset": "videos/L37.mp4"
+        },
+        {
+          "id": "L38",
+          "title": "L38 ネットワーク防御の仕組み",
+          "durationSec": 295,
+          "asset": "videos/L38.mp4"
+        },
+        {
+          "id": "L39",
+          "title": "L39 セキュリティ製品・サービスの地図",
+          "durationSec": 293,
+          "asset": "videos/L39.mp4"
+        },
+        {
+          "id": "L41",
+          "title": "L41 物理的セキュリティ対策",
+          "durationSec": 264,
+          "asset": "videos/L41.mp4"
+        }
+      ]
     }
   ],
   "lessons": [

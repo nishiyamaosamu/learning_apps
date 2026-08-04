@@ -14,7 +14,7 @@ person, group, groups, diversity_3, supervisor_account, manage_accounts, psychol
 school, support_agent, record_voice_over, forum, chat, mail, call
 
 ## IT・ネットワーク
-computer, laptop_mac, smartphone, devices, dns, router, cable, lan, wifi, cloud,
+computer, laptop_mac, smartphone, tablet_mac, devices, dns, router, cable, lan, wifi, cloud,
 cloud_upload, storage, database, memory, terminal, code, bug_report, api,
 settings, build, extension, language, public, travel_explore, search
 
